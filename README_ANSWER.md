@@ -177,10 +177,13 @@ design system dự án, nên nó là **đầu vào của vòng critique**, khôn
 `Academic Review System` **đúng token dự án** (Primary `#146B55`, Headline/Body/Label = Inter) —
 bằng chứng là `ai-output/stitch/loop2-after-0*.jpg`.
 
-Phần **chưa chụp được** là ảnh vòng 3 (`loop3-touch.png`): prompt ≥48dp đã chạy và Stitch đã xác
-nhận hiểu yêu cầu, nhưng phiên trình duyệt đóng trước khi Stitch render xong màn hình.
+**Vòng 3 đã chạy và có bằng chứng:** prompt ≥48dp sinh design system `Educator Touch System`;
+Stitch ghi thẳng `Strict 48x48 min touch target` trong accessible name của nút chuyển sinh viên —
+trích đầy đủ ở `ai-output/stitch/LOOP3-EVIDENCE.md`, ảnh ở `loop3-after-0*.jpg`. Vòng 3 **giữ đúng
+Inter** và **tuân thủ 48dp**, nhưng Primary trôi về `#2563EB` — đúng minh chứng AI dễ quên ràng buộc
+của vòng trước.
 
-> **Vì sao ảnh vòng 2 là `.jpg` screenshot chứ không phải PNG từng màn:** dialog `Export` của Stitch
+> **Vì sao ảnh vòng 2/3 là `.jpg` screenshot chứ không phải PNG từng màn:** dialog `Export` của Stitch
 > nằm trong một iframe lồng, các nút bên trong không lộ tham chiếu cho công cụ điều khiển trình duyệt,
 > nên chỉ chụp được toàn canvas. Ảnh vòng 1 xuất được PNG vì lấy qua menu `⋮ → Download` trước khi
 > Stitch đổi bố cục thanh công cụ.

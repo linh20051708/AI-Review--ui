@@ -208,7 +208,7 @@ Kết quả Stitch dựng dự án mới tên `Mobi Review Teacher Dashboard` v�
 > `Export` của Stitch nằm trong iframe lồng không điều khiển được bằng công cụ hiện có (xem
 > `README_ANSWER.md`).
 
-### Vòng 3 — sau khi yêu cầu ≥48dp (ĐANG chạy)
+### Vòng 3 — sau khi yêu cầu ≥48dp (ĐÃ chạy)
 
 Prompt vòng 3:
 
@@ -216,13 +216,35 @@ Prompt vòng 3:
 
 Stitch xác nhận đã hiểu: *"design the Mobi Review teacher mobile app with strict accessibility
 compliance (minimum 48×48 dp touch targets across all interactive elements, comfortable thumb reach,
-and high-contrast typography)"*, đề xuất bộ 4 màn (Review Queue & Dashboard, Submission Assessment
-& Rubric Scoring, Class Mastery & Insights, Quick Feedback & Assignment Manager) và bắt đầu sinh
-tại thời điểm ghi log. **Chưa kịp chụp ảnh kết quả vòng 3** — phiên trình duyệt đóng trước khi
-Stitch render xong.
+and high-contrast typography)"*, rồi sinh design system **Educator Touch System** với 4 màn
+(Review Queue & Dashboard · Assessment & Rubric Scoring · Class Mastery & Insights · Quick Feedback
+& Assignment Manager).
 
-> **Còn thiếu:** ảnh `loop3-touch.png`. Ba vòng critique trong tài liệu này ghi lại **quyết định
-> sửa**; bản sửa trong Figma là `03 Final UI` (`figma-svg/output/03-final/`).
+**Bằng chứng 48dp đọc được từ DOM thật** (accessible name Stitch tự ghi, không phải suy đoán):
+
+| Phần tử | Context Stitch ghi |
+|---|---|
+| Nút chuyển sinh viên trước | `Prev Student Nav (Strict 48x48 min touch target)` |
+| Nút chuyển sinh viên sau | `Next Student Nav (Strict 48x48 min touch target)` |
+
+**Token vòng 3:** Primary `#2563EB`, Secondary `#0F172A`, Tertiary `#059669`, Neutral `#64748B`,
+Headline/Body/Label = **Inter**.
+
+| File | Nội dung | Trạng thái |
+|---|---|---|
+| `ai-output/stitch/loop3-after-01-canvas-48dp.jpg` | Canvas vòng 3 + panel mô tả 48dp | ✅ có |
+| `ai-output/stitch/loop3-after-02-canvas-full.jpg` | Cùng canvas, khung đầy đủ | ✅ có |
+| `ai-output/stitch/LOOP3-EVIDENCE.md` | Trích nguyên văn prompt, accessible name, token vòng 3 | ✅ có |
+
+> **Nhận xét trung thực cho mục C:** vòng 3 **giữ đúng font Inter** (ràng buộc vòng 2 dính lại) và
+> **tuân thủ đúng ràng buộc 48dp** vừa nêu, nhưng **Primary trôi về xanh dương `#2563EB`** thay vì
+> `#146B55`. Đây là minh chứng cho luận điểm: AI giữ được ràng buộc *vừa nêu trong cùng prompt*
+> nhưng **dễ quên ràng buộc của vòng trước** — đúng lý do vì sao design system phải do người chốt và
+> ghi thành token cứng, không giao cho AI tự nhớ.
+
+> **Ghi chú kỹ thuật ảnh:** cả ảnh vòng 2 và vòng 3 là **screenshot canvas 1430×876** (`.jpg`), không
+> phải ảnh từng màn xuất riêng, do dialog `Export` của Stitch nằm trong iframe lồng không điều khiển
+> được bằng công cụ hiện có. Bản sửa trong Figma là `03 Final UI` (`figma-svg/output/03-final/`).
 
 ---
 

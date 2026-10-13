@@ -81,6 +81,8 @@ Stitch sinh 5 màn hình, xuất kèm HTML + design token:
 |---|---|
 | `ai-output/stitch/loop1-before-0*.png` | 5 ảnh màn hình AI sinh lần đầu |
 | `ai-output/stitch/loop2-after-0*.jpg` | 3 ảnh vòng 2 — AI sửa theo token dự án |
+| `ai-output/stitch/loop3-after-0*.jpg` | 2 ảnh vòng 3 — yêu cầu ≥48dp touch target |
+| `ai-output/stitch/LOOP3-EVIDENCE.md` | Trích nguyên văn prompt + accessible name 48dp vòng 3 |
 | `ai-output/stitch/html/*.html` | Mã HTML 5 màn Stitch sinh |
 | `ai-output/stitch/STITCH-DESIGN-TOKENS.md` | Token Stitch xuất kèm |
 
@@ -91,7 +93,7 @@ dựng design system mới **Academic Review System** đúng token dự án — 
 Bản cuối nộp là `figma-svg/output/03-final/` (script sinh theo token dự án).
 
 > **`figma-svg/` là output do script sinh, KHÔNG phải ảnh Google Stitch.** Hai nguồn khác nhau, ghi rõ
-> để không nhầm. Vòng 3 (≥48dp touch target) đã khởi chạy trên Stitch nhưng chưa chụp được ảnh kết quả.
+> để không nhầm. Vòng 3 (≥48dp touch target) đã chạy và có ảnh: `loop3-after-0*.jpg` + `LOOP3-EVIDENCE.md`.
 
 ## 3. Danh mục tài liệu
 

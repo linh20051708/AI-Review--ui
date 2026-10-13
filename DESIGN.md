@@ -108,15 +108,19 @@ Prompt ở §2 đã dán vào Google Stitch, dự án `Academic Review Mobile Wo
 | `ai-output/stitch/loop2-after-01-design-system-tokens.jpg` | Vòng 2 sau yêu cầu lại: token đúng `#146B55` + Inter |
 | `ai-output/stitch/loop2-after-02-login-prototype.jpg` | Vòng 2: màn Đăng nhập trong prototype |
 | `ai-output/stitch/loop2-after-03-canvas-overview.jpg` | Vòng 2: toàn cảnh canvas |
+| `ai-output/stitch/loop3-after-01-canvas-48dp.jpg` | Vòng 3 (≥48dp): canvas + panel mô tả |
+| `ai-output/stitch/loop3-after-02-canvas-full.jpg` | Vòng 3: cùng canvas, khung đầy đủ |
+| `ai-output/stitch/LOOP3-EVIDENCE.md` | Trích nguyên văn prompt + accessible name 48dp vòng 3 |
 
 > **Ghi chú trung thực:** ảnh `loop1-before-*` là **kết quả AI thật** (Google Stitch xuất PNG từng
 > màn). Nhưng Stitch **tự chọn bảng màu tím `#4F46E5` và font Newsreader/Hanken Grotesk**, khác
 > design system dự án (`#146B55`, Inter) — đây chính là **đối tượng của vòng critique**. Sau khi
 > gõ lại prompt chỉ đích danh mã màu + font (vòng 2), Stitch dựng design system mới
 > **Academic Review System** với Primary `#146B55` và Headline/Body/Label đều `Inter` — **khớp token
-> dự án**; bằng chứng là 3 ảnh `loop2-after-*.jpg`. Bộ cuối cùng nộp cho Lab 2 là
-> `figma-svg/output/03-final/`, **không** phải ảnh Stitch. Vòng 3 (≥48dp) đã khởi chạy nhưng chưa
-> chụp được ảnh kết quả.
+> dự án**; bằng chứng là 3 ảnh `loop2-after-*.jpg`. Vòng 3 (≥48dp) giữ đúng font Inter và tuân thủ
+> 48dp (Stitch ghi thẳng `Strict 48x48 min touch target` trong accessible name), nhưng Primary trôi
+> về `#2563EB` — xem `LOOP3-EVIDENCE.md`. Bộ cuối cùng nộp cho Lab 2 là `figma-svg/output/03-final/`,
+> **không** phải ảnh Stitch.
 
 ---
 
