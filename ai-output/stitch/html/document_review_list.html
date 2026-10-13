@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&amp;family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary": "#005338", "tertiary-fixed-dim": "#68dba9", "surface-tint": "#4d44e3", "surface-container": "#e5eeff", "surface-dim": "#cbdbf5", "on-tertiary-fixed-variant": "#005137", "on-secondary": "#ffffff", "secondary-fixed": "#d8e3fb", "outline": "#777587", "on-tertiary-container": "#7df1bd", "on-tertiary": "#ffffff", "surface-container-low": "#eff4ff", "on-background": "#0b1c30", "primary-fixed": "#e2dfff", "tertiary-container": "#006e4c", "on-surface-variant": "#464555", "secondary-fixed-dim": "#bcc7de", "surface-container-highest": "#d3e4fe", "on-surface": "#0b1c30", "inverse-on-surface": "#eaf1ff", "on-secondary-container": "#586377", "on-primary-container": "#dad7ff", "on-primary-fixed": "#0f0069", "surface-container-high": "#dce9ff", "secondary-container": "#d5e0f8", "surface-variant": "#d3e4fe", "inverse-surface": "#213145", "outline-variant": "#c7c4d8", "error": "#ba1a1a", "tertiary-fixed": "#85f8c4", "on-tertiary-fixed": "#002114", "surface-bright": "#f8f9ff", "on-error": "#ffffff", "on-error-container": "#93000a", "background": "#f8f9ff", "error-container": "#ffdad6", "inverse-primary": "#c3c0ff", "primary-fixed-dim": "#c3c0ff", "primary": "#3525cd", "surface": "#f8f9ff", "surface-container-lowest": "#ffffff", "primary-container": "#4f46e5", "on-secondary-fixed-variant": "#3c475a", "on-secondary-fixed": "#111c2d", "secondary": "#545f73", "on-primary": "#ffffff", "on-primary-fixed-variant": "#3323cc" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "gutter": "1rem", "space-xl": "2rem", "gutter-desktop": "1.5rem", "margin": "1rem", "gutter-mobile": "0.75rem", "margin-desktop": "2rem", "space-lg": "1.25rem", "gutter-tablet": "1.25rem", "space-md": "0.75rem", "margin-tablet": "1.5rem", "space-xs": "0.25rem", "margin-mobile": "1rem", "space-sm": "0.5rem" }, "fontFamily": { "body-lg": ["Hanken Grotesk"], "headline-lg-mobile": ["Newsreader"], "headline-sm": ["Newsreader"], "body-sm": ["Hanken Grotesk"], "label-sm": ["Hanken Grotesk"], "label-lg": ["Hanken Grotesk"], "headline-lg": ["Newsreader"], "headline-md": ["Newsreader"], "body-md": ["Hanken Grotesk"], "label-md": ["Hanken Grotesk"], "headline-xl-mobile": ["Newsreader"], "headline-xl": ["Newsreader"] }, "fontSize": { "body-lg": ["17px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "400" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "body-md": ["15px", { "lineHeight": "24px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "headline-xl-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-xl": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Mobi Review Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1X6zZUL1mgp3IEvBdCP-zXkZiCcJhC_EtmjOnPRuajo1oDnedLvzN9YXmeG0NkMI4eXSKt0mTc8lLLJN5SLjzMVxMWl84EQyF0uEFsUFEtk6G7wApVXPDGgoonVrsn81n84ojX3zWgXgXP2cjGjjkg3CSZOs5snV23cyPdHU2yKRH0KRe08RhPbEvtFfvDodkEmvg3pj8UKEZV_r9Y4pPGAk7m9rC2BFXOeE0B0B5ED4wGh_jg0Wo5iTtKf"/><div class="flex flex-col"><span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant leading-none">Mobi Review</span><h1 class="font-headline-sm text-headline-sm text-on-surface leading-tight">Submissions</h1></div></div><div class="flex items-center gap-space-sm"><button class="h-11 px-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container flex items-center gap-space-xs text-on-surface min-w-[44px] transition-colors"><span class="font-label-md text-label-md font-semibold max-w-[90px] truncate">ENG 302</span><span class="material-symbols-outlined text-[18px] text-secondary">arrow_drop_down</span></button><img alt="Profile" class="w-8 h-8 rounded-full object-cover min-w-[32px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaOKzQ7616afrK_QyvBGruK06lBe8sssPBVrkSmD_T-laCgJdGnnkZjMYh-NEd8LdeFXOOhh57VwtA-bYF-Ui3miOXF6cbnJPrlb5XqYJDYPTudgwIZP6nac9gbU11bS0LCNxLH-W4Qv1oEayrjNT3T2H6ozWY4if-7rUgeXDH416sin4hD_o1Zfr1srv9QimPho1BSoU7uM84JEiJFQHnYgswqz0ktJs7fDtsSr1Ute90hPzwQ12TLA"/></div></div></header><main class="flex flex-col relative w-full pt-16 pb-20 bg-surface flex-grow"><div class="flex flex-col w-full">
+<!-- Interactive Batch Action Banner -->
+<div class="px-gutter pt-space-md pb-space-sm">
+<div class="bg-primary-container text-on-primary rounded-xl p-space-md shadow-md flex items-center justify-between relative overflow-hidden">
+<div class="flex flex-col z-10 max-w-[65%]">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-primary-container">Grading Cohort Alpha</span>
+<h2 class="font-headline-sm text-headline-sm text-on-primary leading-tight mt-0.5">18 Papers Awaiting</h2>
+<p class="font-body-sm text-body-sm text-on-primary-container mt-1 line-clamp-1">Midterm Capstone: Distributed Protocols</p>
+</div>
+<button class="z-10 h-11 px-space-md bg-surface text-primary rounded-lg font-label-lg text-label-lg shadow-sm flex items-center gap-space-xs active:scale-95 transition-all" id="batchGradeBtn">
+<span class="material-symbols-outlined text-[18px]">play_circle</span>
+<span>Start Batch</span>
+</button>
+<div class="absolute -right-4 -bottom-6 w-28 h-28 bg-surface-tint/20 rounded-full blur-xl pointer-events-none"></div>
+</div>
+</div>
+<!-- Search & Metric Ribbon -->
+<div class="px-gutter space-y-space-sm pt-space-xs pb-space-sm">
+<!-- Live Search & Filter Control -->
+<div class="flex items-center gap-space-sm">
+<div class="flex-grow h-12 bg-surface-container-low rounded-lg flex items-center px-space-sm gap-space-xs shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]">search</span>
+<input class="w-full bg-transparent border-none outline-none font-body-md text-body-md text-on-surface placeholder:text-outline" id="searchInput" placeholder="Search author, thesis, or keyword..." type="text"/>
+<button class="hidden text-secondary hover:text-on-surface p-1" id="clearSearch">
+<span class="material-symbols-outlined text-[16px]">cancel</span>
+</button>
+</div>
+<!-- Rubric Sorting Button Dropdown -->
+<div class="relative">
+<button class="h-12 w-12 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface hover:bg-surface-container active:scale-95 transition-all shadow-sm" id="sortToggleBtn">
+<span class="material-symbols-outlined text-[20px]">swap_vert</span>
+</button>
+<div class="hidden absolute right-0 mt-2 w-56 bg-surface-container-lowest rounded-xl shadow-xl py-space-xs z-30" id="sortMenu">
+<span class="block px-space-md py-1 font-label-sm text-label-sm uppercase text-secondary">Sort Papers By</span>
+<button class="sort-option w-full text-left px-space-md py-2 font-label-md text-label-md text-primary bg-primary-fixed/30 flex items-center justify-between" data-sort="time">
+<span>Submission Time</span>
+<span class="material-symbols-outlined text-[16px]">check</span>
+</button>
+<button class="sort-option w-full text-left px-space-md py-2 font-label-md text-label-md text-on-surface hover:bg-surface-container-low flex items-center justify-between" data-sort="similarity">
+<span>Similarity Score</span>
+</button>
+<button class="sort-option w-full text-left px-space-md py-2 font-label-md text-label-md text-on-surface hover:bg-surface-container-low flex items-center justify-between" data-sort="id">
+<span>Student ID (Ascending)</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Filter Segment Tabs (Horizontal Scroll) -->
+<div class="flex items-center gap-space-xs overflow-x-auto no-scrollbar py-1">
+<button class="tab-chip active whitespace-nowrap h-8 px-space-md rounded-full font-label-md text-label-md bg-primary text-on-primary shadow-sm flex items-center gap-1 transition-all" data-tab="all">
+<span>All</span>
+<span class="bg-primary-container px-1.5 py-0.2 rounded-full font-label-sm text-label-sm text-on-primary">42</span>
+</button>
+<button class="tab-chip whitespace-nowrap h-8 px-space-md rounded-full font-label-md text-label-md bg-surface-container text-on-surface-variant flex items-center gap-1 transition-all" data-tab="needs-review">
+<span>Needs Review</span>
+<span class="bg-surface-container-high px-1.5 py-0.2 rounded-full font-label-sm text-label-sm text-on-surface">18</span>
+</button>
+<button class="tab-chip whitespace-nowrap h-8 px-space-md rounded-full font-label-md text-label-md bg-surface-container text-on-surface-variant flex items-center gap-1 transition-all" data-tab="flagged">
+<span>Flagged by AI</span>
+<span class="bg-error-container text-on-error-container px-1.5 py-0.2 rounded-full font-label-sm text-label-sm">5</span>
+</button>
+<button class="tab-chip whitespace-nowrap h-8 px-space-md rounded-full font-label-md text-label-md bg-surface-container text-on-surface-variant flex items-center gap-1 transition-all" data-tab="graded">
+<span>Graded</span>
+<span class="bg-surface-container-high px-1.5 py-0.2 rounded-full font-label-sm text-label-sm text-on-surface">19</span>
+</button>
+</div>
+</div>
+<!-- Interactive Paper List -->
+<div class="px-gutter space-y-space-md pb-space-xl pt-space-xs" id="paperCardsContainer">
+<!-- Card 1: Elena Rostova -->
+<div class="paper-card group relative bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all duration-200 active:scale-[0.99]" data-similarity="2" data-status="needs-review" data-time="2">
+<div class="flex items-start justify-between gap-space-sm mb-space-sm">
+<div class="flex items-start gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[22px]">description</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Elena Rostova</span>
+<span class="font-label-sm text-label-sm text-secondary">#ST-9481</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-surface leading-snug line-clamp-1 mt-0.5">Neural Consensus Protocol.pdf</p>
+</div>
+</div>
+<span class="shrink-0 px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-tertiary-fixed text-on-tertiary-fixed flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+          Ready to Grade
+        </span>
+</div>
+<!-- Metadata Mosaic Row -->
+<div class="grid grid-cols-3 gap-space-xs py-space-xs bg-surface-container-low rounded-lg p-space-xs mb-space-sm text-center">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase">Pages</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">12 pgs</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase">Submitted</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">2h ago</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase">Plagiarism</span>
+<span class="font-label-md text-label-md text-tertiary font-semibold">2% Low</span>
+</div>
+</div>
+<!-- AI Integrity Badges & Swipe Action Cues -->
+<div class="flex items-center justify-between pt-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="px-2 py-0.5 rounded-md font-label-sm text-label-sm bg-tertiary-container text-on-tertiary flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]">psychology</span>
+            AI: Low Assist
+          </span>
+<span class="px-2 py-0.5 rounded-md font-label-sm text-label-sm bg-surface-container text-on-surface-variant">
+            IEEE Format
+          </span>
+</div>
+<!-- Quick Touch Cue -->
+<div class="flex items-center gap-space-xs text-secondary font-label-sm text-label-sm">
+<span>Swipe to Evaluate</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Marcus Chen -->
+<div class="paper-card group relative bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all duration-200 active:scale-[0.99]" data-similarity="18" data-status="flagged" data-time="5">
+<div class="flex items-start justify-between gap-space-sm mb-space-sm">
+<div class="flex items-start gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-error-container text-on-error-container flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[22px]">warning</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Marcus Chen</span>
+<span class="font-label-sm text-label-sm text-secondary">#ST-8820</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-surface leading-snug line-clamp-1 mt-0.5">Byzantine Fault Tolerance in Edge Devices.pdf</p>
+</div>
+</div>
+<span class="shrink-0 px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-error-container text-on-error-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">flag</span>
+          1 Citation Missing
+        </span>
+</div>
+<!-- Metadata Mosaic Row -->
+<div class="grid grid-cols-3 gap-space-xs py-space-xs bg-surface-container-low rounded-lg p-space-xs mb-space-sm text-center">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase">Pages</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">16 pgs</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase">Turnaround</span>
+<span class="font-label-md text-label-md text-error font-semibold">24h Left</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase">Similarity</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">18% Flagged</span>
+</div>
+</div>
+<!-- Annotation Warning Bar -->
+<div class="flex items-center justify-between pt-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="px-2 py-0.5 rounded-md font-label-sm text-label-sm bg-surface-container-high text-on-surface flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]">auto_fix_high</span>
+            AI Checked
+          </span>
+<span class="px-2 py-0.5 rounded-md font-label-sm text-label-sm bg-error-container text-on-error-container">
+            Ref 4 Unverified
+          </span>
+</div>
+<button class="h-8 px-space-sm rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center gap-1 transition-colors">
+<span>Resolve Flag</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Card 3: Sarah Jenkins -->
+<div class="paper-card group relative bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all duration-200 active:scale-[0.99]" data-similarity="1" data-status="needs-review" data-time="8">
+<div class="flex items-start justify-between gap-space-sm mb-space-sm">
+<div class="flex items-start gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[22px]">pending_actions</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Sarah Jenkins</span>
+<span class="font-label-sm text-label-sm text-secondary">#ST-9104</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-surface leading-snug line-clamp-1 mt-0.5">Optimizing Raft State Machines.pdf</p>
+</div>
+</div>
+<span class="shrink-0 px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-secondary-container text-on-secondary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">hourglass_empty</span>
+          Score Pending
+        </span>
+</div>
+<!-- Metadata Mosaic Row -->
+<div class="grid grid-cols-3 gap-space-xs py-space-xs bg-surface-container-low rounded-lg p-space-xs mb-space-sm text-center">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase">Pages</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">9 pgs</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase">Submitted</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">8h ago</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase">Plagiarism</span>
+<span class="font-label-md text-label-md text-tertiary font-semibold">&lt; 1% Clean</span>
+</div>
+</div>
+<!-- Progress / Rubric Completion State -->
+<div class="flex items-center justify-between pt-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="px-2 py-0.5 rounded-md font-label-sm text-label-sm bg-tertiary-fixed text-on-tertiary-fixed">
+            Self-Assessment Attached
+          </span>
+<span class="px-2 py-0.5 rounded-md font-label-sm text-label-sm bg-surface-container text-on-surface-variant">
+            Appendix Present
+          </span>
+</div>
+<div class="flex items-center gap-space-xs text-secondary font-label-sm text-label-sm">
+<span>Tap to Grade</span>
+<span class="material-symbols-outlined text-[16px]">edit_note</span>
+</div>
+</div>
+</div>
+<!-- Supplementary Visual Card: Reviewer Delight Snapshot -->
+<div class="bg-surface-container rounded-xl p-space-md flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[24px]">workspace_premium</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Rubric Mastery</span>
+<p class="font-body-md text-body-md text-on-surface font-medium leading-snug">Average Cohort Score: <span class="text-primary font-bold">88.4%</span></p>
+<span class="font-label-sm text-label-sm text-tertiary">3 papers qualified for Honours review</span>
+</div>
+</div>
+<button class="h-9 px-space-sm bg-surface-container-highest rounded-lg text-primary font-label-md text-label-md active:scale-95 transition-all">
+        Metrics
+      </button>
+</div>
+</div>
+<!-- Pinned Sticky Evaluation Assistant Bar -->
+<div class="fixed bottom-16 left-0 right-0 z-40 px-gutter pb-2 pointer-events-none">
+<div class="pointer-events-auto bg-surface-container-lowest shadow-xl rounded-xl p-space-sm flex items-center justify-between">
+<div class="flex items-center gap-space-sm pl-space-xs">
+<div class="relative flex items-center justify-center">
+<!-- Circular Mini Progress Indicator -->
+<svg class="w-9 h-9 transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-container" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="45, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<span class="absolute font-label-sm text-label-sm text-on-surface font-semibold">45%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Cohort Pace</span>
+<span class="font-label-sm text-label-sm text-secondary">23 of 42 Reviewed</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="h-10 px-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 active:scale-95 transition-all" id="quickTagDrawerBtn">
+<span class="material-symbols-outlined text-[18px]">quickreply</span>
+<span>Quick Canned</span>
+</button>
+<button class="h-10 px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-md flex items-center gap-1 active:scale-95 transition-all" id="resumeWorkflowBtn">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+<span>Resume</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Interactive Slide-Up Canned Feedback Sheet (Drawer) -->
+<div class="fixed inset-0 z-50 bg-inverse-surface/35 backdrop-blur-xs hidden flex-col justify-end transition-opacity" id="cannedFeedbackModal">
+<div class="bg-surface-container-lowest rounded-t-2xl p-space-lg shadow-xl max-h-[75vh] overflow-y-auto">
+<div class="w-12 h-1.5 bg-surface-container-high rounded-full mx-auto mb-space-md"></div>
+<div class="flex items-center justify-between mb-space-md">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Academic Quick Tags</h3>
+<p class="font-body-sm text-body-sm text-secondary">Tap to append instantaneous critique to active buffer</p>
+</div>
+<button class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center text-secondary" id="closeDrawerBtn">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<div class="flex flex-wrap gap-space-xs mb-space-lg">
+<button class="canned-tag px-3 py-2 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-all">
+          Lacks Empirical Support
+        </button>
+<button class="canned-tag px-3 py-2 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-all">
+          Improper APA 7 Citation
+        </button>
+<button class="canned-tag px-3 py-2 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-all">
+          Exemplary Argumentation
+        </button>
+<button class="canned-tag px-3 py-2 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-all">
+          Refine Methodology
+        </button>
+<button class="canned-tag px-3 py-2 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-all">
+          Strong Thesis Construction
+        </button>
+<button class="canned-tag px-3 py-2 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-all">
+          Grammatical Ambiguity
+        </button>
+</div>
+<button class="w-full h-12 bg-primary text-on-primary rounded-xl font-label-lg text-label-lg shadow-sm flex items-center justify-center gap-space-xs" id="applyTagsBtn">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+<span>Apply to Active Grading Buffer</span>
+</button>
+</div>
+</div>
+<!-- Toast Notification System -->
+<div class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-inverse-surface text-inverse-on-surface font-label-md text-label-md px-space-md py-2 rounded-full shadow-lg opacity-0 transition-opacity pointer-events-none flex items-center gap-1.5" id="toastMessage">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed">info</span>
+<span id="toastText">Batch evaluation queued.</span>
+</div>
+</div>
+<script>
+  // DOM Elements
+  const sortToggleBtn = document.getElementById('sortToggleBtn');
+  const sortMenu = document.getElementById('sortMenu');
+  const sortOptions = document.querySelectorAll('.sort-option');
+  const searchInput = document.getElementById('searchInput');
+  const clearSearch = document.getElementById('clearSearch');
+  const tabChips = document.querySelectorAll('.tab-chip');
+  const cards = document.querySelectorAll('.paper-card');
+  const toastMessage = document.getElementById('toastMessage');
+  const toastText = document.getElementById('toastText');
+  const batchGradeBtn = document.getElementById('batchGradeBtn');
+  const resumeWorkflowBtn = document.getElementById('resumeWorkflowBtn');
+  const quickTagDrawerBtn = document.getElementById('quickTagDrawerBtn');
+  const cannedFeedbackModal = document.getElementById('cannedFeedbackModal');
+  const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+  const applyTagsBtn = document.getElementById('applyTagsBtn');
+  const cannedTags = document.querySelectorAll('.canned-tag');
+
+  // Trigger Toast Notification
+  function showToast(text) {
+    if (!toastMessage) return;
+    toastText.innerText = text;
+    toastMessage.classList.remove('opacity-0');
+    toastMessage.classList.add('opacity-100');
+    setTimeout(() => {
+      toastMessage.classList.remove('opacity-100');
+      toastMessage.classList.add('opacity-0');
+    }, 2400);
+  }
+
+  // Toggle Sorting Menu
+  sortToggleBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    sortMenu.classList.toggle('hidden');
+  });
+
+  document.addEventListener('click', () => {
+    if (!sortMenu?.classList.contains('hidden')) {
+      sortMenu?.classList.add('hidden');
+    }
+  });
+
+  // Sort Filter Options Interaction
+  sortOptions.forEach(opt => {
+    opt.addEventListener('click', () => {
+      sortOptions.forEach(o => {
+        o.classList.remove('text-primary', 'bg-primary-fixed/30');
+        o.classList.add('text-on-surface');
+        const check = o.querySelector('.material-symbols-outlined');
+        if (check) check.remove();
+      });
+
+      opt.classList.remove('text-on-surface');
+      opt.classList.add('text-primary', 'bg-primary-fixed/30');
+      const checkIcon = document.createElement('span');
+      checkIcon.className = 'material-symbols-outlined text-[16px]';
+      checkIcon.innerText = 'check';
+      opt.appendChild(checkIcon);
+      
+      const sortCriteria = opt.getAttribute('data-sort');
+      showToast(`Sorted by: ${opt.querySelector('span').innerText}`);
+      sortMenu.classList.add('hidden');
+    });
+  });
+
+  // Search Filtering
+  searchInput?.addEventListener('input', (e) => {
+    const val = e.target.value.toLowerCase().trim();
+    if (val.length > 0) {
+      clearSearch?.classList.remove('hidden');
+    } else {
+      clearSearch?.classList.add('hidden');
+    }
+
+    cards.forEach(card => {
+      const text = card.innerText.toLowerCase();
+      if (text.includes(val)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+
+  clearSearch?.addEventListener('click', () => {
+    if (searchInput) searchInput.value = '';
+    clearSearch.classList.add('hidden');
+    cards.forEach(card => card.style.display = 'block');
+  });
+
+  // Tab Filtering
+  tabChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      tabChips.forEach(c => {
+        c.classList.remove('active', 'bg-primary', 'text-on-primary');
+        c.classList.add('bg-surface-container', 'text-on-surface-variant');
+        const badge = c.querySelector('span:nth-child(2)');
+        if (badge && !badge.classList.contains('bg-error-container')) {
+          badge.classList.remove('bg-primary-container', 'text-on-primary');
+          badge.classList.add('bg-surface-container-high', 'text-on-surface');
+        }
+      });
+
+      chip.classList.add('active', 'bg-primary', 'text-on-primary');
+      chip.classList.remove('bg-surface-container', 'text-on-surface-variant');
+      const activeBadge = chip.querySelector('span:nth-child(2)');
+      if (activeBadge && !activeBadge.classList.contains('bg-error-container')) {
+        activeBadge.classList.add('bg-primary-container', 'text-on-primary');
+        activeBadge.classList.remove('bg-surface-container-high', 'text-on-surface');
+      }
+
+      const category = chip.getAttribute('data-tab');
+      cards.forEach(card => {
+        if (category === 'all') {
+          card.style.display = 'block';
+        } else {
+          const cardStatus = card.getAttribute('data-status');
+          if (cardStatus === category) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        }
+      });
+    });
+  });
+
+  // Primary Action Clicks
+  batchGradeBtn?.addEventListener('click', () => {
+    showToast('Starting sequential grading session...');
+  });
+
+  resumeWorkflowBtn?.addEventListener('click', () => {
+    showToast('Resuming Elena Rostova evaluation.');
+  });
+
+  // Quick Canned Feedback Modal Toggles
+  quickTagDrawerBtn?.addEventListener('click', () => {
+    cannedFeedbackModal?.classList.remove('hidden');
+    cannedFeedbackModal?.classList.add('flex');
+  });
+
+  closeDrawerBtn?.addEventListener('click', () => {
+    cannedFeedbackModal?.classList.add('hidden');
+    cannedFeedbackModal?.classList.remove('flex');
+  });
+
+  cannedFeedbackModal?.addEventListener('click', (e) => {
+    if (e.target === cannedFeedbackModal) {
+      cannedFeedbackModal.classList.add('hidden');
+      cannedFeedbackModal.classList.remove('flex');
+    }
+  });
+
+  cannedTags.forEach(tag => {
+    tag.addEventListener('click', () => {
+      tag.classList.toggle('bg-primary');
+      tag.classList.toggle('text-on-primary');
+      tag.classList.toggle('bg-surface-container');
+      tag.classList.toggle('text-on-surface');
+    });
+  });
+
+  applyTagsBtn?.addEventListener('click', () => {
+    cannedFeedbackModal?.classList.add('hidden');
+    cannedFeedbackModal?.classList.remove('flex');
+    showToast('Annotations added to active score buffer.');
+  });
+
+  // Tap Card Feedback Simulation
+  cards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('button')) return;
+      const author = card.querySelector('.font-label-lg')?.innerText || 'Paper';
+      showToast(`Opening paper: ${author}`);
+    });
+  });
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(11,28,48,0.04)]" data-active-classes="text-primary font-semibold"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center gap-space-xs min-h-[44px] min-w-[44px] px-space-xs py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[22px]">dashboard</span><span class="font-label-sm text-label-sm">Dashboard</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-space-xs min-h-[44px] min-w-[44px] px-space-xs py-1 transition-colors text-primary font-semibold" data-path="submissions" href="#"><span class="material-symbols-outlined text-[22px]">rule_folder</span><span class="font-label-sm text-label-sm">Submissions</span></a><a class="flex flex-col items-center justify-center gap-space-xs min-h-[44px] min-w-[44px] px-space-xs py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="workspace" href="#"><span class="material-symbols-outlined text-[22px]">rate_review</span><span class="font-label-sm text-label-sm">Workspace</span></a><a class="flex flex-col items-center justify-center gap-space-xs min-h-[44px] min-w-[44px] px-space-xs py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="ai-insights" href="#"><span class="material-symbols-outlined text-[22px]">psychology</span><span class="font-label-sm text-label-sm">AI Insights</span></a></div></nav></body></html>

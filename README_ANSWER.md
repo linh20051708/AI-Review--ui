@@ -163,13 +163,16 @@ Phần em làm là: phân tích, thiết kế, design system, prototype spec, ha
 ### "Ảnh trong `figma-svg/` là Google Stitch sinh à?"
 
 **Không.** Đó là SVG do script Python sinh (`figma-svg/gen.py`). Ghi rõ trong `README.md` §4.
-Bằng chứng AI thật phải nằm ở `ai-output/` (hiện **chưa có** — xem `README.md` §2.3).
+Bằng chứng AI thật nằm ở `ai-output/stitch/` — 5 ảnh PNG + HTML + token, **Google Stitch xuất
+ngày 2026-10-14** (xem `README.md` §2.3).
 
 ### "Vậy phần AI ở đâu?"
 
-Ở `DESIGN.md` §2 (prompt nguyên văn) và `ai-design-log.md` (3 vòng lặp với prompt, critique, quyết định).
-Các **số đo** trong critique là thật — đo trên bản dựng thật hoặc tính bằng công thức WCAG.
-Phần **chưa chạy** là sinh ảnh bằng công cụ AI thật.
+Ở `DESIGN.md` §2 (prompt nguyên văn), `ai-output/stitch/` (kết quả Stitch xuất) và `ai-design-log.md`
+(3 vòng lặp với prompt, critique, quyết định). Các **số đo** trong critique là thật — đo trên bản
+dựng thật hoặc tính bằng công thức WCAG. **Kết quả Stitch đầu tiên tự chọn màu tím + font khác**
+design system dự án, nên nó là **đầu vào của vòng critique**, không phải bản cuối.
+Phần **chưa chạy** là 2 ảnh Stitch *sau khi sửa* (`loop2-contrast.png`, `loop3-touch.png`).
 
 ### "Prototype đã dựng chưa?"
 

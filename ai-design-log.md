@@ -153,17 +153,32 @@ Việc từ chối ở vòng #2 là có căn cứ bằng số liệu, không ph�
 
 ---
 
-## Tài liệu cần bổ sung
+## Ảnh kết quả AI (Google Stitch) — ĐÃ CÓ
+
+Ảnh AI sinh thật bằng **Google Stitch**, xuất 2026-10-14. File gốc nằm ở `ai-output/stitch/`.
 
 | File | Nội dung | Trạng thái |
 |---|---|---|
-| `ai-output/loop1-before.png` | Ảnh AI sinh lần đầu | ⬜ chưa có |
-| `ai-output/loop2-contrast.png` | Ảnh sau khi kiểm tương phản | ⬜ chưa có |
-| `ai-output/loop3-touch.png` | Ảnh sau khi sửa vùng bấm | ⬜ chưa có |
+| `ai-output/stitch/loop1-before-01-login.png` | Đăng nhập cổng giảng viên | ✅ có |
+| `ai-output/stitch/loop1-before-02-dashboard.png` | Tổng quan (việc cần làm) | ✅ có |
+| `ai-output/stitch/loop1-before-03-review-list.png` | Danh sách yêu cầu review | ✅ có |
+| `ai-output/stitch/loop1-before-04-workspace.png` | Không gian review | ✅ có |
+| `ai-output/stitch/loop1-before-05-ai-results.png` | Kết quả AI & rubric | ✅ có |
+| `ai-output/stitch/html/*.html` | Mã HTML 5 màn hình (Stitch sinh) | ✅ có |
+| `ai-output/stitch/STITCH-DESIGN-TOKENS.md` | Design token Stitch xuất kèm | ✅ có |
 
-> **Ghi chú trung thực:** ba file ảnh trên **chưa tồn tại**. Nhật ký này ghi lại **quá trình và kết luận**,
-> trong đó mọi số đo là thật (đo trên bản dựng thật hoặc tính bằng công thức WCAG).
-> Phần cần công cụ AI thật để sinh ảnh vẫn chưa chạy — xem `README.md` §2.3.
+> **Bối cảnh sinh:** prompt gõ trong Google Stitch ngày 2026-10-14, dự án `Academic Review Mobile
+> Workspace`. Stitch tự đặt tên "Mobi Review" và dựng 5 màn + một design system riêng.
+>
+> **Điểm cần phê bình (quan trọng cho mục C):** Stitch **tự chọn bảng màu và font khác** với
+> `DESIGN.md` của dự án — dùng tím `#4F46E5` (primary), chữ *Newsreader* + *Hanken Grotesk*,
+> trong khi dự án chốt xanh `#146B55` và Inter. Đây là **bằng chứng cho vòng critique**: kết quả
+> AI đầu tiên **không tuân thủ design system**, phải yêu cầu lại. Không gộp ảnh này vào bộ nộp
+> như "bản cuối".
+>
+> **Chưa có:** ảnh `loop2-contrast.png` / `loop3-touch.png` (kết quả *sau khi sửa* trong Stitch).
+> Ba vòng critique trong tài liệu này ghi lại **quyết định sửa**; bản sửa trong Figma là `03 Final UI`
+> (`figma-svg/output/03-final/`).
 
 ---
 

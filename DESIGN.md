@@ -91,19 +91,26 @@ không hiệu ứng động phức tạp.
 
 ## 4. Output của AI
 
-**Trạng thái: chưa chạy trên công cụ AI thật.**
+**Trạng thái: ĐÃ chạy trên Google Stitch (2026-10-14).**
 
-Prompt ở §2 là bản sẵn sàng dán vào Google Stitch (hoặc công cụ tương tự).
-Ảnh kết quả cần lưu vào `ai-output/` với tên:
+Prompt ở §2 đã dán vào Google Stitch, dự án `Academic Review Mobile Workspace`. Stitch sinh
+5 màn hình + một design system riêng, xuất kèm mã HTML.
 
 | Tên file | Nội dung |
 |---|---|
-| `ai-output/loop1-before.png` | Kết quả lần sinh đầu (bản chưa sửa) |
-| `ai-output/loop2-contrast.png` | Sau vòng sửa tương phản |
-| `ai-output/loop3-touch.png` | Sau vòng sửa vùng bấm |
+| `ai-output/stitch/loop1-before-01-login.png` | Kết quả lần sinh đầu — Đăng nhập |
+| `ai-output/stitch/loop1-before-02-dashboard.png` | Kết quả lần sinh đầu — Tổng quan |
+| `ai-output/stitch/loop1-before-03-review-list.png` | Kết quả lần sinh đầu — Danh sách review |
+| `ai-output/stitch/loop1-before-04-workspace.png` | Kết quả lần sinh đầu — Không gian review |
+| `ai-output/stitch/loop1-before-05-ai-results.png` | Kết quả lần sinh đầu — Kết quả AI |
+| `ai-output/stitch/html/` | Mã HTML 5 màn hình Stitch sinh |
+| `ai-output/stitch/STITCH-DESIGN-TOKENS.md` | Token Stitch xuất kèm |
 
-> **Ghi chú trung thực:** các file trong `ai-output/` hiện **chưa tồn tại**. Không có ảnh nào trong repo này
-> là kết quả AI thật. Bộ khung trong `figma-svg/` do script sinh, không phải ảnh AI.
+> **Ghi chú trung thực:** ảnh trên là **kết quả AI thật** (Google Stitch xuất). Nhưng Stitch **tự chọn
+> bảng màu tím `#4F46E5` và font Newsreader/Hanken Grotesk**, khác design system dự án (`#146B55`,
+> Inter). Đây chính là **đối tượng của vòng critique** — kết quả AI đầu không tuân thủ token, xem
+> `ai-design-log.md`. Bộ cuối cùng nộp cho Lab 2 là `figma-svg/output/03-final/`, **không** phải ảnh
+> Stitch. Ảnh `loop2-contrast.png` / `loop3-touch.png` (sau sửa) chưa tạo.
 
 ---
 
