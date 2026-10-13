@@ -32,7 +32,7 @@ COLORS = [
 ]
 
 TYPE_ROWS = [
-    ("Tiêu đề trang", "22sp / 700", FS_PRICE, 700, "Chào An — Chợ… không, tên màn hình"),
+    ("Tiêu đề trang", "22sp / 700", FS_PRICE, 700, "Chào An — Tổng quan"),
     ("Tiêu đề mục", "20sp / 700", FS_TITLE, 700, "Hồ sơ, Lớp học"),
     ("Tiêu đề khối", "16sp / 600", FS_HEAD, 600, "SRS - Use Case Diagram"),
     ("Thân", "14sp / 400", FS_BODY, 400, "Mặc định hiển thị việc cần làm trong học kỳ."),
@@ -227,9 +227,9 @@ def comp_button():
             y += 24
         out.append(text(x, y + 6, "Trạng thái bắt buộc: mặc định · nhấn giữ · vô hiệu.",
                          FS_MICRO, MUTED, 500))
-        out.append(text(x, y + 24, "Chiều cao tối thiểu 44px, bo góc 8px.", FS_MICRO, MUTED, 500))
+        out.append(text(x, y + 24, "Chiều cao tối thiểu 48dp, bo góc 8px.", FS_MICRO, MUTED, 500))
         return "".join(out)
-    return comp_frame("Button", "3 biến thể × 3 trạng thái · tối thiểu 44px, bo góc 8px", draw)
+    return comp_frame("Button", "3 biến thể × 3 trạng thái · tối thiểu 48dp, bo góc 8px", draw)
 
 
 def comp_textfield():

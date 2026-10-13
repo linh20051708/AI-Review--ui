@@ -111,7 +111,7 @@ và không cảnh báo khi tài liệu còn lỗi AI chưa xử lý.
 **Sửa thành:**
 1. Nút "Phê duyệt" là nút chính, nút "Hủy" là nút phụ (phân cấp rõ)
 2. Nếu còn lỗi AI chưa xử lý → thêm banner cảnh báo phía trên
-3. Cả hai nút cao **44px**
+3. Cả hai nút cao **48dp** (Chuẩn chung C4)
 
 **Kiểm chứng:** `ConfirmModal` đã tồn tại trong code nền; `AICounts.errors` cho biết còn lỗi hay không.
 

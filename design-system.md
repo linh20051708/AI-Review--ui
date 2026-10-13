@@ -95,7 +95,7 @@ Font: **Inter** (`--font-sans`), dự phòng `ui-sans-serif, system-ui, sans-ser
 | Nhãn | 12px / 600 | Nhãn trạng thái |
 | Siêu nhỏ | 11px / 500 | Thời gian, ngữ cảnh |
 
-Thân tối thiểu **13px** — không dùng cỡ nhỏ hơn cho nội dung đọc.
+Thân tối thiểu **14sp** (Chuẩn chung C4) — không dùng cỡ nhỏ hơn cho nội dung đọc.
 
 ---
 
@@ -182,10 +182,11 @@ Mỗi nhóm có khung riêng ở page `05 Components`.
 1. **Không hardcode màu.** Luôn dùng biến CSS.
 2. **Không dùng cỡ chữ ngoài thang.** Nếu thiếu, bổ sung token trước.
 3. **Trạng thái luôn có nhãn chữ**, không chỉ màu (cho người mù màu).
-4. **Vùng bấm tối thiểu 44px** — đây là yêu cầu, không phải gợi ý.
+4. **Vùng bấm tối thiểu 48dp** (Chuẩn chung C4) — đây là yêu cầu, không phải gợi ý.
 5. **Mọi danh sách có 4 trạng thái:** đang tải, có dữ liệu, rỗng, lỗi.
 
-> **Chênh lệch đã biết:** code nền hiện **chưa** đạt quy tắc 4 ở nhiều chỗ (118 phần tử ở màn Sinh viên).
+> **Chênh lệch đã biết:** code nền hiện **chưa** đạt quy tắc 4 ở nhiều chỗ (≥118 phần tử ở màn Sinh viên,
+> đo theo ngưỡng 44px cũ; theo 48dp con số cao hơn).
 > Design system này ghi ngưỡng đúng; việc sửa code nằm ngoài phạm vi Lab 2. Số đo: `facts/MEASUREMENTS.md`.
 
 ---

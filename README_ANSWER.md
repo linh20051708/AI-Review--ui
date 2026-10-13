@@ -95,7 +95,7 @@ Làm theo AI sẽ đổi token khỏi code nền mà không đo được lợi �
 
 | Vòng | Vấn đề | Loại | Kết quả |
 |---|---|---|---|
-| #1 | Vùng bấm dưới 44px | Vật lý / khả năng chạm | Sửa — 5 điểm |
+| #1 | Vùng bấm dưới 48dp | Vật lý / khả năng chạm | Sửa — 5 điểm |
 | #2 | Tương phản màu chữ | Thị giác / khả năng đọc | **Từ chối sửa** — đã đạt |
 | #3 | Lỗi thiếu đường phục hồi | Logic / phục hồi | Sửa — 4 điểm |
 
@@ -205,7 +205,7 @@ Nếu giảng viên yêu cầu slide. Bài nộp bắt buộc chỉ cần 2 arti
 | 3 | Persona | Nguyễn Văn An, 38 tuổi; 5 tiêu chí thành công |
 | 4 | User flow | 23 màn hình, 3 luồng, 5 tab |
 | 5 | Prompt AI | Prompt nguyên văn (`DESIGN.md` §2) |
-| 6 | Vòng lặp 1 | Vùng bấm < 44px → sửa |
+| 6 | Vòng lặp 1 | Vùng bấm < 48dp → sửa |
 | 7 | Vòng lặp 2 | Tương phản 4.78 → **từ chối sửa** |
 | 8 | Vòng lặp 3 | Lỗi 1 → 2 đường phục hồi |
 | 9 | Design system | 16 màu, 7 cỡ chữ, 9 nhóm component |
@@ -221,7 +221,7 @@ Nếu giảng viên yêu cầu slide. Bài nộp bắt buộc chỉ cần 2 arti
 
 > "Đề tài là hệ thống quản lý học vụ và review tài liệu cho giảng viên, dựng trên code nền
 > của thầy. Em phân tích 23 màn hình thành 3 luồng, trong đó có một luồng lỗi và phục hồi.
-> Em chạy ba vòng lặp với AI: vòng một sửa vùng bấm quá nhỏ — đo được 118 chỗ dưới 44px;
+> Em chạy ba vòng lặp với AI: vòng một sửa vùng bấm quá nhỏ — đo được 118 chỗ dưới 44px (ngưỡng C4 là 48dp);
 > vòng hai em **từ chối** đề xuất của AI vì đo ra tương phản đã đạt 4.78;
 > vòng ba thêm đường phục hồi thứ hai cho trạng thái lỗi.
 > Design system có 16 màu, 9 nhóm component. Handoff Flutter có bảng token sang Dart.

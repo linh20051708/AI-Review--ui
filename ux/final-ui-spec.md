@@ -222,5 +222,5 @@ Lưu ý quan trọng: nội dung ở 360dp **khác** 412dp, không phải chỉ 
 | Cao ô nhập | 52px |
 | Bo góc thẻ | 12px |
 | Bo góc nút | 8px |
-| Cỡ chữ thân tối thiểu | 13px |
+| Cỡ chữ thân tối thiểu | 14sp (Chuẩn chung C4) |
 | Nhãn trạng thái | Luôn có chữ, không chỉ màu |

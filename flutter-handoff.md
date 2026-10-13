@@ -431,7 +431,7 @@ Bottom nav dùng `NavigationBar` với `selectedIndex` theo vị trí route.
 ## 10. Lưu ý khi chuyển
 
 1. **Không hardcode màu.** Dùng `AppColors`, không dùng `Color(0xFF...)` trong widget.
-2. **Vùng bấm tối thiểu 44px.** Dùng `AppSpace.tapMin` cho mọi nút.
+2. **Vùng bấm tối thiểu 48dp.** Dùng `AppSpace.tapMin` cho mọi nút.
 3. **Bottom nav 64px** — `NavigationBar` mặc định 80px, cần `height: AppSpace.navH`.
 4. **Nhãn trạng thái luôn có chữ**, không chỉ màu.
 5. **Mọi danh sách có 4 trạng thái** — dùng `switch` trên `LoadState`.
