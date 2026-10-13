@@ -105,12 +105,18 @@ Prompt ở §2 đã dán vào Google Stitch, dự án `Academic Review Mobile Wo
 | `ai-output/stitch/loop1-before-05-ai-results.png` | Kết quả lần sinh đầu — Kết quả AI |
 | `ai-output/stitch/html/` | Mã HTML 5 màn hình Stitch sinh |
 | `ai-output/stitch/STITCH-DESIGN-TOKENS.md` | Token Stitch xuất kèm |
+| `ai-output/stitch/loop2-after-01-design-system-tokens.jpg` | Vòng 2 sau yêu cầu lại: token đúng `#146B55` + Inter |
+| `ai-output/stitch/loop2-after-02-login-prototype.jpg` | Vòng 2: màn Đăng nhập trong prototype |
+| `ai-output/stitch/loop2-after-03-canvas-overview.jpg` | Vòng 2: toàn cảnh canvas |
 
-> **Ghi chú trung thực:** ảnh trên là **kết quả AI thật** (Google Stitch xuất). Nhưng Stitch **tự chọn
-> bảng màu tím `#4F46E5` và font Newsreader/Hanken Grotesk**, khác design system dự án (`#146B55`,
-> Inter). Đây chính là **đối tượng của vòng critique** — kết quả AI đầu không tuân thủ token, xem
-> `ai-design-log.md`. Bộ cuối cùng nộp cho Lab 2 là `figma-svg/output/03-final/`, **không** phải ảnh
-> Stitch. Ảnh `loop2-contrast.png` / `loop3-touch.png` (sau sửa) chưa tạo.
+> **Ghi chú trung thực:** ảnh `loop1-before-*` là **kết quả AI thật** (Google Stitch xuất PNG từng
+> màn). Nhưng Stitch **tự chọn bảng màu tím `#4F46E5` và font Newsreader/Hanken Grotesk**, khác
+> design system dự án (`#146B55`, Inter) — đây chính là **đối tượng của vòng critique**. Sau khi
+> gõ lại prompt chỉ đích danh mã màu + font (vòng 2), Stitch dựng design system mới
+> **Academic Review System** với Primary `#146B55` và Headline/Body/Label đều `Inter` — **khớp token
+> dự án**; bằng chứng là 3 ảnh `loop2-after-*.jpg`. Bộ cuối cùng nộp cho Lab 2 là
+> `figma-svg/output/03-final/`, **không** phải ảnh Stitch. Vòng 3 (≥48dp) đã khởi chạy nhưng chưa
+> chụp được ảnh kết quả.
 
 ---
 

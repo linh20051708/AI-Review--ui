@@ -163,16 +163,27 @@ Phần em làm là: phân tích, thiết kế, design system, prototype spec, ha
 ### "Ảnh trong `figma-svg/` là Google Stitch sinh à?"
 
 **Không.** Đó là SVG do script Python sinh (`figma-svg/gen.py`). Ghi rõ trong `README.md` §4.
-Bằng chứng AI thật nằm ở `ai-output/stitch/` — 5 ảnh PNG + HTML + token, **Google Stitch xuất
-ngày 2026-10-14** (xem `README.md` §2.3).
+Bằng chứng AI thật nằm ở `ai-output/stitch/` — 5 ảnh PNG vòng 1 + 3 ảnh `.jpg` vòng 2 + HTML + token,
+**Google Stitch xuất ngày 2026-10-14** (xem `README.md` §2.3).
 
 ### "Vậy phần AI ở đâu?"
 
 Ở `DESIGN.md` §2 (prompt nguyên văn), `ai-output/stitch/` (kết quả Stitch xuất) và `ai-design-log.md`
 (3 vòng lặp với prompt, critique, quyết định). Các **số đo** trong critique là thật — đo trên bản
-dựng thật hoặc tính bằng công thức WCAG. **Kết quả Stitch đầu tiên tự chọn màu tím + font khác**
+dựng thật hoặc tính bằng công thức WCAG. **Kết quả Stitch vòng 1 tự chọn màu tím + font khác**
 design system dự án, nên nó là **đầu vào của vòng critique**, không phải bản cuối.
-Phần **chưa chạy** là 2 ảnh Stitch *sau khi sửa* (`loop2-contrast.png`, `loop3-touch.png`).
+
+**Vòng 2 đã chạy:** gõ lại prompt chỉ đích danh `#146B55` + Inter, Stitch dựng design system
+`Academic Review System` **đúng token dự án** (Primary `#146B55`, Headline/Body/Label = Inter) —
+bằng chứng là `ai-output/stitch/loop2-after-0*.jpg`.
+
+Phần **chưa chụp được** là ảnh vòng 3 (`loop3-touch.png`): prompt ≥48dp đã chạy và Stitch đã xác
+nhận hiểu yêu cầu, nhưng phiên trình duyệt đóng trước khi Stitch render xong màn hình.
+
+> **Vì sao ảnh vòng 2 là `.jpg` screenshot chứ không phải PNG từng màn:** dialog `Export` của Stitch
+> nằm trong một iframe lồng, các nút bên trong không lộ tham chiếu cho công cụ điều khiển trình duyệt,
+> nên chỉ chụp được toàn canvas. Ảnh vòng 1 xuất được PNG vì lấy qua menu `⋮ → Download` trước khi
+> Stitch đổi bố cục thanh công cụ.
 
 ### "Prototype đã dựng chưa?"
 

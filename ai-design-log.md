@@ -175,10 +175,54 @@ Việc từ chối ở vòng #2 là có căn cứ bằng số liệu, không ph�
 > trong khi dự án chốt xanh `#146B55` và Inter. Đây là **bằng chứng cho vòng critique**: kết quả
 > AI đầu tiên **không tuân thủ design system**, phải yêu cầu lại. Không gộp ảnh này vào bộ nộp
 > như "bản cuối".
->
-> **Chưa có:** ảnh `loop2-contrast.png` / `loop3-touch.png` (kết quả *sau khi sửa* trong Stitch).
-> Ba vòng critique trong tài liệu này ghi lại **quyết định sửa**; bản sửa trong Figma là `03 Final UI`
-> (`figma-svg/output/03-final/`).
+
+### Vòng 2 — sau khi yêu cầu lại (ĐÃ chạy)
+
+Prompt vòng 2 (tiếng Anh, gõ trong Stitch):
+
+> `Mobi Review academic app teachers use brand green 146B55 primary Inter font text 4.5 to 1 Screens
+> login dashboard`
+
+Kết quả Stitch dựng dự án mới tên `Mobi Review Teacher Dashboard` với design system
+**Academic Review System**:
+
+| Token Stitch sinh vòng 2 | Giá trị | So với dự án |
+|---|---|---|
+| Primary | `#146B55` | ✅ **khớp** `--color-brand` |
+| Secondary | `#6C9A8B` | xấp xỉ `--color-olive` |
+| Tertiary | `#D97706` | ngoài bảng token (amber đậm hơn) |
+| Neutral | `#F1F5F9` | ngoài bảng token |
+| Headline / Body / Label | `Inter` | ✅ **khớp** `--font-sans` |
+
+Ảnh bằng chứng (screenshot canvas Stitch, `.jpg` vì Stitch chặn tải PNG riêng lẻ ở chế độ này):
+
+| File | Nội dung | Trạng thái |
+|---|---|---|
+| `ai-output/stitch/loop2-after-01-design-system-tokens.jpg` | Bảng token vòng 2 — `#146B55` + Inter | ✅ có |
+| `ai-output/stitch/loop2-after-02-login-prototype.jpg` | Màn Đăng nhập vòng 2 trong prototype | ✅ có |
+| `ai-output/stitch/loop2-after-03-canvas-overview.jpg` | Toàn cảnh canvas vòng 2 (design system + login + dashboard + prototype) | ✅ có |
+
+> **Kết luận vòng 2:** yêu cầu lại bằng prompt nêu rõ mã màu + font **đã kéo được AI về đúng
+> design system** — đây là bằng chứng "AI có sửa được khi chỉ đích danh token", phần lõi của mục C.
+> Giới hạn: ảnh là **screenshot canvas 1430×876**, không phải ảnh từng màn xuất riêng, do dialog
+> `Export` của Stitch nằm trong iframe lồng không điều khiển được bằng công cụ hiện có (xem
+> `README_ANSWER.md`).
+
+### Vòng 3 — sau khi yêu cầu ≥48dp (ĐANG chạy)
+
+Prompt vòng 3:
+
+> `Mobi Review teacher app All tap targets at least 48 by 48 dp`
+
+Stitch xác nhận đã hiểu: *"design the Mobi Review teacher mobile app with strict accessibility
+compliance (minimum 48×48 dp touch targets across all interactive elements, comfortable thumb reach,
+and high-contrast typography)"*, đề xuất bộ 4 màn (Review Queue & Dashboard, Submission Assessment
+& Rubric Scoring, Class Mastery & Insights, Quick Feedback & Assignment Manager) và bắt đầu sinh
+tại thời điểm ghi log. **Chưa kịp chụp ảnh kết quả vòng 3** — phiên trình duyệt đóng trước khi
+Stitch render xong.
+
+> **Còn thiếu:** ảnh `loop3-touch.png`. Ba vòng critique trong tài liệu này ghi lại **quyết định
+> sửa**; bản sửa trong Figma là `03 Final UI` (`figma-svg/output/03-final/`).
 
 ---
 

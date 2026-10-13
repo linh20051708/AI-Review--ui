@@ -80,15 +80,18 @@ Stitch sinh 5 màn hình, xuất kèm HTML + design token:
 | Nơi lưu | Nội dung |
 |---|---|
 | `ai-output/stitch/loop1-before-0*.png` | 5 ảnh màn hình AI sinh lần đầu |
+| `ai-output/stitch/loop2-after-0*.jpg` | 3 ảnh vòng 2 — AI sửa theo token dự án |
 | `ai-output/stitch/html/*.html` | Mã HTML 5 màn Stitch sinh |
 | `ai-output/stitch/STITCH-DESIGN-TOKENS.md` | Token Stitch xuất kèm |
 
-**Phải nói rõ khi bảo vệ:** Stitch tự chọn bảng màu tím `#4F46E5` + font Newsreader/Hanken Grotesk,
-**khác** design system dự án (`#146B55`, Inter). Vì vậy kết quả Stitch là **đầu vào của vòng critique**,
-không phải bản cuối. Bản cuối nộp là `figma-svg/output/03-final/` (script sinh theo token dự án).
+**Phải nói rõ khi bảo vệ:** vòng 1 Stitch tự chọn bảng màu tím `#4F46E5` + font Newsreader/Hanken
+Grotesk, **khác** design system dự án (`#146B55`, Inter). Vì vậy kết quả vòng 1 là **đầu vào của vòng
+critique**, không phải bản cuối. Vòng 2, sau khi gõ lại prompt chỉ đích danh `#146B55` + Inter, Stitch
+dựng design system mới **Academic Review System** đúng token dự án — xem 3 ảnh `loop2-after-*.jpg`.
+Bản cuối nộp là `figma-svg/output/03-final/` (script sinh theo token dự án).
 
 > **`figma-svg/` là output do script sinh, KHÔNG phải ảnh Google Stitch.** Hai nguồn khác nhau, ghi rõ
-> để không nhầm. Ảnh `loop2-contrast.png` / `loop3-touch.png` (Stitch sau khi sửa) chưa tạo.
+> để không nhầm. Vòng 3 (≥48dp touch target) đã khởi chạy trên Stitch nhưng chưa chụp được ảnh kết quả.
 
 ## 3. Danh mục tài liệu
 
@@ -102,7 +105,7 @@ không phải bản cuối. Bản cuối nộp là `figma-svg/output/03-final/` 
 | | `ux/persona-decisions.md` | Ma trận Persona → Need → UI decision → Test + chuỗi truy vết E→P→F→S→T |
 | | `ux/assumption-backlog.md` | Giả định 4 nhãn C2 (Observed/Reported/Inferred/Assumed) + research backlog |
 | | `ux/research-plan.md` | Kế hoạch phỏng vấn/quan sát (chưa thực hiện — ghi rõ) |
-| | **B** Tạo UI bằng AI | `DESIGN.md` | Prompt Stitch nguyên văn, token, 5 ảnh AI thật ở `ai-output/stitch/` |
+| **B** Tạo UI bằng AI | `DESIGN.md` | Prompt Stitch nguyên văn, token, 5 ảnh AI thật vòng 1 + 3 ảnh vòng 2 ở `ai-output/stitch/` |
 | **C** Lặp & critique với AI | `ai-design-log.md` | 3 vòng lặp: prompt → output → critique → quyết định → thay đổi Figma |
 | | `ux/critique.md` | 8 phát hiện UX, có số đo thật |
 | **D** UI/UX cuối | `ux/final-ui-spec.md` | Đặc tả 14 màn hình + biến thể |
@@ -129,7 +132,8 @@ python3 rendercheck.py  # render từng file, bắt file vỡ
 ```
 
 > **`figma-svg/` là output do script sinh, KHÔNG phải ảnh Google Stitch.** Đây là bộ khung dựng Figma.
-> Bằng chứng AI thật nằm ở `ai-output/stitch/` (5 ảnh + HTML + token, Stitch xuất 2026-10-14) và
+> Bằng chứng AI thật nằm ở `ai-output/stitch/` (5 ảnh PNG vòng 1 + 3 ảnh JPG vòng 2 + HTML + token,
+> Stitch xuất 2026-10-14) và
 > `ai-design-log.md`.
 
 Bốn tầng kiểm định đều **SẠCH** trên 48 file (xem `LAB2-GATE.md`):
