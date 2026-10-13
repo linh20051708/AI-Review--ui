@@ -54,7 +54,7 @@ Tài liệu này bám **đúng 23 route** trong `app/src/app/router.tsx`. Không
 
 ## 3. Ba luồng người dùng
 
-### Luồng 1 — Thuận (Happy path): duyệt một tài liệu
+### Luồng 1 (F01) — Thuận (Happy path): duyệt một tài liệu
 
 ```
 S02 Tổng quan
@@ -72,7 +72,7 @@ S02 Tổng quan
 
 **Thời gian mục tiêu:** ≤ 90 giây cho một tài liệu.
 
-### Luồng 2 — Thay thế: so sánh phiên bản trước khi quyết định
+### Luồng 2 (F02) — Thay thế: so sánh phiên bản trước khi quyết định
 
 ```
 S04 Không gian review (v2.1)
@@ -86,7 +86,7 @@ S04 Không gian review (v2.1)
 
 Dùng khi: nhóm nộp lại nhiều lần, giảng viên cần biết **đã sửa được gì** so với lần trước.
 
-### Luồng 3 — Lỗi & phục hồi (bắt buộc có)
+### Luồng 3 (F03) — Lỗi & phục hồi (bắt buộc có)
 
 ```
 S03 Yêu cầu review
@@ -175,10 +175,28 @@ Luật áp cho toàn hệ thống:
 
 | Yêu cầu | Ngưỡng | Trạng thái |
 |---|---|---|
-| Vùng bấm | ≥ 44×44 px | ⚠️ app nền chưa đạt ở link phụ và chip (đo thật: 17–40px) |
+| Vùng bấm | ≥ 48×48 dp (C4) | ⚠️ app nền chưa đạt ở link phụ và chip (đo thật: 17–40px) |
 | Tương phản chữ | ≥ 4.5:1 | ✅ đạt — thấp nhất 4.78 (`muted` trên `canvas`) |
-| Cỡ chữ thân | ≥ 13 px | ✅ đạt |
+| Cỡ chữ thân | ≥ 14 sp (C4) | ✅ đạt |
 | Bề rộng hỗ trợ | 360dp & 412dp | ✅ không tràn ngang ở cả hai |
 | Nhãn điều hướng | min-height 48px, có `aria-label` | ✅ đạt |
 
 Số đo cụ thể: `facts/MEASUREMENTS.md`.
+
+---
+
+## 8. Mã định danh (Chuẩn chung C7)
+
+| Tiền tố | Ý nghĩa | Nơi định nghĩa |
+|---|---|---|
+| `E-xx` | Bằng chứng (nỗi đau ↔ code) | `ux/persona.md` §1 (bảng E-01…E-06) |
+| `P01`, `P02` | Persona | `ux/persona.md` |
+| `F01`–`F03` | Flow | tài liệu này §3 |
+| `S01`–`S23` | Màn hình | tài liệu này §2 |
+| `I01`–`I03` | Vòng lặp AI | `ai-design-log.md` |
+| `D01`–`D07` | Quyết định thiết kế | `design-decisions.md` |
+| `T01`–`T11` | Test case | `ux/persona-decisions.md` §2 |
+| `AS-xx` | Giả định cần kiểm | `ux/assumption-backlog.md` |
+
+**Chuỗi truy vết:** `E → Insight → P / Need → F → S → T` (bảng đầy đủ ở `ux/persona-decisions.md` §2).
+Mọi màn hình đều thuộc ít nhất một flow.

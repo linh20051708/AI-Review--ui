@@ -7,7 +7,7 @@ Ba vòng xử lý **ba vấn đề UX khác nhau**, không phải ba lần sửa
 
 ---
 
-## Vòng #1 — Bố cục ban đầu & vùng bấm quá nhỏ
+## Vòng #1 (I01) — Bố cục ban đầu & vùng bấm quá nhỏ
 
 ### Prompt
 
@@ -25,11 +25,11 @@ Nhưng khi **đo bằng `getBoundingClientRect`** trên bản dựng thật, ph�
 
 | Phát hiện | Số đo | Ngưỡng | Kết luận |
 |---|---|---|---|
-| Link `Lớp: SE1701(SWP391)` | 149×26 | ≥44 | ❌ thiếu 18px chiều cao |
-| Link `Group 01` | 67×24 | ≥44 | ❌ thiếu 20px |
-| Chip `Fall 2026` | 92×28 | ≥44 | ❌ thiếu 16px |
-| Nút `Xóa bộ lọc` | 69×18 | ≥44 | ❌ thiếu 26px |
-| Ô tìm kiếm | 321×20 | ≥44 | ❌ vùng bấm lệch khung bao |
+| Link `Lớp: SE1701(SWP391)` | 149×26 | ≥48 | ❌ thiếu 22px chiều cao |
+| Link `Group 01` | 67×24 | ≥48 | ❌ thiếu 24px |
+| Chip `Fall 2026` | 92×28 | ≥48 | ❌ thiếu 20px |
+| Nút `Xóa bộ lọc` | 69×18 | ≥48 | ❌ thiếu 30px |
+| Ô tìm kiếm | 321×20 | ≥48 | ❌ vùng bấm lệch khung bao |
 
 Nguyên tắc Nielsen liên quan: **#4 Nhất quán** — cùng là "nút bấm được" nhưng kích thước chênh nhau 2.5 lần.
 
@@ -37,19 +37,19 @@ Nguyên tắc Nielsen liên quan: **#4 Nhất quán** — cùng là "nút bấm 
 
 ### Quyết định
 
-**Sửa (modify).** Không chấp nhận bố cục gốc. Áp `min-h-11` (44px) cho:
+**Sửa (modify).** Không chấp nhận bố cục gốc. Áp `min-h-12` (48dp, Chuẩn chung C4) cho:
 nút phụ, chip lọc, nút phục hồi, và cho input `h-full` khớp khung bao.
 
 ### Thay đổi trong Figma
 
-- Page `05 Components` → `comp-button`: ghi rõ "Chiều cao tối thiểu 44px, bo góc 8px"
+- Page `05 Components` → `comp-button`: ghi rõ "Chiều cao tối thiểu 48dp, bo góc 8px"
 - Page `05 Components` → `comp-textfield`: input cao 52px, vùng bấm khớp khung
-- Page `03 Final UI`: các khung dùng chip và nút phụ đều theo 44px
+- Page `03 Final UI`: các khung dùng chip và nút phụ đều theo 48dp
 - Page `04 Design System` → `ds-spacing`: ghi ngưỡng vùng bấm tối thiểu
 
 ---
 
-## Vòng #2 — Tương phản chữ & khả năng đọc
+## Vòng #2 (I02) — Tương phản chữ & khả năng đọc
 
 ### Prompt
 
@@ -96,7 +96,7 @@ Lý do: đã đạt 4.78 — sửa sẽ làm lệch khỏi token của code nề
 
 ---
 
-## Vòng #3 — Trạng thái lỗi & đường phục hồi
+## Vòng #3 (I03) — Trạng thái lỗi & đường phục hồi
 
 ### Prompt
 
@@ -126,7 +126,7 @@ không có hành động gợi ý nào.
 1. Mọi trạng thái lỗi có **≥2 đường phục hồi**: "Thử lại" + "Xem bản lưu"
 2. Sau 3 lần thử lại tự chuyển sang bản lưu, kèm banner giải thích
 3. Mọi trạng thái rỗng có **1 hành động gợi ý**
-4. Nút phục hồi cao **tối thiểu 44px**
+4. Nút phục hồi cao **tối thiểu 48dp** (Chuẩn chung C4)
 5. Mọi chỗ bị khoá phải nói lý do
 
 ### Thay đổi trong Figma
@@ -144,9 +144,9 @@ không có hành động gợi ý nào.
 
 | Vòng | Vấn đề | Mức | Quyết định | Số phát hiện |
 |---|---|---|---|---|
-| #1 | Vùng bấm < 44px | Nặng | Sửa | 5 |
-| #2 | Tương phản chữ | Không | **Từ chối sửa** | 1 |
-| #3 | Lỗi thiếu phục hồi | Nặng | Sửa | 4 |
+| I01 | Vùng bấm < 48dp | Nặng | Sửa | 5 |
+| I02 | Tương phản chữ | Không | **Từ chối sửa** | 1 |
+| I03 | Lỗi thiếu phục hồi | Nặng | Sửa | 4 |
 
 **Phân bổ quyết định:** 3 loại vấn đề khác nhau · 2 lần sửa · 1 lần từ chối.
 Việc từ chối ở vòng #2 là có căn cứ bằng số liệu, không phải bỏ qua AI.

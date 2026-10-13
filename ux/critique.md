@@ -15,7 +15,7 @@ Dữ liệu gốc: `facts/MEASUREMENTS.md`.
 
 | # | Phát hiện | Mức | Nguyên tắc Nielsen | Trạng thái |
 |---|---|---|---|---|
-| 1 | Vùng bấm dưới 44px ở màn Sinh viên | Nặng | #4 Nhất quán | Đã đề xuất sửa |
+| 1 | Vùng bấm dưới 48dp ở màn Sinh viên | Nặng | #4 Nhất quán | Đã đề xuất sửa |
 | 2 | Chip lọc cao 28–40px | Nặng | #7 Dùng linh hoạt | Đã đề xuất sửa |
 | 3 | Ô tìm kiếm chỉ cao 20px | Nặng | #6 Nhận ra thay vì nhớ | Đã đề xuất sửa |
 | 4 | Link "Xem tất cả" cao 17px | Vừa | #2 Khớp thế giới thực | Đã đề xuất sửa |
@@ -26,9 +26,11 @@ Dữ liệu gốc: `facts/MEASUREMENTS.md`.
 
 ---
 
-## 1. Vùng bấm dưới 44px ở màn Sinh viên — NẶNG
+## 1. Vùng bấm dưới 48dp ở màn Sinh viên — NẶNG
 
-**Đo được:** 118 phần tử có vùng bấm < 44px trên `/students`.
+**Đo được:** 118 phần tử có vùng bấm < 44px trên `/students`. Theo ngưỡng chính thức
+**48dp (Chuẩn chung C4)**, con số vi phạm còn cao hơn — số 118 là đo theo ngưỡng 44px cũ,
+cần đo lại theo 48dp (xem `facts/MEASUREMENTS.md` §3).
 
 Ví dụ nặng nhất:
 
@@ -37,11 +39,11 @@ Ví dụ nặng nhất:
 | Link `Lớp: SE1701(SWP391)` | **149×26** | `rounded-[6px] px-2.5 py-1 text-[12px]` |
 | Link `Group 01` | **67×24** | `text-[12px]` + `py-1` |
 
-**Vì sao là vấn đề:** WCAG 2.5.8 (Target Size) tối thiểu 24×24, Material 3 khuyến nghị 48×48.
-Cao 24–26px là dưới cả ngưỡng tối thiểu. Người dùng persona chính (38 tuổi, dùng điện thoại khi di chuyển)
-bấm sai thường xuyên.
+**Vì sao là vấn đề:** WCAG 2.5.8 (Target Size) tối thiểu 24×24, Material 3 / Chuẩn chung C4
+yêu cầu **48×48 dp**. Cao 24–26px là dưới cả ngưỡng tối thiểu. Người dùng persona chính
+(38 tuổi, dùng điện thoại khi di chuyển) bấm sai thường xuyên.
 
-**Đề xuất:** link hạng 2 trong danh sách tối thiểu `min-h-11` (44px), hoặc mở rộng vùng bấm bằng `py-2.5`.
+**Đề xuất:** link hạng 2 trong danh sách tối thiểu `min-h-12` (48px), hoặc mở rộng vùng bấm bằng `py-3`.
 
 ## 2. Chip lọc cao 28–40px — NẶNG
 
@@ -50,7 +52,7 @@ bấm sai thường xuyên.
 **Vì sao là vấn đề:** chip là điều khiển chính để lọc — dùng liên tục. Cao 28px buộc người dùng
 phải nhắm chính xác.
 
-**Đề xuất:** chip tối thiểu 44px chiều cao; nếu cần gọn, dùng `min-h-11` với padding dọc lớn hơn.
+**Đề xuất:** chip tối thiểu 48px chiều cao; nếu cần gọn, dùng `min-h-12` với padding dọc lớn hơn.
 
 ## 3. Ô tìm kiếm chỉ cao 20px — NẶNG
 
@@ -60,7 +62,7 @@ Khung bao ngoài cao 40px nhưng **vùng bấm của chính input chỉ 20px** �
 
 **Vì sao là vấn đề:** người dùng bấm vào phần padding của khung thì focus không vào input.
 
-**Đề xuất:** cho input `h-full` để vùng bấm khớp khung bao, tối thiểu 44px.
+**Đề xuất:** cho input `h-full` để vùng bấm khớp khung bao, tối thiểu 48px.
 
 ## 4. Link "Xem tất cả" cao 17px — VỪA
 
@@ -68,7 +70,7 @@ Khung bao ngoài cao 40px nhưng **vùng bấm của chính input chỉ 20px** �
 
 **Vì sao là vấn đề:** đây là lối vào danh sách đầy đủ, lại là vùng bấm nhỏ nhất màn hình.
 
-**Đề xuất:** `min-h-11` + `px-2`.
+**Đề xuất:** `min-h-12` + `px-2`.
 
 ## 5. Dashboard có khối cuộn ngang không báo — VỪA
 
@@ -100,7 +102,7 @@ cuộn ngang. `documentElement.scrollWidth == clientWidth` → trang không trà
 **Vì sao là vấn đề:** đây **chính là** nút phục hồi khi người dùng lọc ra kết quả rỗng (Nielsen #9).
 Vùng bấm 18px khiến việc thoát khỏi ngõ cụt khó khăn.
 
-**Đề xuất:** `min-h-11` — vì đây là đường phục hồi, cần to hơn mức thông thường.
+**Đề xuất:** `min-h-12` — vì đây là đường phục hồi, cần to hơn mức thông thường.
 
 ---
 
@@ -121,8 +123,8 @@ Vùng bấm 18px khiến việc thoát khỏi ngõ cụt khó khăn.
 
 | Ưu tiên | Việc | Vì sao |
 |---|---|---|
-| 1 | Nút "Xóa bộ lọc" lên 44px | Là đường phục hồi, đang nhỏ nhất |
-| 2 | Vùng bấm màn Sinh viên (118 chỗ) | Ảnh hưởng nhiều nhất |
+| 1 | Nút "Xóa bộ lọc" lên 48dp | Là đường phục hồi, đang nhỏ nhất |
+| 2 | Vùng bấm màn Sinh viên (≥118 chỗ) | Ảnh hưởng nhiều nhất |
 | 3 | Ô tìm kiếm khớp khung | Sai lệch giữa nhìn và bấm |
-| 4 | Chip lọc 44px | Dùng liên tục |
+| 4 | Chip lọc 48dp | Dùng liên tục |
 | 5 | Chỉ báo cuộn ngang | Tránh bỏ sót nội dung |

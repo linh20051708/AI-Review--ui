@@ -31,6 +31,10 @@ Tất cả route trả nội dung thật, `overflowX = 0` (không tràn ngang �
 
 ## 3. FINDING THẬT — tap target < 44px (WCAG 2.5.8 / Material 3 ≥48dp)
 
+> **Lưu ý ngưỡng:** bảng dưới đếm theo ngưỡng **44px** tại thời điểm đo. Ngưỡng chính thức
+> áp dụng cho bài nộp là **48×48 dp** (Chuẩn chung C4), nên số phần tử vi phạm thực tế
+> **cao hơn** con số trong bảng này. Cột số đo từng phần tử vẫn đúng và tái sử dụng được.
+
 Đo bằng `getBoundingClientRect()` trên mọi `button, a, [role=button], input, select`:
 
 | Route | Số target < 44px | Ví dụ nặng nhất |

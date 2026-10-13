@@ -10,13 +10,13 @@ Mỗi quyết định gắn với **bằng chứng đo được** hoặc **ràng
 
 | # | Đề xuất | Quyết định | Lý do | Bằng chứng |
 |---|---|---|---|---|
-| D1 | Bố cục 3 màn hình chính + bottom nav 5 tab | **Chấp nhận** | Khớp code nền | `BottomNavigation.tsx` có đúng 5 tab |
-| D2 | Padding thẻ 16px, header 56px | **Sửa** | 16px hơi chật khi có nhãn trạng thái | `.mobile-header-inner` min-height 56px |
-| D3 | Đổi `muted` sang màu tối hơn để tăng tương phản | **Từ chối** | Đã đạt 4.78, không cần sửa | `facts/MEASUREMENTS.md` §4 |
-| D4 | Thêm công tắc chế độ tối | **Từ chối** | Ngoài phạm vi, tăng gấp đôi việc kiểm tra | Quy ước dự án: nền sáng |
-| D5 | Thêm băng chuyền tự chạy ở Tổng quan | **Từ chối** | Tự chạy gây mất kiểm soát, không giải quyết vấn đề | Nielsen #3 |
-| D6 | Huy hiệu khoảng cách ở thẻ project | **Chấp nhận** | Giúp nhận ra nhóm muộn mà không phải mở | `GroupHealth` có `overdue` |
-| D7 | Thêm hộp thoại xác nhận trước khi phê duyệt | **Sửa** | Cần thiết nhưng phải có nút phục hồi to | `ConfirmModal` đã có trong code nền |
+| D01 | Bố cục 3 màn hình chính + bottom nav 5 tab | **Chấp nhận** | Khớp code nền | `BottomNavigation.tsx` có đúng 5 tab |
+| D02 | Padding thẻ 16px, header 56px | **Sửa** | 16px hơi chật khi có nhãn trạng thái | `.mobile-header-inner` min-height 56px |
+| D03 | Đổi `muted` sang màu tối hơn để tăng tương phản | **Từ chối** | Đã đạt 4.78, không cần sửa | `facts/MEASUREMENTS.md` §4 |
+| D04 | Thêm công tắc chế độ tối | **Từ chối** | Ngoài phạm vi, tăng gấp đôi việc kiểm tra | Quy ước dự án: nền sáng |
+| D05 | Thêm băng chuyền tự chạy ở Tổng quan | **Từ chối** | Tự chạy gây mất kiểm soát, không giải quyết vấn đề | Nielsen #3 |
+| D06 | Huy hiệu khoảng cách ở thẻ project | **Chấp nhận** | Giúp nhận ra nhóm muộn mà không phải mở | `GroupHealth` có `overdue` |
+| D07 | Thêm hộp thoại xác nhận trước khi phê duyệt | **Sửa** | Cần thiết nhưng phải có nút phục hồi to | `ConfirmModal` đã có trong code nền |
 
 **Tổng: 2 chấp nhận · 2 sửa · 3 từ chối.**
 
@@ -24,7 +24,7 @@ Mỗi quyết định gắn với **bằng chứng đo được** hoặc **ràng
 
 ## 2. Chi tiết từng quyết định
 
-### D1 — Bố cục 3 màn hình chính + bottom nav — CHẤP NHẬN
+### D01 — Bố cục 3 màn hình chính + bottom nav — CHẤP NHẬN
 
 **Đề xuất của AI:** dùng bottom navigation với 5 mục cho màn hình chính.
 
@@ -37,7 +37,7 @@ Mỗi quyết định gắn với **bằng chứng đo được** hoặc **ràng
 
 ---
 
-### D2 — Padding thẻ và chiều cao header — SỬA
+### D02 — Padding thẻ và chiều cao header — SỬA
 
 **Đề xuất của AI:** padding thẻ 16px, header 56px.
 
@@ -50,7 +50,7 @@ nội dung sát mép — đo được khoảng cách chỉ còn 6px ở một s�
 
 ---
 
-### D3 — Đổi `muted` để tăng tương phản — TỪ CHỐI
+### D03 — Đổi `muted` để tăng tương phản — TỪ CHỐI
 
 **Đề xuất của AI:** đổi `muted` từ `#66736D` sang màu tối hơn để chắc chắn đạt chuẩn.
 
@@ -62,7 +62,7 @@ Cả ba đều **trên ngưỡng 4.5**.
 
 ---
 
-### D4 — Thêm chế độ tối — TỪ CHỐI
+### D04 — Thêm chế độ tối — TỪ CHỐI
 
 **Đề xuất của AI:** thêm công tắc sáng/tối trong màn Tài khoản.
 
@@ -75,7 +75,7 @@ Cả ba đều **trên ngưỡng 4.5**.
 
 ---
 
-### D5 — Băng chuyền tự chạy — TỪ CHỐI
+### D05 — Băng chuyền tự chạy — TỪ CHỐI
 
 **Đề xuất của AI:** thêm băng chuyền ảnh tự chạy ở màn Tổng quan cho sinh động.
 
@@ -88,7 +88,7 @@ Cả ba đều **trên ngưỡng 4.5**.
 
 ---
 
-### D6 — Huy hiệu khoảng cách ở thẻ project — CHẤP NHẬN
+### D06 — Huy hiệu khoảng cách ở thẻ project — CHẤP NHẬN
 
 **Đề xuất của AI:** hiện huy hiệu "Quá hạn" / "Sắp đến hạn" ngay trên thẻ project.
 
@@ -101,7 +101,7 @@ kèm nhãn tiếng Việt trong `groupHealthMeta`. Nghĩa là dữ liệu đã c
 
 ---
 
-### D7 — Hộp thoại xác nhận trước khi phê duyệt — SỬA
+### D07 — Hộp thoại xác nhận trước khi phê duyệt — SỬA
 
 **Đề xuất của AI:** thêm hộp thoại xác nhận trước khi phê duyệt tài liệu.
 

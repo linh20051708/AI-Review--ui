@@ -38,14 +38,14 @@ BẢNG MÀU (bắt buộc dùng đúng, không thay):
 - Nền trạng thái tương ứng: #F1F4E9, #F5F2E7, #FBF0EA, #FAEEEE
 
 KIỂU CHỮ: Inter. Cỡ: 22 tiêu đề trang / 20 tiêu đề mục / 16 tiêu đề khối
-/ 14 thân / 13 thân nhỏ / 12 nhãn / 11 siêu nhỏ. Thân tối thiểu 13px.
+/ 14 thân / 13 thân nhỏ / 12 nhãn / 11 siêu nhỏ. Thân tối thiểu 14sp (Chuẩn chung C4).
 
 BO GÓC: chip 6, nút 8, thẻ 12, hộp thoại 16, viên thuốc 999.
 KHOẢNG CÁCH: 4 / 8 / 12 / 16 / 24 / 32 / 48. Padding ngang 20px.
 NỀN: SÁNG. Không làm chế độ tối.
 
 KHUNG: rộng 412dp và 360dp. Header 56px, bottom nav 64px.
-Vùng bấm tối thiểu 44x44px. Nút chính cao 44-48px.
+Vùng bấm tối thiểu 48x48dp (Chuẩn chung C4). Nút chính cao 48px.
 
 CÁC MÀN HÌNH CẦN THIẾT KẾ (theo thứ tự):
 1. Đăng nhập — form email/mật khẩu, logo trên cùng
@@ -81,7 +81,8 @@ không hiệu ứng động phức tạp.
 |---|---|
 | Bảng màu cố định | Code nền đã có token; đổi màu thì không ghép được |
 | Nền sáng | Quy ước dự án: mặc định sáng trừ khi có yêu cầu khác |
-| Vùng bấm ≥ 44px | Kết quả đo cho thấy code nền chưa đạt — prompt sửa luôn |
+| Vùng bấm ≥ 48dp | Chuẩn chung C4 (WCAG 2.5.8 / Material 3); kết quả đo cho thấy code nền chưa đạt — prompt sửa luôn |
+| Chữ thân ≥ 14sp | Chuẩn chung C4 (mobile); code nền có cỡ 13px cần nâng |
 | Tiếng Việt, từ vựng cố định | Code nền có `statusMeta` với nhãn đã chốt |
 | Bắt buộc có trạng thái rỗng/lỗi | Đây là mục rubric C và D hay bị bỏ sót |
 | Cấm gradient/bóng nặng | Giữ phong cách phẳng, dễ chuyển sang Flutter |

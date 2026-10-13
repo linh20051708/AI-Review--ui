@@ -87,8 +87,14 @@ không được coi ảnh placeholder là bằng chứng AI thật.
 
 | Nhóm rubric | File | Nội dung |
 |---|---|---|
-| **A** Phân tích UX & user flow | `ux/persona.md` | 2 persona (giảng viên chính + sinh viên phụ), 10 ánh xạ Nielsen |
-| | `ux/user-flow.md` | 23 màn hình, 3 luồng, ma trận Back, biến thể trạng thái, accessibility |
+| **A** Phân tích UX & user flow | `ux/persona.md` | 2 persona (giảng viên chính + sinh viên phụ), problem statement, 12 trường lõi, 10 ánh xạ Nielsen, nhãn Assumed |
+| | `ux/user-flow.md` | 23 màn hình, 3 luồng (F01–F03), ma trận Back, biến thể trạng thái, accessibility, mã định danh C7 |
+| | `ux/stakeholder-map.md` | Stakeholder/User Map, người dùng dễ bị bỏ sót, ma trận quyền hạn |
+| | `ux/affinity-board.md` | Affinity Board 5 cụm theo hành vi/nỗi đau, có mã bằng chứng |
+| | `ux/persona-coverage-matrix.md` | Ma trận archetype × tác vụ × rào cản × evidence |
+| | `ux/persona-decisions.md` | Ma trận Persona → Need → UI decision → Test + chuỗi truy vết E→P→F→S→T |
+| | `ux/assumption-backlog.md` | Giả định 4 nhãn C2 (Observed/Reported/Inferred/Assumed) + research backlog |
+| | `ux/research-plan.md` | Kế hoạch phỏng vấn/quan sát (chưa thực hiện — ghi rõ) |
 | | **B** Tạo UI bằng AI | `DESIGN.md` | Prompt Stitch nguyên văn, token, placeholder output |
 | **C** Lặp & critique với AI | `ai-design-log.md` | 3 vòng lặp: prompt → output → critique → quyết định → thay đổi Figma |
 | | `ux/critique.md` | 8 phát hiện UX, có số đo thật |
