@@ -1,0 +1,386 @@
+[
+ {
+  "file": "user-flow-supervisor.svg",
+  "page": "01 User Flow",
+  "w": 1760,
+  "h": 1180,
+  "label": "Sơ đồ 3 luồng — Giảng viên",
+  "note": ""
+ },
+ {
+  "file": "wf-01-dang-nhap.svg",
+  "page": "02 Wireframe",
+  "w": 412,
+  "h": 892,
+  "label": "Đăng nhập",
+  "note": "Bố cục 1 cột, form trên cùng"
+ },
+ {
+  "file": "wf-02-tong-quan.svg",
+  "page": "02 Wireframe",
+  "w": 412,
+  "h": 892,
+  "label": "Tổng quan",
+  "note": "Thẻ số liệu + việc cần làm"
+ },
+ {
+  "file": "wf-03-yeu-cau-review.svg",
+  "page": "02 Wireframe",
+  "w": 412,
+  "h": 892,
+  "label": "DS yêu cầu review",
+  "note": "Bộ lọc + danh sách"
+ },
+ {
+  "file": "wf-04-khong-gian-review.svg",
+  "page": "02 Wireframe",
+  "w": 412,
+  "h": 892,
+  "label": "Không gian review",
+  "note": "3 track + phát hiện AI + quyết định"
+ },
+ {
+  "file": "wf-05-ket-qua-ai.svg",
+  "page": "02 Wireframe",
+  "w": 412,
+  "h": 892,
+  "label": "Kết quả AI Review",
+  "note": "Đếm lỗi/cảnh báo/gợi ý rồi liệt kê"
+ },
+ {
+  "file": "wf-06-lop-hoc.svg",
+  "page": "02 Wireframe",
+  "w": 412,
+  "h": 892,
+  "label": "DS lớp học",
+  "note": "Danh sách lớp kèm tình trạng"
+ },
+ {
+  "file": "wf-07-project.svg",
+  "page": "02 Wireframe",
+  "w": 412,
+  "h": 892,
+  "label": "DS project",
+  "note": "Tiến độ + deadline"
+ },
+ {
+  "file": "wf-08-tai-lieu.svg",
+  "page": "02 Wireframe",
+  "w": 412,
+  "h": 892,
+  "label": "Tài liệu project",
+  "note": "Tiến độ project + tài liệu"
+ },
+ {
+  "file": "wf-09-hoc-ky.svg",
+  "page": "02 Wireframe",
+  "w": 412,
+  "h": 892,
+  "label": "DS học kỳ",
+  "note": "Học kỳ + trạng thái lưu trữ"
+ },
+ {
+  "file": "r360-s02-tong-quan.svg",
+  "page": "03 Final UI",
+  "w": 360,
+  "h": 800,
+  "label": "Tổng quan @360dp",
+  "note": "Khung 360dp — kiểm responsive"
+ },
+ {
+  "file": "r360-s03-yeu-cau.svg",
+  "page": "03 Final UI",
+  "w": 360,
+  "h": 800,
+  "label": "Yêu cầu review @360dp",
+  "note": "Khung 360dp — kiểm responsive"
+ },
+ {
+  "file": "r360-s07-project.svg",
+  "page": "03 Final UI",
+  "w": 360,
+  "h": 800,
+  "label": "Project @360dp",
+  "note": "Khung 360dp — kiểm responsive"
+ },
+ {
+  "file": "s01-dang-nhap.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Đăng nhập",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "s02-tong-quan.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Tổng quan",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "s03-yeu-cau-review.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Yêu cầu review",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "s04-khong-gian-review.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Không gian review",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "s05-ket-qua-ai.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Kết quả AI Review",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "s06-lop-hoc.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Lớp học",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "s07-project.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Project",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "s08-tai-lieu.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Tài liệu project",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "s09-hoc-ky.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Học kỳ",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "s10-rule-set.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Rule set",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "s11-sinh-vien.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Sinh viên",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "s12-nhom.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Nhóm",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "s13-thong-bao.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Thông báo",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "s14-tai-khoan.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Tài khoản",
+  "note": "Khung 412dp"
+ },
+ {
+  "file": "v-s02-offline.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Tổng quan — mất mạng",
+  "note": "Biến thể trạng thái"
+ },
+ {
+  "file": "v-s03-empty.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Danh sách — rỗng",
+  "note": "Biến thể trạng thái"
+ },
+ {
+  "file": "v-s03-error.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Danh sách — lỗi mạng",
+  "note": "Biến thể trạng thái"
+ },
+ {
+  "file": "v-s03-loading.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Danh sách — đang tải",
+  "note": "Biến thể trạng thái"
+ },
+ {
+  "file": "v-s04-decision.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Hộp thoại phê duyệt",
+  "note": "Biến thể trạng thái"
+ },
+ {
+  "file": "v-s04-unavailable.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "Tài liệu không khả dụng",
+  "note": "Biến thể trạng thái"
+ },
+ {
+  "file": "v-s05-running.svg",
+  "page": "03 Final UI",
+  "w": 412,
+  "h": 892,
+  "label": "AI đang phân tích",
+  "note": "Biến thể trạng thái"
+ },
+ {
+  "file": "ds-colors.svg",
+  "page": "04 Design System",
+  "w": 1180,
+  "h": 1000,
+  "label": "Bảng màu token",
+  "note": ""
+ },
+ {
+  "file": "ds-contrast.svg",
+  "page": "04 Design System",
+  "w": 1180,
+  "h": 700,
+  "label": "Độ tương phản WCAG",
+  "note": ""
+ },
+ {
+  "file": "ds-elevation.svg",
+  "page": "04 Design System",
+  "w": 1180,
+  "h": 380,
+  "label": "Độ nổi",
+  "note": ""
+ },
+ {
+  "file": "ds-spacing.svg",
+  "page": "04 Design System",
+  "w": 1180,
+  "h": 480,
+  "label": "Khoảng cách & bo góc",
+  "note": ""
+ },
+ {
+  "file": "ds-typography.svg",
+  "page": "04 Design System",
+  "w": 1180,
+  "h": 620,
+  "label": "Thang chữ Inter",
+  "note": ""
+ },
+ {
+  "file": "comp-appbar.svg",
+  "page": "05 Components",
+  "w": 360,
+  "h": 640,
+  "label": "Appbar",
+  "note": ""
+ },
+ {
+  "file": "comp-button.svg",
+  "page": "05 Components",
+  "w": 360,
+  "h": 640,
+  "label": "Button",
+  "note": ""
+ },
+ {
+  "file": "comp-card.svg",
+  "page": "05 Components",
+  "w": 360,
+  "h": 640,
+  "label": "Card",
+  "note": ""
+ },
+ {
+  "file": "comp-dialog.svg",
+  "page": "05 Components",
+  "w": 360,
+  "h": 640,
+  "label": "Dialog",
+  "note": ""
+ },
+ {
+  "file": "comp-empty.svg",
+  "page": "05 Components",
+  "w": 360,
+  "h": 640,
+  "label": "Empty",
+  "note": ""
+ },
+ {
+  "file": "comp-error.svg",
+  "page": "05 Components",
+  "w": 360,
+  "h": 640,
+  "label": "Error",
+  "note": ""
+ },
+ {
+  "file": "comp-loading.svg",
+  "page": "05 Components",
+  "w": 360,
+  "h": 640,
+  "label": "Loading",
+  "note": ""
+ },
+ {
+  "file": "comp-navigation.svg",
+  "page": "05 Components",
+  "w": 360,
+  "h": 640,
+  "label": "Navigation",
+  "note": ""
+ },
+ {
+  "file": "comp-textfield.svg",
+  "page": "05 Components",
+  "w": 360,
+  "h": 640,
+  "label": "Textfield",
+  "note": ""
+ }
+]
