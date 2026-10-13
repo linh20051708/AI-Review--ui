@@ -12,7 +12,7 @@ Lab 2 yêu cầu **đúng 2 artifact**:
 
 | # | Artifact | Trạng thái | Ở đâu |
 |---|---|---|---|
-| 1 | **GitHub repository** chứa tài liệu thiết kế + code nền | ⬜ cần push | repo này |
+| 1 | **GitHub repository** chứa tài liệu thiết kế + code nền | ✅ đã push | https://github.com/linh20051708/AI-Review--ui |
 | 2 | **Liên kết Figma** xem được, 6 page theo đúng thứ tự | ⬜ cần dựng | `figma-svg/output/` hỗ trợ dựng |
 
 Repo này gồm 2 phần:
@@ -33,6 +33,11 @@ Repo này gồm 2 phần:
 | 3 | Chạy AI thật (nếu giảng viên đòi ảnh) | §2.3 |
 
 ### 2.1 Bật repo GitHub
+
+Đã làm: docs Lab 2 (không gồm `app/`, không đè `.gitignore`) được commit chồng lên code nền của
+giảng viên trong repo nhóm **`linh20051708/AI-Review--ui`** (branch `main`). Link đã điền ở §6.
+
+Nếu tự làm từ đầu trên repo riêng:
 
 ```bash
 cd prm323-lab2
