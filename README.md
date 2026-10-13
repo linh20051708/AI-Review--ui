@@ -125,7 +125,7 @@ Bài nộp bắt buộc chỉ là 2 artifact ở §1.
 
 | Artifact | Liên kết |
 |---|---|
-| GitHub repository | `<điền link>` |
+| GitHub repository | https://github.com/linh20051708/AI-Review--ui |
 | Figma file (6 page) | `<điền link>` |
 
 ## 7. Tự chấm
