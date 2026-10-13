@@ -10,7 +10,7 @@ Bài nộp gồm **đúng 2 artifact** theo brief Lab 2:
 
 | # | Artifact | Liên kết |
 |---|---|---|
-| 1 | **GitHub repository** — tài liệu Lab 2 + code nền của giảng viên | `<điền link>` |
+| 1 | **GitHub repository** — tài liệu Lab 2 + code nền của giảng viên | https://github.com/linh20051708/AI-Review--ui |
 | 2 | **Figma 6 page** (xem được ở chế độ ẩn danh) | `<điền link>` |
 
 Hướng dẫn dựng file Figma: `README.md` §2.2. Điền link tự động: `python3 set-links.py --github <url> --figma <url>`.
