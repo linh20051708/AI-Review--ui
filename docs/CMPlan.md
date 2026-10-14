@@ -112,7 +112,29 @@ Persona (Pxx) → Scenario (SCxx) → Use Case (UCxx) → User Story (USxx)
    → Figma ID (011_MODULE_USxx) → Code Package → Test Cases (TC_USxx_<LOẠI>_<STT>)
 ```
 
-Không dòng code hay test case nào được "mồ côi". Cổng `check-cmplan.py` kiểm điều này.
+Không dòng code hay test case nào được "mồ côi". **Ba** cổng cùng kiểm chuỗi này:
+
+| Cổng | Kiểm gì |
+|---|---|
+| `check-cmplan.py` | mã tầng trong tên file, cô lập import, định mức 10 TC/US |
+| `check-trace-map.py` | **từng dòng** bảng `docs/CMPlan-MAP.md` trỏ tới persona/UC/US/SVG/file code có thật |
+| `check-trace.py` | TC có nguồn, UC có HP, không UC/US mồ côi (hai chiều UC ↔ US) |
+
+### 3.1.1 Sự thật về độ phủ của chuỗi (đo 14/10/2026)
+
+Chuỗi trên là **đích**, không phải hiện trạng. Đo thật:
+
+| Mắt xích | Có thật | Thiếu |
+|---|---|---|
+| Persona | 2 (`P01`, `P02`) | actor `1-SH-03` chưa có persona |
+| Use Case | 17 | `1-UC-15/16/17` chưa có User Story |
+| User Story | 14 | — |
+| Wireframe (`figma-svg/output/03-final/`) | 14 (`s01`…`s14`) | — |
+| **Màn Flutter (`011_presentation/`)** | **6** | **8 US chưa dựng** (US06–US10, US12, US13) |
+| Test Case (thiết kế) | 140 | 134 chưa có bằng chứng chạy |
+
+Ô "Code package" trong bảng truy vết ghi `— *(chưa code)*` cho 8 US đó. Điền đường dẫn không tồn tại
+cho đẹp bảng là **bịa** — `check-trace-map.py` sinh ra để chặn đúng việc ấy.
 
 ### 3.2 Năm nhóm phân loại — mỗi nhóm ≥2 TC, tổng ≥10 TC / US
 
@@ -199,9 +221,10 @@ Số thứ tự **không** luôn khớp — `4-TC-05` có thể là `TC_US04_HP_
 | N1 | **Figma chưa theo sơ đồ page CMPlan** | Mục 02 `[CRITICAL]` chưa đạt | Viết lại `figma-svg/gen.py` sinh theo `001_/011_/101_/201_`; hoặc dựng tay trong Figma |
 | N2 | **Chỉ 6/140 TC có bằng chứng chạy** | Mục 10 đạt một phần | `verify/flutter-journeys.mjs` sinh 6 ảnh gắn mã `TC_USxx_*` + 17 test neo mã TC. Còn 134 TC là **thiết kế**, chưa chạy |
 | N3 | ~~`011` gọi thẳng `201`~~ | **ĐÃ SỬA** | `202_data_repositories/` đã có; 7 màn đã chuyển sang gọi repository. Cổng C2 `[OK]` |
-| N4 | **`101_domain_entities/` và `111_domain_usecases/` rỗng** | Tầng domain chỉ có danh nghĩa | Chuyển logic lọc/tìm từ màn hình xuống use case |
+| N4 | ~~`101_domain_entities/` và `111_domain_usecases/` rỗng~~ | **ĐÃ SỬA** | `101_DOMAIN_review_entities.dart` (thực thể) + `111_DOMAIN_us03_filter_requests_uc.dart` (luật lọc) đã có thật |
 | N5 | **Lịch sử commit cũ không theo SKU** | Mục 09 | Không viết lại lịch sử đã push — chỉ áp từ commit này |
 | N6 | **2 use case chưa có test** (`1-UC-16`, `1-UC-17`) và actor `1-SH-03` chưa có persona | Truy vết có lỗ hổng | Cần persona quản trị học vụ trước |
+| N7 | **8/14 User Story chưa dựng màn Flutter** | Tầng `011` chỉ phủ 6 US | US06–US10, US12, US13 có user story + wireframe thật nhưng **chưa có code**; bảng truy vết ghi `— *(chưa code)*` chứ không bịa đường dẫn. `rules/check-trace-map.py` chặn tái diễn |
 
 ---
 

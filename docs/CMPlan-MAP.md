@@ -9,22 +9,40 @@ Tra ở đây, **đừng suy số** từ mã này sang mã kia.
 
 ## 1. Chuỗi truy vết dọc — 14 User Story
 
-| Persona | Scenario | Use Case | User Story | Figma ID (011_MODULE_USxx) | Code package | Test Cases |
-|---|---|---|---|---|---|---|
-| `P01` giảng viên | `SC01` | `1-UC-01` | `1-US-01` | `011_AUTH_US01_login_screen` | `011_presentation/auth/` | `TC_US01_*` |
-| `P01` giảng viên | `SC02` | `1-UC-02` | `1-US-02` | `011_DASH_US02_dashboard_screen` | `011_presentation/dashboard/` | `TC_US02_*` |
-| `P01` giảng viên | `SC03` | `1-UC-03` | `1-US-03` | `011_REVIEW_US03_request_list` | `011_presentation/review/` | `TC_US03_*` |
-| `P01` giảng viên | `SC04` | `1-UC-04` | `1-US-04` | `011_REVIEW_US04_workspace_screen` | `011_presentation/review/` | `TC_US04_*` |
-| `P01` giảng viên | `SC05` | `1-UC-05` | `1-US-05` | `011_REVIEW_US05_ai_result_screen` | `011_presentation/review/` | `TC_US05_*` |
-| `P01` giảng viên | `SC06` | `1-UC-06` | `1-US-06` | `011_REVIEW_US06_decision_bar` | `011_presentation/review/` | `TC_US06_*` |
-| `P01` giảng viên | `SC07` | `1-UC-07` | `1-US-07` | `011_REVIEW_US07_revision_dialog` | `011_presentation/review/` | `TC_US07_*` |
-| `P01` giảng viên | `SC08` | `1-UC-08` | `1-US-08` | `011_REVIEW_US08_version_compare` | `011_presentation/review/` | `TC_US08_*` |
-| `P02` sinh viên | `SC09` | `1-UC-09` | `1-US-09` | `011_SUBMIT_US09_submit_screen` | `011_presentation/submit/` | `TC_US09_*` |
-| `P02` sinh viên | `SC10` | `1-UC-10` | `1-US-10` | `011_SUBMIT_US10_submit_locked` | `011_presentation/submit/` | `TC_US10_*` |
-| `P01`+`P02` | `SC11` | `1-UC-11` | `1-US-11` | `011_CORE_US11_offline_banner` | `011_presentation/shared/` | `TC_US11_*` |
-| `P01` giảng viên | `SC12` | `1-UC-12` | `1-US-12` | `011_DASH_US12_group_health` | `011_presentation/dashboard/` | `TC_US12_*` |
-| `P01` giảng viên | `SC13` | `1-UC-13` | `1-US-13` | `011_REVIEW_US13_rule_context` | `011_presentation/review/` | `TC_US13_*` |
-| `P01`+`P02` | `SC14` | `1-UC-14` | `1-US-14` | `011_PROFILE_US14_profile_screen` | `011_presentation/profile/` | `TC_US14_*` |
+| Persona | Scenario | Use Case | User Story | Figma ID (CMPlan) | Wireframe thật (`figma-svg/output/03-final/`) | Code thật trong `flutter_app/lib/` | Test Cases |
+|---|---|---|---|---|---|---|---|
+| `P01` giảng viên | `SC01` | `1-UC-01` | `1-US-01` | `011_AUTH_US01_login_screen` | `s01-dang-nhap.svg` | `011_presentation/auth/us01/011_AUTH_US01_login_screen.dart` | `TC_US01_*` |
+| `P01` giảng viên | `SC02` | `1-UC-02` | `1-US-02` | `011_DASH_US02_dashboard_screen` | `s02-tong-quan.svg` | `011_presentation/dashboard/us02/011_DASH_US02_dashboard_screen.dart` | `TC_US02_*` |
+| `P01` giảng viên | `SC03` | `1-UC-03` | `1-US-03` | `011_REVIEW_US03_request_list` | `s03-yeu-cau-review.svg` | `011_presentation/review/us03/011_REVIEW_US03_request_list_screen.dart` | `TC_US03_*` |
+| `P01` giảng viên | `SC04` | `1-UC-04` | `1-US-04` | `011_REVIEW_US04_workspace_screen` | `s04-khong-gian-review.svg` | `011_presentation/review/us04/011_REVIEW_US04_workspace_screen.dart` | `TC_US04_*` |
+| `P01` giảng viên | `SC05` | `1-UC-05` | `1-US-05` | `011_REVIEW_US05_ai_result_screen` | `s05-ket-qua-ai.svg` | `011_presentation/review/us05/011_REVIEW_US05_ai_result_screen.dart` | `TC_US05_*` |
+| `P01` giảng viên | `SC06` | `1-UC-06` | `1-US-06` | `011_REVIEW_US06_class_screen` | `s06-lop-hoc.svg` | — *(chưa code)* | `TC_US06_*` |
+| `P01` giảng viên | `SC07` | `1-UC-07` | `1-US-07` | `011_REVIEW_US07_project_screen` | `s07-project.svg` | — *(chưa code)* | `TC_US07_*` |
+| `P01` giảng viên | `SC08` | `1-UC-08` | `1-US-08` | `011_REVIEW_US08_document_screen` | `s08-tai-lieu.svg` | — *(chưa code)* | `TC_US08_*` |
+| `P02` sinh viên | `SC09` | `1-UC-09` | `1-US-09` | `011_SUBMIT_US09_semester_screen` | `s09-hoc-ky.svg` | — *(chưa code)* | `TC_US09_*` |
+| `P02` sinh viên | `SC10` | `1-UC-10` | `1-US-10` | `011_SUBMIT_US10_ruleset_screen` | `s10-rule-set.svg` | — *(chưa code)* | `TC_US10_*` |
+| `P01`+`P02` | `SC11` | `1-UC-11` | `1-US-11` | `011_CORE_US11_offline_banner` | `s11-sinh-vien.svg` | `011_presentation/shared/011_CORE_US11_offline_banner.dart` | `TC_US11_*` |
+| `P01` giảng viên | `SC12` | `1-UC-12` | `1-US-12` | `011_DASH_US12_group_health` | `s12-nhom.svg` | — *(chưa code)* | `TC_US12_*` |
+| `P01` giảng viên | `SC13` | `1-UC-13` | `1-US-13` | `011_REVIEW_US13_notify_screen` | `s13-thong-bao.svg` | — *(chưa code)* | `TC_US13_*` |
+| `P01`+`P02` | `SC14` | `1-UC-14` | `1-US-14` | `011_PROFILE_US14_profile_screen` | `s14-tai-khoan.svg` | `011_presentation/profile/us14/011_PROFILE_US14_profile_screen.dart` | `TC_US14_*` |
+
+### 1.1 Ghi chú trung thực về bảng trên
+
+Cột **Wireframe thật** trỏ tới file SVG có thật trong `figma-svg/output/03-final/`. Cột này được
+`rules/check-trace-map.py` đối chiếu với đĩa.
+
+Cột **Code thật** chỉ ghi đường dẫn khi file **tồn tại**. Ô `— *(chưa code)*` là **khai báo trung thực**:
+user story và wireframe có thật, nhưng bản demo Flutter **chưa dựng màn đó**. Cụ thể:
+
+| Có code (6) | Chưa code (8) |
+|---|---|
+| US01 đăng nhập · US02 tổng quan · US03 danh sách review · US04 không gian review · US05 kết quả AI · US14 hồ sơ | US06 lớp học · US07 project · US08 tài liệu · US09 học kỳ · US10 rule set · US11 *(banner dùng chung, có file)* · US12 nhóm · US13 thông báo |
+
+> US11 có file `011_CORE_US11_offline_banner.dart` nhưng là **component dùng chung**, không phải màn riêng.
+> 8 US chưa code **không** phải "đã xong" — `docs/CMPlan.md` §6 ghi ở N4.
+
+**Vì sao không dựng 8 màn giả:** gate yêu cầu đường dẫn phải có thật; cách duy nhất để nó xanh là
+dựng màn thật hoặc khai `—`. Điền đường dẫn không tồn tại cho xanh là **bịa**, đúng thứ cổng này sinh ra để chặn.
 
 **Đối chiếu mã tài liệu Lab 2:** scenario `SC01`…`SC14` ở đây là **cách đánh số CMPlan**, khác
 `1-E-01`…`1-E-06` (bằng chứng) của Lab 2. Bảng dịch ở §5.

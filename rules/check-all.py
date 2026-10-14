@@ -20,6 +20,7 @@ RULES = ROOT / "rules"
 GATES = [
     ("Mã định danh", "check-ids.py"),
     ("Truy vết", "check-trace.py"),
+    ("Truy vết dọc (MAP)", "check-trace-map.py"),
     ("Tầng / folder", "check-layers.py"),
     ("Tham chiếu code", "check-code-refs.py"),
     ("CMPlan (PRM393)", "check-cmplan.py"),
