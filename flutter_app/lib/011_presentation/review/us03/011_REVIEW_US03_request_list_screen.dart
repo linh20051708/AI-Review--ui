@@ -175,10 +175,15 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
     return ListView(
       padding: const EdgeInsets.all(AppSpace.pagePad),
       children: [
+        // `Expanded` cho nhan dem thay `Spacer`: `Spacer` chi chiem phan TRONG
+        // con lai, khong nen duoc nhan, nen o 320dp nut "Mo phong loi" day
+        // `Row` tran 42px (do bang `flutter test`).
         Row(
           children: [
-            Text('${items.length} yêu cầu', style: AppText.micro),
-            const Spacer(),
+            Expanded(
+              child: Text('${items.length} yêu cầu', style: AppText.micro),
+            ),
+            const SizedBox(width: AppSpace.s),
             // 48dp — đo được 40dp trước sửa (xem ghi chú ở S04 `_decisionBar`).
             SizedBox(
               height: AppSpace.tapMin,

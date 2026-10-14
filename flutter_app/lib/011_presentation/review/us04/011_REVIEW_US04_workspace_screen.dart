@@ -10,6 +10,7 @@ import '../../shared/011_CORE_shared_status_chip.dart';
 import '../../shared/011_CORE_tone_colors.dart';
 import '../../../202_data_repositories/202_DOMAIN_review_repository.dart';
 import '../../shared/011_CORE_US11_offline_banner.dart';
+import '../../shared/011_CORE_dialog_actions.dart';
 
 /// S04 — Không gian review.
 ///
@@ -120,7 +121,9 @@ class ReviewWorkspaceScreen extends StatelessWidget {
                 style: AppText.micro,
               ),
             ),
-            StatusChip.of(r.status),
+            // `Flexible`: chip phai chiu duoc be rong hep, thieu thi `Row`
+            // tran 6,3px o 320dp (do bang `flutter test`).
+            Flexible(child: StatusChip.of(r.status)),
           ],
         ),
         const SizedBox(height: AppSpace.s),
@@ -415,12 +418,15 @@ class ReviewWorkspaceScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: AppRadius.dialogAll),
         title: Text(title, style: AppText.blockTitle),
         content: Text(message, style: AppText.body),
+        // Dùng `DialogAction`: nút trong `AlertDialog.actions` bị ràng buộc
+        // tight 40dp nên `minimumSize` của theme bị vô hiệu — đã đo được
+        // 40dp trước khi sửa. `style` chỉ để đổi màu, không đặt minimumSize.
         actions: [
-          TextButton(
+          DialogAction.cancel(
             onPressed: () => Navigator.of(ctx).pop(false),
             child: const Text('Huỷ'),
           ),
-          FilledButton(
+          DialogAction.confirm(
             style: destructive
                 ? FilledButton.styleFrom(backgroundColor: AppColors.rust)
                 : null,

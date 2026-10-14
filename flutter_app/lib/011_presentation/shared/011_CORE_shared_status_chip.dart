@@ -40,9 +40,18 @@ class StatusChip extends StatelessWidget {
             Icon(icon, size: 14, color: fg),
             const SizedBox(width: AppSpace.xs),
           ],
-          Text(
-            label,
-            style: AppText.label.copyWith(color: fg, fontSize: 11),
+          // `Flexible` quanh `Text`: chip là widget DÙNG CHUNG, có chỗ nhét
+          // trong `Row` hẹp (ô lưới, thanh trạng thái). Nhãn dài như
+          // "Đã yêu cầu chỉnh sửa" từng làm `Row` này tràn 113px —
+          // đo được bằng `flutter test`, không thấy được khi lái trình duyệt.
+          // Cho chữ xuống dòng thay vì tràn: thà chip cao hơn còn hơn mất chữ.
+          Flexible(
+            child: Text(
+              label,
+              style: AppText.label.copyWith(color: fg, fontSize: 11),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),
@@ -77,36 +86,42 @@ class StatCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: AppRadius.cardAll,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 28,
-            height: 28,
-            decoration: BoxDecoration(
-              color: ToneColors.bg(tone),
-              borderRadius: AppRadius.chipAll,
-            ),
-            child: Icon(icon, size: 16, color: fg),
-          ),
-          const SizedBox(height: AppSpace.xs),
-          // Nội dung chữ co theo ô lưới: ô thấp thì thu nhỏ, không tràn.
-          Expanded(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.bottomLeft,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(value, style: AppText.sectionTitle),
-                  const SizedBox(height: AppSpace.xs),
-                  Text(label, style: AppText.micro),
-                ],
+      // Bọc TOÀN BỘ nội dung trong `FittedBox` + `mainAxisSize.min`:
+      //
+      // LỖI THẬT ĐÃ SỬA (14/10, đợt 2). `StatCard` từng hỏng theo HAI kiểu,
+      // tuỳ cha — cả hai đều bung ở MỌI màn dùng nó:
+      //   1. Cha CAO VÔ HẠN (mục trong `ListView`, `Row` không chốt cao) —
+      //      `Expanded`/`Flexible` bên trong `Column` ném "RenderFlex children
+      //      have non-zero flex but incoming height constraints are unbounded".
+      //   2. Cha CHỐT cao nhưng THẤP (`GridView` 2 cột, `childAspectRatio:1.6`
+      //      ở 320dp ⇒ ô chỉ còn ~100dp) — nội dung cao hơn ô nên `Column`
+      //      tràn xuống dưới 17–48px.
+      //
+      // Bỏ flex (hết lỗi 1) + bọc `FittedBox` quanh cả cột (hết lỗi 2: ô thấp
+      // thì thu nhỏ chữ, không tràn). `mainAxisSize.min` để cột tự cao theo
+      // nội dung, không đòi hỏi cha phải hữu hạn.
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.topLeft,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: ToneColors.bg(tone),
+                borderRadius: AppRadius.chipAll,
               ),
+              child: Icon(icon, size: 16, color: fg),
             ),
-          ),
-        ],
+            const SizedBox(height: AppSpace.xs),
+            Text(value, style: AppText.sectionTitle),
+            const SizedBox(height: AppSpace.xs),
+            Text(label, style: AppText.micro),
+          ],
+        ),
       ),
     );
 

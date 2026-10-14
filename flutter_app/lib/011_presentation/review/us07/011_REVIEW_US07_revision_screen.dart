@@ -95,12 +95,21 @@ class _RequestRevisionScreenState extends State<RequestRevisionScreen> {
               Text('${r.classCode} · ${r.groupName} · ${r.version}',
                   style: AppText.micro),
               const SizedBox(height: AppSpace.l),
+              // `Expanded` + `Flexible`: thiếu thì `Row` tràn ngang —
+              // đo được 127px @320dp, 87px @360dp và **35px @412dp**
+              // (bề rộng điện thoại thật) bằng `flutter test`.
               Row(
                 children: [
-                  Text('Trạng thái', style: AppText.micro),
+                  Expanded(
+                    child: Text('Trạng thái', style: AppText.micro),
+                  ),
                   const SizedBox(width: AppSpace.s),
-                  StatusChip.of(
-                    _sent && !_undone ? DocStatus.needsRevision : r.status,
+                  Flexible(
+                    child: StatusChip.of(
+                      _sent && !_undone
+                          ? DocStatus.needsRevision
+                          : r.status,
+                    ),
                   ),
                 ],
               ),

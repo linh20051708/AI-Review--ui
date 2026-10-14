@@ -37,7 +37,9 @@ class ReviewCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpace.s),
-            StatusChip.of(item.status),
+            // `Flexible`: chip phai chiu duoc be rong hep. Thieu no thi `Row`
+            // tran 14px o 320dp (do bang `flutter test`).
+            Flexible(child: StatusChip.of(item.status)),
           ],
         ),
         const SizedBox(height: AppSpace.s),

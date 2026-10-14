@@ -150,7 +150,18 @@ class ProfileScreen extends StatelessWidget {
             Icon(icon, size: 18, color: AppColors.muted),
             const SizedBox(width: AppSpace.m),
             Expanded(child: Text(k, style: AppText.bodySmall)),
-            Text(v, style: AppText.micro),
+            const SizedBox(width: AppSpace.s),
+            // `Flexible` + cat chu: gia tri dai (vd email/truong) tung lam `Row`
+            // tran 43px o 320dp (do bang `flutter test`).
+            Flexible(
+              child: Text(
+                v,
+                style: AppText.micro,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.right,
+              ),
+            ),
           ],
         ),
       );

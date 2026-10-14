@@ -149,3 +149,48 @@ khung riêng, **không phải lỗi vỡ layout**. Ghi đúng bản chất, khô
 - Chạy 3 luồng nghiệp vụ đầu-cuối trên trình duyệt thật (xem `ux/user-flow.md`).
 - Dựng file Figma Design 6 page (việc của người nộp).
 - Dọn file thừa `app/index (2).html`.
+
+## 3c. Tràn ngang trong `flutter_app` — quét bằng `flutter test` (14/10, đợt 2)
+
+**Vì sao phải đổi cách đo.** `verify/flutter-tap-targets.mjs` lái app trong Chromium thật
+nhưng chỉ thấy bố cục ở **đúng một bề rộng** (412dp) và **đúng vị trí cuộn**. Lỗi tràn ngang ở
+320dp hoặc ở một mục nằm ngoài vùng nhìn thì cổng đó **mù**. Bổ sung `flutter_app/test/overflow_test.dart`:
+dựng lại **13 màn × 3 bề rộng (320/360/412dp) = 39 ca**, mỗi ca khẳng định `takeException() == null`.
+
+**Kết quả đã đo:**
+
+| Lần chạy | Số ca ĐẠT | Ghi chú |
+|---|---|---|
+| Trước khi sửa | 0 / 15 | `StatCard` bung ở **mọi** màn dùng nó |
+| Sau khi sửa `StatCard` + 9 chỗ khác | **39 / 39** | xem bảng dưới |
+
+**9 lỗi THẬT đã bắt và sửa** (đều là `Row`/`Column` không cho con co lại):
+
+| # | File:dòng | Tràn đo được | Bản chất |
+|---|---|---|---|
+| 1 | `shared/011_CORE_shared_status_chip.dart` `StatCard` | bung **13/13 màn** | `Expanded` trong `Column` gặp cha **cao vô hạn** → `RenderFlex ... incoming height constraints are unbounded` |
+| 2 | `shared/011_CORE_shared_status_chip.dart` `StatCard` (lần 2) | 17–48px @320dp | `GridView childAspectRatio:1.6` cho ô **cao chốt nhưng thấp** → nội dung tràn xuống |
+| 3 | `review/us06/...approval_screen.dart:105` | **188px** | `Row` nhãn + `StatusChip` thiếu `Expanded`/`Flexible` |
+| 4 | `shared/011_CORE_shared_status_chip.dart` `StatusChip` | **113px** | chip dùng chung, `Text` không có `Flexible` |
+| 5 | `review/us07/...revision_screen.dart:98` | **127 / 87 / 35px** @320/360/**412dp** | như #3, tràn cả ở **bề rộng điện thoại thật** |
+| 6 | `dashboard/us12/...group_health_screen.dart:63` | 53 / 13px @320/360dp | 2 chip lọc trong `Row` thiếu `Expanded` |
+| 7 | `review/us03/...review_card.dart:31` | 14px @320dp | `Expanded` + `StatusChip` thiếu `Flexible` |
+| 8 | `review/us03/...request_list_screen.dart:178` | 42px @320dp | `Spacer()` không nén được nhãn đếm |
+| 9 | `review/us04/...workspace_screen.dart:116`, `auth/us01/...login_screen.dart:234`, `profile/us14/...profile_screen.dart:148` | 6,3 / 37 / 43px @320dp | `Expanded`+`StatusChip`, nhãn "hoặc dùng tài khoản nội bộ", cặp nhãn–giá trị |
+
+**Cách sửa, một luật duy nhất:** mọi `Text` nằm cạnh một widget khác trong `Row` phải nằm trong
+`Expanded`/`Flexible` (hoặc có `overflow: TextOverflow.ellipsis`). Không thêm `Expanded`/`Flexible`
+vào chỗ mà cha **có thể** cao vô hạn.
+
+**Bài học về DỤNG CỤ ĐO:** cổng trình duyệt và cổng `flutter test` **không thay thế nhau** —
+cổng trình duyệt bắt được ngưỡng chạm thật + lỗi console, cổng widget bắt được tràn ở mọi bề rộng
+mà trình duyệt không mô phỏng. Giữ **cả hai**.
+
+**Về hộp thoại xác nhận — kết luận đã sửa lại.** Đợt trước tôi kết luận "`await showDialog` không
+bao giờ trả về" chỉ vì app chạy trên web không đổi trạng thái quan sát được sau khi hộp thoại đóng.
+Kết luận đó **SAI**: `test/dialog_confirm_test.dart` (3 ca) gọi thẳng `tester.tap` trên
+`AlertDialog` và **PASS** — thông báo "Trạng thái đã cập nhật" có hiện, nhãn đổi sang trạng thái
+cuối, log `[202] da gui: Phê duyệt (review-001)` có chạy. Nguyên nhân là **bất đối xứng của
+cây semantics Flutter-web**: sau khi hộp thoại đóng, phần cây semantics được dựng lại và
+Playwright không đọc ra nội dung mới. **App đúng, dụng cụ đọc sai** — đúng loại lỗi đã gặp ở mục 3
+(`Xem tất cả` 20,5dp giả).

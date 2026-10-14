@@ -231,12 +231,21 @@ class _OrDivider extends StatelessWidget {
   const _OrDivider();
 
   @override
+  // Nhan "hoac dung tai khoan noi bo" o 320dp rong hon phan trong con lai nen
+  // tung lam `Row` tran 37px (do bang `flutter test`). Boc `Flexible` cho nhan:
+  // duong ke hai ben tu co lai, chu xuong dong thay vi tran.
   Widget build(BuildContext context) => Row(
     children: [
       const Expanded(child: Divider()),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpace.m),
-        child: Text('hoặc dùng tài khoản nội bộ', style: AppText.micro),
+      Flexible(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.m),
+          child: Text(
+            'hoặc dùng tài khoản nội bộ',
+            style: AppText.micro,
+            textAlign: TextAlign.center,
+          ),
+        ),
       ),
       const Expanded(child: Divider()),
     ],

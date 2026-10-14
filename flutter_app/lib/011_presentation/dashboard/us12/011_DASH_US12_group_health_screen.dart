@@ -60,13 +60,19 @@ class _GroupHealthScreenState extends State<GroupHealthScreen> {
     );
   }
 
+  // Hai chip lọc co giãn được — thiếu `Expanded` thì `Row` này tràn
+  // 53px @320dp và 13px @360dp (đo bằng `flutter test`).
   Widget _filter() => Row(
     children: [
-      _chip('Tất cả (${ReviewRepository.instance.groupHealth().length})',
-          !_onlyOverdue, () => setState(() => _onlyOverdue = false)),
+      Expanded(
+        child: _chip('Tất cả (${ReviewRepository.instance.groupHealth().length})',
+            !_onlyOverdue, () => setState(() => _onlyOverdue = false)),
+      ),
       const SizedBox(width: AppSpace.s),
-      _chip('Chỉ quá hạn',
-          _onlyOverdue, () => setState(() => _onlyOverdue = true)),
+      Expanded(
+        child: _chip('Chỉ quá hạn', _onlyOverdue,
+            () => setState(() => _onlyOverdue = true)),
+      ),
     ],
   );
 
@@ -91,8 +97,15 @@ class _GroupHealthScreenState extends State<GroupHealthScreen> {
             color: selected ? AppColors.brand : AppColors.line,
           ),
         ),
+        // Chip là nút LỌC nằm trong `Expanded`, nên phải chịu được bề rộng hẹp:
+        // nhãn "Tất cả (3)" dài hơn "Chỉ quá hạn" và từng tràn 53px @320dp.
+        // Cho chữ co lại và cắt bằng "…" thay vì tràn — nhãn vẫn đọc được vì
+        // tooltip/semantics giữ nguyên chuỗi đầy đủ.
         child: Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
           style: AppText.label.copyWith(
             color: selected ? Colors.white : AppColors.muted,
           ),

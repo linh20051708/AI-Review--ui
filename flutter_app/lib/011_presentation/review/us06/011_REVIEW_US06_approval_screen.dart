@@ -9,6 +9,7 @@ import '../../shared/011_CORE_shared_status_chip.dart';
 import '../../shared/011_CORE_tone_colors.dart';
 import '../../shared/011_CORE_US11_offline_banner.dart';
 import '../../../101_domain_entities/101_DOMAIN_review_entities.dart';
+import '../../shared/011_CORE_dialog_actions.dart';
 
 /// S06 — Phê duyệt có xác nhận (`1-UC-07`, US06).
 ///
@@ -40,12 +41,15 @@ class _ApprovalDecisionScreenState extends State<ApprovalDecisionScreen> {
           'Trạng thái sẽ đổi và giảng viên nhận thông báo. '
           'Hành động này có thể thực hiện lại nếu bấm nhầm.',
         ),
+        // Dùng `DialogAction` thay vì `TextButton`/`FilledButton` trần: nút trong
+        // `AlertDialog.actions` bị ràng buộc tight 40dp nên `minimumSize` của
+        // theme bị vô hiệu — đã đo được 46,6×40 trước khi sửa.
         actions: [
-          TextButton(
+          DialogAction.cancel(
             onPressed: () => Navigator.of(ctx).pop(false), // A1: huỷ, không toast
             child: const Text('Huỷ'),
           ),
-          FilledButton(
+          DialogAction.confirm(
             onPressed: () => Navigator.of(ctx).pop(true),
             child: Text(label),
           ),
@@ -93,11 +97,16 @@ class _ApprovalDecisionScreenState extends State<ApprovalDecisionScreen> {
               Text('${r.classCode} · ${r.groupName} · ${r.version}',
                   style: AppText.micro),
               const SizedBox(height: AppSpace.l),
+              // `Expanded` cho nhãn + chip bọc `Flexible`: thiếu hai thứ này thì
+              // `Row` tràn ngang khi nhãn trạng thái dài (đo được tràn 188px
+              // trong `flutter test`). Không phải lỗi thẩm mỹ — nội dung bị cắt.
               Row(
                 children: [
-                  Text('Trạng thái hiện tại', style: AppText.micro),
+                  Expanded(
+                    child: Text('Trạng thái hiện tại', style: AppText.micro),
+                  ),
                   const SizedBox(width: AppSpace.s),
-                  StatusChip.of(status),
+                  Flexible(child: StatusChip.of(status)),
                 ],
               ),
               const SizedBox(height: AppSpace.l),
