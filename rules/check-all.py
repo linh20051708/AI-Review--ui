@@ -24,6 +24,7 @@ GATES = [
     ("Tầng / folder", "check-layers.py"),
     ("Tham chiếu code", "check-code-refs.py"),
     ("CMPlan (PRM393)", "check-cmplan.py"),
+    ("Nut chet (flutter_app)", "check-dead-controls.py"),
 ]
 
 # Rò ký tự CJK vào văn bản tiếng Việt là lỗi đã gặp nhiều lần.

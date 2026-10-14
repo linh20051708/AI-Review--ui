@@ -13,7 +13,14 @@ import '../../../111_domain_usecases/111_DOMAIN_us03_filter_requests_uc.dart';
 ///
 /// 4 trạng thái: thường · đang tải · rỗng (lọc không ra kết quả) · lỗi.
 class ReviewListScreen extends StatefulWidget {
-  const ReviewListScreen({super.key});
+  const ReviewListScreen({super.key, this.focusSearchToken = 0});
+
+  /// Đổi giá trị này thì màn tự focus vào ô tìm kiếm.
+  ///
+  /// Cần cho nút `Tìm kiếm` trên thanh tiêu đề (`AppShell`): nút đó ở ngoài
+  /// màn này nên không gọi thẳng được `FocusNode`. Truyền một "vé" đổi giá trị
+  /// là cách đơn giản nhất, không cần global state.
+  final int focusSearchToken;
 
   @override
   State<ReviewListScreen> createState() => _ReviewListScreenState();
@@ -21,6 +28,7 @@ class ReviewListScreen extends StatefulWidget {
 
 class _ReviewListScreenState extends State<ReviewListScreen> {
   final _query = TextEditingController();
+  final _searchFocus = FocusNode();
   String _keyword = '';
   DocStatus? _filter;
   final bool _loading = false;
@@ -54,9 +62,19 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
   }
 
   @override
+  void didUpdateWidget(ReviewListScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Nút `Tìm kiếm` trên tiêu đề vừa được bấm (vé đổi giá trị) -> focus ô nhập.
+    if (widget.focusSearchToken != oldWidget.focusSearchToken) {
+      _searchFocus.requestFocus();
+    }
+  }
+
+  @override
   void dispose() {
     ReviewRepository.instance.removeListener(_onRepoChanged);
     _query.dispose();
+    _searchFocus.dispose();
     super.dispose();
   }
 
@@ -95,6 +113,7 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
       children: [
         TextField(
           controller: _query,
+          focusNode: _searchFocus,
           style: AppText.body,
           onChanged: (v) => setState(() => _keyword = v),
           decoration: InputDecoration(

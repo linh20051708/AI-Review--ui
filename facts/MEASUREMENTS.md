@@ -218,3 +218,38 @@ xanh cả khi tắt listener — đã sửa để đi tới Tổng quan rồi m�
 **Bẫy đã gặp:** `AppShell` dùng `switch (_index)`, nên **đổi tab là dựng lại màn từ đầu**. Muốn
 chứng minh một màn có nghe repository thì phải để màn **yên tại chỗ** mà dữ liệu đổi; đi vòng qua
 tab khác rồi quay lại thì màn mới đọc dữ liệu mới **kể cả khi không có listener**.
+
+## 3e. Nút chết — bấm không làm gì (14/10, đợt 4)
+
+Cùng họ với §3d: giao diện **hứa** một hành động rồi không làm gì. Khác ở chỗ ở đây
+không có thông báo sai để đối chiếu — nút chỉ im lặng. Tìm bằng cách quét
+`onPressed: () {}` / `onTap: () {}` trong `flutter_app/lib/`.
+
+| # | Nút | Vị trí | Vì sao tệ |
+|---|---|---|---|
+| 1 | `Tìm kiếm` | `011_CORE_app_shell.dart` thanh tiêu đề | Có mặt ở **MỌI màn**, app không có màn tìm kiếm nào |
+| 2 | Thẻ tệp đính kèm | `us04/...workspace_screen.dart::_attachment` | Tự khai `Semantics(button: true, label: 'Mở tài liệu …')` → **trình đọc màn hình đọc lên như nút mở được tài liệu**. Nút chết thường chỉ im; nút này còn **nói dối** |
+
+**Sửa:**
+1. `Tìm kiếm` → chuyển sang tab Review + focus thẳng ô tìm kiếm (truyền "vé"
+   `focusSearchToken`, vì nút nằm ngoài màn nên không gọi thẳng `FocusNode` được).
+2. Thẻ tệp → mở `showModalBottomSheet` xem trước thật. Không có backend tệp nên sheet
+   hiện đúng thứ hệ thống BIẾT (tên, phiên bản, số trang, người nộp) và **nói rõ là bản
+   demo**, không bịa nội dung trang.
+
+**Cổng chống tái phát:** `rules/check-dead-controls.py` — mục thứ 8 trong `check-all.py`.
+Quét `onPressed`/`onTap`/`onLongPress`/`onChanged`/`onSubmitted` thân rỗng, bỏ qua dòng
+chú thích. Muốn cố ý để nút không hoạt động thì phải viết
+`// ignore: dead-control — <lý do>`.
+
+**Đã chứng minh cổng ĐỎ được:**
+- Code sạch: `Quet 0 handler rong` → `[OK]`, exit 0.
+- Tiêm lại `onPressed: () {}` vào nút Tìm kiếm: `[FAIL] 1 NUT CHET` ở đúng
+  `011_CORE_app_shell.dart:46`, exit 1.
+- Thêm dấu `ignore: dead-control` → về `[OK]`, exit 0. Khôi phục code gốc → `[OK]`.
+
+**Bài học về test tự viết:** hai lần test của chính tôi **xanh giả** trước khi đúng:
+(a) kiểm `find.textContaining('Xem trước')` — nhưng thẻ tệp **tự có** chữ
+"Xem trước 12 trang" nên phép kiểm luôn đúng; phải đổi sang đếm xem có **thêm** bề mặt
+mới mở ra không. (b) không cuộn tới thẻ tệp trước khi bấm. Cả hai đều là
+"test tự đúng" — phải tự hỏi *test này có thể ĐỎ vì lý do gì* trước khi tin nó.

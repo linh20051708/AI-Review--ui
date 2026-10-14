@@ -25,6 +25,10 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   late int _index = widget.initialIndex;
 
+  /// "Vé" báo cho `ReviewListScreen` focus ô tìm kiếm. Tăng lên mỗi lần bấm nút
+  /// `Tìm kiếm` ở thanh tiêu đề.
+  int _searchToken = 0;
+
   static const _titles = ['Tổng quan', 'Yêu cầu review', 'Thông báo', 'Hồ sơ'];
 
   @override
@@ -33,9 +37,16 @@ class _AppShellState extends State<AppShell> {
       appBar: AppBar(
         title: Text(_titles[_index]),
         actions: [
+          // Nút này từng là `onPressed: () {}` — NÚT CHẾT, có mặt ở mọi màn mà
+          // bấm không làm gì. Không có màn tìm kiếm toàn cục, nên hành động
+          // đúng nghĩa là đưa người dùng tới chỗ tìm được: tab Review, và focus
+          // thẳng vào ô tìm kiếm ở đó. Xem `test/dead_control_test.dart`.
           IconButton(
             tooltip: 'Tìm kiếm',
-            onPressed: () {},
+            onPressed: () => setState(() {
+              _index = 1;
+              _searchToken++;
+            }),
             icon: const Icon(Icons.search, size: 22),
           ),
           IconButton(
@@ -48,7 +59,7 @@ class _AppShellState extends State<AppShell> {
       ),
       body: switch (_index) {
         0 => const DashboardScreen(),
-        1 => const ReviewListScreen(),
+        1 => ReviewListScreen(focusSearchToken: _searchToken),
         2 => const _NotificationsTab(),
         _ => const ProfileScreen(),
       },

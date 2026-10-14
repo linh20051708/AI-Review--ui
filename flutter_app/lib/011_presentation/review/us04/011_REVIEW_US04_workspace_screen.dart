@@ -252,7 +252,11 @@ class _ReviewWorkspaceScreenState extends State<ReviewWorkspaceScreen> {
     button: true,
     label: 'Mở tài liệu ${r.documentTitle} ${r.version}',
     child: InkWell(
-      onTap: () {},
+      // Từng là `onTap: () {}` — NÚT CHẾT. Tệ hơn nút chết thường vì khối này tự
+      // khai `Semantics(button: true, label: 'Mở tài liệu ...')`: trình đọc màn
+      // hình đọc lên như một nút mở được tài liệu, mà bấm không có gì xảy ra.
+      // Giờ mở một sheet xem trước thật. Xem `test/dead_control_test.dart`.
+      onTap: () => _showPreviewSheet(context, r),
       borderRadius: AppRadius.buttonAll,
       child: Container(
         constraints: const BoxConstraints(minHeight: AppSpace.tapMin + 24),
@@ -438,6 +442,85 @@ class _ReviewWorkspaceScreenState extends State<ReviewWorkspaceScreen> {
       sent
           ? okMessage
           : 'Đang mất mạng — đã xếp hàng, sẽ gửi lại khi có mạng.',
+    );
+  }
+
+  /// Sheet xem trước tài liệu.
+  ///
+  /// Không có backend thật nên không tải được PDF: sheet hiện đúng những gì hệ
+  /// thống BIẾT về tệp (tên, phiên bản, số trang, người nộp, thời điểm) và nói
+  /// rõ đây là bản demo. Không bịa nội dung trang.
+  void _showPreviewSheet(BuildContext context, ReviewRequest r) {
+    final fileName =
+        '${r.documentTitle.toLowerCase().replaceAll(' ', '-')}-${r.version}.pdf';
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpace.pagePad,
+            0,
+            AppSpace.pagePad,
+            AppSpace.pagePad,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(fileName, style: AppText.sectionTitle),
+              const SizedBox(height: AppSpace.s),
+              Row(
+                children: [
+                  const Icon(Icons.description_outlined,
+                      size: 18, color: AppColors.muted),
+                  const SizedBox(width: AppSpace.s),
+                  Expanded(
+                    child: Text(
+                      'Xem trước 12 trang · ${r.version} · ${r.submitter}',
+                      style: AppText.micro,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpace.m),
+              Container(
+                height: 180,
+                width: double.infinity,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AppColors.subtle,
+                  borderRadius: AppRadius.cardAll,
+                  border: Border.all(color: AppColors.line),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.picture_as_pdf_outlined,
+                        size: 32, color: AppColors.muted),
+                    const SizedBox(height: AppSpace.s),
+                    Text(
+                      'Bản demo chưa nối máy chủ tệp — chưa dựng được nội dung '
+                      'trang.',
+                      style: AppText.micro,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpace.m),
+              SizedBox(
+                height: AppSpace.tapMin,
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: const Text('Đóng'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
