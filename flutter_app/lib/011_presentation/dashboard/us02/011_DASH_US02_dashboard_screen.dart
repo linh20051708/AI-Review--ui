@@ -68,6 +68,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       .where((r) => r.status == DocStatus.needsRevision)
       .length;
 
+  int get _rejected =>
+      ReviewRepository.instance.requests().where((r) => r.status == DocStatus.notAccepted).length;
+
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -210,6 +213,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
         value: '$_needsRevision',
         icon: Icons.edit_note_outlined,
         tone: Tone.rust,
+        onTap: () => Navigator.of(context).pushNamed('/reviews'),
+      ),
+      // Thẻ "Không đạt" từng BỊ THIẾU (đợt 5): 4 thẻ cũ = 4+1+1+1 = 7, nhưng dữ
+      // liệu có 8 yêu cầu. Trạng thái `notAccepted` không được thẻ nào đếm ->
+      // giảng viên nhìn Tổng quan thiếu mất tài liệu đã bị trả về. Giờ đếm đủ.
+      StatCard(
+        label: 'Không đạt',
+        value: '$_rejected',
+        icon: Icons.cancel_outlined,
+        tone: Tone.danger,
         onTap: () => Navigator.of(context).pushNamed('/reviews'),
       ),
     ],

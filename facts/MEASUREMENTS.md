@@ -253,3 +253,32 @@ chú thích. Muốn cố ý để nút không hoạt động thì phải viết
 "Xem trước 12 trang" nên phép kiểm luôn đúng; phải đổi sang đếm xem có **thêm** bề mặt
 mới mở ra không. (b) không cuộn tới thẻ tệp trước khi bấm. Cả hai đều là
 "test tự đúng" — phải tự hỏi *test này có thể ĐỎ vì lý do gì* trước khi tin nó.
+
+## 3f. Tổng quan đếm thiếu một trạng thái (14/10, đợt 5)
+
+Tiếp đợt 4: soi lớp "giao diện nói thiếu sự thật" — đối chiếu SỐ HIỆN TRÊN MÀN
+với DỮ LIỆU GỐC trong `201_DOMAIN_mock_datasource.dart`.
+
+Dữ liệu có **8** yêu cầu: `waiting 4, inReview 1, needsRevision 1, approved 1,
+notAccepted 1`. Tổng quan có 4 thẻ số liệu (Chờ / Đang review / Đã phê duyệt /
+Cần chỉnh sửa) = 4+1+1+1 = **7**. Trạng thái `notAccepted` ("Không đạt") **không
+được thẻ nào đếm** — giảng viên nhìn Tổng quan sẽ thiếu mất một tài liệu đã bị
+trả về, và không có cách nào từ Tổng quan nhận ra sự tồn tại của nó.
+
+Lỗi im lặng thuộc họ §3d/§3e: không có thông báo sai, chỉ là con số không khớp.
+Đặc biệt nguy hiểm vì nó **dưới đếm** workload — giảng viên tưởng còn 7 việc mà
+thực ra có 8.
+
+**Sửa:** thêm thẻ thứ 5 "Không đạt" (`Tone.danger`, icon `cancel_outlined`), đọc
+từ getter `_rejected`. Giờ 5 thẻ = 4+1+1+1+1 = 8 = đúng tổng.
+
+**Cổng chống tái phát:** `test/dashboard_totals_test.dart` — (a) tổng giá trị 5
+`StatCard` phải **bằng đúng** `requests().length`, (b) phải có chữ "Không đạt"
+trên màn.
+
+**Đã chứng minh cổng ĐỎ được:** trước sửa, tổng 4 thẻ = 7 ≠ 8 → ĐỎ
+(`Actual: <7>`); sau sửa → XANH. (Lỗi phụ của riêng tôi: test đầu dùng `Set`
+nên 3 số `1` gộp thành 1 → tổng 5; sửa sang đọc đúng `StatCard.value` mới đúng.)
+
+**Quét thêm:** review list (`us03`) lọc rỗng mặc định nên HIỆN ĐỦ 8, không bỏ
+sót. Filter use case nhận `statuses` tường minh từ caller nên không tự bỏ sót.
