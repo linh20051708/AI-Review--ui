@@ -66,11 +66,11 @@ nguyên để không phá tham chiếu. Bảng dưới chỉ để tra:
 |---|---|---|---|
 | `3-SC-01` | `pages/auth/LoginPage.tsx` | `login_screen.dart` | `4-TC-01`, `4-TC-02` |
 | `3-SC-02` | `pages/dashboard/DashboardPage.tsx` | `dashboard_screen.dart` | `4-TC-03`, `4-TC-12` |
-| `3-SC-03` | `pages/reviews/ReviewListPage.tsx` | `review_list_screen.dart` | `4-TC-04`, `4-TC-20`, `4-TC-22` |
+| `3-SC-03` | `pages/reviews/ReviewRequestsPage.tsx` | `review_list_screen.dart` | `4-TC-04`, `4-TC-20`, `4-TC-22` |
 | `3-SC-04` | `pages/reviews/ReviewWorkspacePage.tsx` | `review_workspace_screen.dart` | `4-TC-05`…`4-TC-09` |
-| `3-SC-05` | `pages/reviews/AiResultPage.tsx` | `ai_result_screen.dart` | `4-TC-10` |
-| `3-SC-06`/`3-SC-07` | `VersionsPage.tsx` / `HistoryPage.tsx` | — (chưa port) | `4-TC-08` |
-| `3-SC-11` | `pages/projects/ProjectsPage.tsx` | — (chưa port) | `4-TC-14` |
+| `3-SC-05` | `pages/reviews/AIReviewResultPage.tsx` | `ai_result_screen.dart` | `4-TC-10` |
+| `3-SC-06`/`3-SC-07` | `VersionHistoryPage.tsx` / `ReviewHistoryPage.tsx` | — (chưa port) | `4-TC-08` |
+| `3-SC-11` | `pages/projects/ProjectListPage.tsx` | — (chưa port) | `4-TC-14` |
 | `3-SC-13` | `ProjectDocumentsPage.tsx` | — (chưa port) | `4-TC-11` |
 | `3-SC-23` | `pages/profile/ProfilePage.tsx` | `profile_screen.dart` | `4-TC-16` |
 

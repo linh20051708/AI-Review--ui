@@ -99,7 +99,7 @@ Một mã `1-UC-16` được **định nghĩa** trong `docs/` → **lỗi** (t�
 |---|---|
 | `3-SC-01` | `app/src/pages/auth/LoginPage.tsx` |
 | `3-SC-04` | `app/src/pages/reviews/ReviewWorkspacePage.tsx` |
-| `3-SC-05` | `app/src/pages/reviews/AiResultPage.tsx` |
+| `3-SC-05` | `app/src/pages/reviews/AIReviewResultPage.tsx` |
 | `2-FL-01` | luồng trong `app/src/app/router.tsx` (23 route) |
 
 Ánh xạ sang app Flutter mới (`flutter_app/lib/`):
@@ -129,6 +129,12 @@ Exit 0 = sạch · 1 = vi phạm tầng · 2 = chưa kiểm được.
 
 - Quy ước 4 tầng này **tôi đặt trong phiên làm việc**, dựa trên yêu cầu của người dùng ("architect sẽ
   chỉ theo layer, biết cấp độ thông tin là cấp mấy"). Không phải quy ước chuẩn của giảng viên.
+- **Về "001, 011, 202":** đã tra tài liệu ngành (khảo sát 14/10/2026) — **không có chuẩn nào** dùng
+  bộ số `001/011/202` làm mã tầng kiến trúc. Các quy ước gần nhất là ADR (`ADR-001`), sheet number
+  kiểu NCS (`A-102`), và dải mã theo tổ chức (`00xx` quản trị, `01xx` nền, `02xx` mô-đun) — **tất cả
+  đều là quy ước cục bộ của từng dự án**, không phổ quát.
+  Kết luận: số đầu mã = cấp thông tin (như §2) là **một cách hiểu hợp lệ**, nhưng **không phải chuẩn
+  ngành**. Nếu người dùng có quy ước riêng của lớp/dự án, thay số cho khớp — cấu trúc 4 tầng giữ nguyên.
 - Các mã **đã tồn tại trước** trong `ux/persona-decisions.md` dùng dạng cũ (`E-01`, `INS-A`, `P01`,
   `PN-01`, `F01`, `S02`, `TC-01`). Bảng đối chiếu dạng cũ ↔ dạng mới ở `docs/traceability.md` §3 —
   tài liệu cũ **không bị sửa lại** để tránh phá vỡ tham chiếu đang có.

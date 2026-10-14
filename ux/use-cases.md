@@ -29,13 +29,13 @@ Một use case không có user story nào trỏ tới là **use case mồ côi**
 |---|---|---|---|---|---|
 | `1-UC-01` | Đăng nhập bằng SSO trường | Cả hai | S01 | FL-01 | `pages/auth/LoginPage.tsx` |
 | `1-UC-02` | Xem việc cần làm hôm nay | `1-SH-01` | S02 | FL-01 | `pages/dashboard/DashboardPage.tsx` |
-| `1-UC-03` | Xem danh sách yêu cầu review | `1-SH-01` | S03 | FL-01 | `pages/reviews/ReviewListPage.tsx` |
+| `1-UC-03` | Xem danh sách yêu cầu review | `1-SH-01` | S03 | FL-01 | `pages/reviews/ReviewRequestsPage.tsx` |
 | `1-UC-04` | Lọc / tìm yêu cầu review | `1-SH-01` | S03 | FL-01 | `lib/smartFilter.ts` (9 facet) |
 | `1-UC-05` | Mở không gian review một tài liệu | `1-SH-01` | S04 | FL-01 | `pages/reviews/ReviewWorkspacePage.tsx` |
-| `1-UC-06` | Xem kết quả AI Review | `1-SH-01`, `1-SH-02` | S05 | FL-01 | `pages/reviews/AiResultPage.tsx` |
+| `1-UC-06` | Xem kết quả AI Review | `1-SH-01`, `1-SH-02` | S05 | FL-01 | `pages/reviews/AIReviewResultPage.tsx` |
 | `1-UC-07` | Phê duyệt tài liệu | `1-SH-01` | S04 | FL-01 | `_DecisionBar` trong S04 |
 | `1-UC-08` | Yêu cầu chỉnh sửa | `1-SH-01` | S04 | FL-01 | `_DecisionBar` trong S04 |
-| `1-UC-09` | So sánh phiên bản tài liệu | `1-SH-01`, `1-SH-02` | S06, S07 | FL-02 | `pages/reviews/VersionsPage.tsx` |
+| `1-UC-09` | So sánh phiên bản tài liệu | `1-SH-01`, `1-SH-02` | S06, S07 | FL-02 | `pages/reviews/VersionReviewHistoryPage.tsx` |
 | `1-UC-10` | Nộp tài liệu cho nhóm | `1-SH-02` | S13 | FL-01 | `pages/projects/ProjectDocumentsPage.tsx` |
 | `1-UC-11` | Xem vì sao nút nộp bị khoá | `1-SH-02` | S13 | FL-03 | `dependsOn` trong store |
 | `1-UC-12` | Phục hồi khi mất mạng | Cả hai | S02, S03 | FL-03 | `OfflineBanner` + 2 đường phục hồi |
@@ -43,7 +43,7 @@ Một use case không có user story nào trỏ tới là **use case mồ côi**
 | `1-UC-14` | Xem chuẩn đang áp tại chỗ ra quyết định | `1-SH-01` | S04 | FL-01 | rule set + deadline resolve |
 | `1-UC-15` | Xem hồ sơ cá nhân | Cả hai | S23 | — | `pages/profile/ProfilePage.tsx` |
 | `1-UC-16` | Quản lý học kỳ / lớp / môn | `1-SH-03` | S09, S10, S17, S19, S20 | — | `managementStore.ts` |
-| `1-UC-17` | Quản lý rule set | `1-SH-03` | S18 | — | `pages/rule-sets/RuleSetsPage.tsx` |
+| `1-UC-17` | Quản lý rule set | `1-SH-03` | S18 | — | `pages/rule-sets/RuleSetListPage.tsx` |
 
 **Tổng: 17 use case.** Trong đó 12 use case có test case, 5 use case chưa (`1-UC-15`…`1-UC-17` và
 phần quản trị) — ghi rõ trong `docs/test-cases.md` §4.
