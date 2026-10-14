@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../data/demo_data.dart';
-import '../data/models.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_space.dart';
-import '../theme/app_text.dart';
-import '../widgets/app_card.dart';
-import '../widgets/review_card.dart';
-import '../widgets/status_chip.dart';
+import '../../../101_domain_entities/101_DOMAIN_review_entities.dart';
+import '../../../001_core/theme/001_CORE_color_tokens.dart';
+import '../../../001_core/theme/001_CORE_spacing.dart';
+import '../../../001_core/theme/001_CORE_typography.dart';
+import '../../shared/011_CORE_shared_app_card.dart';
+import '../us03/011_REVIEW_US03_review_card.dart';
+import '../../shared/011_CORE_shared_status_chip.dart';
+import '../../shared/011_CORE_tone_colors.dart';
+import '../../../202_data_repositories/202_DOMAIN_review_repository.dart';
+import '../../shared/011_CORE_US11_offline_banner.dart';
 
 /// S04 — Không gian review.
 ///
@@ -20,7 +22,20 @@ class ReviewWorkspaceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final r = DemoData.byId(reviewId);
+    final r = ReviewRepository.instance.byId(reviewId);
+
+    // Tài liệu không tồn tại (id sai, hoặc đã bị xoá) -> trạng thái lỗi rõ ràng,
+    // không dựng giao diện với dữ liệu rỗng gây hiểu nhầm.
+    if (r == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Không gian review')),
+        body: ErrorState(
+          title: 'Không tìm thấy tài liệu',
+          message: 'Yêu cầu review "$reviewId" không tồn tại hoặc đã bị xoá.',
+          onRetry: () => Navigator.of(context).pop(),
+        ),
+      );
+    }
 
     return Column(
       children: [
@@ -38,13 +53,13 @@ class ReviewWorkspaceScreen extends StatelessWidget {
               const SizedBox(height: AppSpace.l),
               _sectionTitle('Lịch sử phiên bản'),
               const SizedBox(height: AppSpace.s),
-              ...DemoData.versionLog.map(_versionRow),
+              ...ReviewRepository.instance.versions().map(_versionRow),
               const SizedBox(height: AppSpace.l),
               _sectionTitle('Phát hiện của AI'),
               const SizedBox(height: AppSpace.s),
               _aiSummary(r),
               const SizedBox(height: AppSpace.s),
-              ...DemoData.aiFindings
+              ...ReviewRepository.instance.findings()
                   .take(3)
                   .map((f) => AiFindingCard(finding: f)),
               const SizedBox(height: AppSpace.s),
@@ -54,7 +69,7 @@ class ReviewWorkspaceScreen extends StatelessWidget {
                   arguments: r.id,
                 ),
                 icon: const Icon(Icons.auto_awesome_outlined, size: 18),
-                label: Text('Xem tất cả ${DemoData.aiFindings.length} phát hiện'),
+                label: Text('Xem tất cả ${ReviewRepository.instance.findings().length} phát hiện'),
               ),
               const SizedBox(height: AppSpace.huge),
             ],

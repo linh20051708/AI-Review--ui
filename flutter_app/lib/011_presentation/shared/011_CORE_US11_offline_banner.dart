@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
-import '../theme/app_space.dart';
-import '../theme/app_text.dart';
+import '../../001_core/theme/001_CORE_color_tokens.dart';
+import '../../001_core/theme/001_CORE_spacing.dart';
+import '../../001_core/theme/001_CORE_typography.dart';
 
 /// Trạng thái rỗng — có tiêu đề, giải thích và một hành động để không thành ngõ cụt.
 class EmptyState extends StatelessWidget {

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../data/demo_data.dart';
-import '../data/models.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_space.dart';
-import '../theme/app_text.dart';
-import '../widgets/app_card.dart';
-import '../widgets/status_chip.dart';
+import '../../../101_domain_entities/101_DOMAIN_review_entities.dart';
+import '../../../001_core/theme/001_CORE_color_tokens.dart';
+import '../../../001_core/theme/001_CORE_spacing.dart';
+import '../../../001_core/theme/001_CORE_typography.dart';
+import '../../shared/011_CORE_shared_app_card.dart';
+import '../../shared/011_CORE_shared_status_chip.dart';
+import '../../../202_data_repositories/202_DOMAIN_review_repository.dart';
 
 /// S06 — Hồ sơ giảng viên.
 class ProfileScreen extends StatelessWidget {
@@ -22,7 +22,7 @@ class ProfileScreen extends StatelessWidget {
       const SizedBox(height: AppSpace.l),
       _section('Tài khoản'),
       _row(context, Icons.badge_outlined, 'Mã giảng viên', 'GV-SE-0142'),
-      _row(context, Icons.mail_outline, 'Email', DemoData.currentUserEmail),
+      _row(context, Icons.mail_outline, 'Email', ReviewRepository.instance.currentUserEmail),
       _row(
         context,
         Icons.school_outlined,
@@ -30,7 +30,7 @@ class ProfileScreen extends StatelessWidget {
         'Khoa Công nghệ Phần mềm',
       ),
       _row(context, Icons.calendar_today_outlined, 'Học kỳ',
-          DemoData.currentSemester),
+          ReviewRepository.instance.currentSemester),
       const SizedBox(height: AppSpace.l),
       _section('Tuỳ chọn review'),
       _toggle('Tự động tải kết quả AI', true),
@@ -66,7 +66,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: Text(
-            DemoData.currentUserInitials,
+            ReviewRepository.instance.currentUserInitials,
             style: AppText.blockTitle.copyWith(color: AppColors.brand),
           ),
         ),
@@ -75,9 +75,9 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(DemoData.currentUserName, style: AppText.blockTitle),
+              Text(ReviewRepository.instance.currentUserName, style: AppText.blockTitle),
               const SizedBox(height: AppSpace.xs),
-              Text(DemoData.currentUserRole, style: AppText.micro),
+              Text(ReviewRepository.instance.currentUserRole, style: AppText.micro),
               const SizedBox(height: AppSpace.s),
               const StatusChip(
                 label: 'Đang hoạt động',
@@ -92,10 +92,10 @@ class ProfileScreen extends StatelessWidget {
   );
 
   Widget _stats() {
-    final pending = DemoData.reviewRequests
+    final pending = ReviewRepository.instance.requests()
         .where((r) => r.status == DocStatus.waiting)
         .length;
-    final approved = DemoData.reviewRequests
+    final approved = ReviewRepository.instance.requests()
         .where((r) => r.status == DocStatus.approved)
         .length;
 

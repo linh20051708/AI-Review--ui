@@ -1,31 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
-import '../theme/app_colors.dart';
-
-/// Sắc thái ngữ nghĩa — ánh xạ sang token màu dự án.
+/// Sắc thái ngữ nghĩa — CHỈ là nhãn trừu tượng, KHÔNG biết màu cụ thể.
+///
+/// Việc ánh xạ `Tone` -> `Color` nằm ở tầng 011 (`011_CORE_tone_colors.dart`),
+/// vì tầng domain (101) không được phụ thuộc vào tầng Core UI (001).
+/// Đây là luật cô lập tầng — mục 07 [CRITICAL] của docs/CMPlan.md.
 enum Tone { neutral, olive, amber, rust, danger, brand }
-
-class ToneColors {
-  ToneColors._();
-
-  static Color fg(Tone t) => switch (t) {
-    Tone.neutral => AppColors.muted,
-    Tone.olive => AppColors.olive,
-    Tone.amber => AppColors.amber,
-    Tone.rust => AppColors.rust,
-    Tone.danger => AppColors.danger,
-    Tone.brand => AppColors.brand,
-  };
-
-  static Color bg(Tone t) => switch (t) {
-    Tone.neutral => AppColors.subtle,
-    Tone.olive => AppColors.oliveSoft,
-    Tone.amber => AppColors.amberSoft,
-    Tone.rust => AppColors.rustSoft,
-    Tone.danger => AppColors.dangerSoft,
-    Tone.brand => AppColors.brandSoft,
-  };
-}
 
 /// Trạng thái tài liệu — nhãn tiếng Việt lấy nguyên từ `app/src/data/mockData.ts`.
 enum DocStatus {

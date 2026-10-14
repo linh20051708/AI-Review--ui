@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_space.dart';
+import '../../001_core/theme/001_CORE_spacing.dart';
 
 /// Thẻ trắng có viền — đơn vị bố cục cơ bản của mọi màn.
 class AppCard extends StatelessWidget {

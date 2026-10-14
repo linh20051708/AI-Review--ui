@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../data/models.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_space.dart';
-import '../theme/app_text.dart';
-import 'app_card.dart';
-import 'status_chip.dart';
+import '../../../101_domain_entities/101_DOMAIN_review_entities.dart';
+import '../../../001_core/theme/001_CORE_color_tokens.dart';
+import '../../../001_core/theme/001_CORE_spacing.dart';
+import '../../../001_core/theme/001_CORE_typography.dart';
+import '../../shared/011_CORE_shared_app_card.dart';
+import '../../shared/011_CORE_shared_status_chip.dart';
+import '../../shared/011_CORE_tone_colors.dart';
 
 /// Thẻ yêu cầu review trong danh sách.
 ///

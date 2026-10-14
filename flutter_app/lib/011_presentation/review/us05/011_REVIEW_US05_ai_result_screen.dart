@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../data/demo_data.dart';
-import '../data/models.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_space.dart';
-import '../theme/app_text.dart';
-import '../widgets/app_card.dart';
-import '../widgets/review_card.dart';
-import '../widgets/states.dart';
+import '../../../101_domain_entities/101_DOMAIN_review_entities.dart';
+import '../../../001_core/theme/001_CORE_color_tokens.dart';
+import '../../../001_core/theme/001_CORE_spacing.dart';
+import '../../../001_core/theme/001_CORE_typography.dart';
+import '../../shared/011_CORE_shared_app_card.dart';
+import '../us03/011_REVIEW_US03_review_card.dart';
+import '../../shared/011_CORE_US11_offline_banner.dart';
+import '../../../202_data_repositories/202_DOMAIN_review_repository.dart';
 
 /// S05 — Kết quả đánh giá của AI.
 ///
@@ -25,12 +25,23 @@ class _AiResultScreenState extends State<AiResultScreen> {
   FindingLevel? _level;
 
   List<AiFinding> get _visible => _level == null
-      ? DemoData.aiFindings
-      : DemoData.aiFindings.where((f) => f.level == _level).toList();
+      ? ReviewRepository.instance.findings()
+      : ReviewRepository.instance.findings().where((f) => f.level == _level).toList();
 
   @override
   Widget build(BuildContext context) {
-    final r = DemoData.byId(widget.reviewId);
+    final r = ReviewRepository.instance.byId(widget.reviewId);
+
+    if (r == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Kết quả AI')),
+        body: ErrorState(
+          title: 'Không tìm thấy tài liệu',
+          message: 'Không có kết quả AI cho "${widget.reviewId}".',
+          onRetry: () => Navigator.of(context).pop(),
+        ),
+      );
+    }
 
     return ListView(
       padding: const EdgeInsets.all(AppSpace.pagePad),
@@ -120,8 +131,8 @@ class _AiResultScreenState extends State<AiResultScreen> {
       children: [
         Text('Bảng kiểm tự động', style: AppText.blockTitle),
         const SizedBox(height: AppSpace.xs),
-        ...DemoData.aiChecks.map((c) {
-          final isLast = c == DemoData.aiChecks.last;
+        ...ReviewRepository.instance.checks().map((c) {
+          final isLast = c == ReviewRepository.instance.checks().last;
           return Column(
             children: [
               AiCheckRow(check: c),
@@ -138,12 +149,12 @@ class _AiResultScreenState extends State<AiResultScreen> {
     child: ListView(
       scrollDirection: Axis.horizontal,
       children: [
-        _chip('Tất cả (${DemoData.aiFindings.length})', _level == null, () {
+        _chip('Tất cả (${ReviewRepository.instance.findings().length})', _level == null, () {
           setState(() => _level = null);
         }),
         ...FindingLevel.values.map(
           (l) => _chip(
-            '${l.label} (${DemoData.aiFindings.where((f) => f.level == l).length})',
+            '${l.label} (${ReviewRepository.instance.findings().where((f) => f.level == l).length})',
             _level == l,
             () => setState(() => _level = _level == l ? null : l),
           ),

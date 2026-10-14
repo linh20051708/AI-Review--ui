@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'app_colors.dart';
-import 'app_space.dart';
-import 'app_text.dart';
+import './001_CORE_color_tokens.dart';
+import './001_CORE_spacing.dart';
+import './001_CORE_typography.dart';
 
 /// Theme dựng từ token dự án. Không override màu bằng giá trị tự nghĩ.
 ///

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../data/demo_data.dart';
-import '../data/models.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_space.dart';
-import '../theme/app_text.dart';
-import '../widgets/app_card.dart';
-import 'dashboard_screen.dart';
-import 'profile_screen.dart';
-import 'review_list_screen.dart';
+import '../001_core/theme/001_CORE_color_tokens.dart';
+import '../001_core/theme/001_CORE_spacing.dart';
+import '../001_core/theme/001_CORE_typography.dart';
+import './shared/011_CORE_shared_app_card.dart';
+import './dashboard/us02/011_DASH_US02_dashboard_screen.dart';
+import './profile/us14/011_PROFILE_US14_profile_screen.dart';
+import './review/us03/011_REVIEW_US03_request_list_screen.dart';
+import './shared/011_CORE_tone_colors.dart';
+import '../202_data_repositories/202_DOMAIN_review_repository.dart';
 
 /// Khung 4 tab dùng chung: Tổng quan · Review · Thông báo · Hồ sơ.
 ///
@@ -112,7 +112,7 @@ class _NotificationsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = DemoData.reviewRequests
+    final items = ReviewRepository.instance.requests()
         .where((r) => r.note != null)
         .map(
           (r) => (

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:mobi_review/data/demo_data.dart';
-import 'package:mobi_review/data/models.dart';
-import 'package:mobi_review/theme/app_colors.dart';
-import 'package:mobi_review/theme/app_space.dart';
-import 'package:mobi_review/theme/app_theme.dart';
-import 'package:mobi_review/widgets/review_card.dart';
-import 'package:mobi_review/widgets/status_chip.dart';
+import 'package:mobi_review/201_data_sources/201_DOMAIN_mock_datasource.dart';
+import 'package:mobi_review/101_domain_entities/101_DOMAIN_review_entities.dart';
+import 'package:mobi_review/001_core/theme/001_CORE_color_tokens.dart';
+import 'package:mobi_review/001_core/theme/001_CORE_spacing.dart';
+import 'package:mobi_review/001_core/theme/001_CORE_app_theme.dart';
+import 'package:mobi_review/011_presentation/review/us03/011_REVIEW_US03_review_card.dart';
+import 'package:mobi_review/011_presentation/shared/011_CORE_shared_status_chip.dart';
 
 /// Kiểm tra những ràng buộc **đo được** trong đề bài Lab 2 (mục C và D).
 ///

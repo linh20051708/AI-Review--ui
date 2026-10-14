@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../data/demo_data.dart';
-import '../data/models.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_space.dart';
-import '../theme/app_text.dart';
-import '../widgets/review_card.dart';
-import '../widgets/states.dart';
-import '../widgets/status_chip.dart';
+import '../../../101_domain_entities/101_DOMAIN_review_entities.dart';
+import '../../../001_core/theme/001_CORE_color_tokens.dart';
+import '../../../001_core/theme/001_CORE_spacing.dart';
+import '../../../001_core/theme/001_CORE_typography.dart';
+import '../../review/us03/011_REVIEW_US03_review_card.dart';
+import '../../shared/011_CORE_US11_offline_banner.dart';
+import '../../shared/011_CORE_shared_status_chip.dart';
+import '../../shared/011_CORE_tone_colors.dart';
+import '../../../202_data_repositories/202_DOMAIN_review_repository.dart';
 
 /// S02 — Tổng quan.
 ///
@@ -35,15 +36,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   int get _pending =>
-      DemoData.reviewRequests.where((r) => r.status == DocStatus.waiting).length;
+      ReviewRepository.instance.requests().where((r) => r.status == DocStatus.waiting).length;
 
   int get _inReview =>
-      DemoData.reviewRequests.where((r) => r.status == DocStatus.inReview).length;
+      ReviewRepository.instance.requests().where((r) => r.status == DocStatus.inReview).length;
 
   int get _approved =>
-      DemoData.reviewRequests.where((r) => r.status == DocStatus.approved).length;
+      ReviewRepository.instance.requests().where((r) => r.status == DocStatus.approved).length;
 
-  int get _needsRevision => DemoData.reviewRequests
+  int get _needsRevision => ReviewRepository.instance.requests()
       .where((r) => r.status == DocStatus.needsRevision)
       .length;
 
@@ -53,7 +54,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       return const SkeletonList(count: 5);
     }
 
-    final queue = DemoData.reviewRequests
+    final queue = ReviewRepository.instance.requests()
         .where((r) => r.status == DocStatus.waiting || r.status == DocStatus.inReview)
         .take(3)
         .toList();
@@ -74,12 +75,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 _section(
                   title: 'Việc cần chú ý',
                   trailing: Text(
-                    '${DemoData.attentionItems.length} mục',
+                    '${ReviewRepository.instance.attention().length} mục',
                     style: AppText.micro,
                   ),
                 ),
                 const SizedBox(height: AppSpace.m),
-                ...DemoData.attentionItems.map(_attentionTile),
+                ...ReviewRepository.instance.attention().map(_attentionTile),
                 const SizedBox(height: AppSpace.xl),
                 _section(
                   title: 'Hàng đợi review',
@@ -114,11 +115,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _greeting() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(DemoData.currentSemester.toUpperCase(), style: AppText.micro),
+      Text(ReviewRepository.instance.currentSemester.toUpperCase(), style: AppText.micro),
       const SizedBox(height: AppSpace.xs),
-      Text('Chào ${DemoData.currentUserName}', style: AppText.pageTitle),
+      Text('Chào ${ReviewRepository.instance.currentUserName}', style: AppText.pageTitle),
       const SizedBox(height: AppSpace.xs),
-      Text(DemoData.currentUserRole, style: AppText.micro),
+      Text(ReviewRepository.instance.currentUserRole, style: AppText.micro),
     ],
   );
 

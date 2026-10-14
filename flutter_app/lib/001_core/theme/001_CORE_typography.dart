@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'app_colors.dart';
+import './001_CORE_color_tokens.dart';
 
 /// Thang chữ — nguồn: `app/src/index.css` (@theme) + `DESIGN.md` §5.
 /// Sàn chữ thân bài theo C4 là 14sp; `bodySmall` 13 dùng cho metadata phụ.

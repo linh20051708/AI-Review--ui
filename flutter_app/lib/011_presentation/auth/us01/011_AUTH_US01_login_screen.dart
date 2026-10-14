@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../data/demo_data.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_space.dart';
-import '../theme/app_text.dart';
+import '../../../001_core/theme/001_CORE_color_tokens.dart';
+import '../../../001_core/theme/001_CORE_spacing.dart';
+import '../../../001_core/theme/001_CORE_typography.dart';
+import '../../../202_data_repositories/202_DOMAIN_review_repository.dart';
 
 /// S01 — Đăng nhập.
 ///
@@ -153,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: AppSpace.xl),
                 Text(
-                  'Demo cá nhân · PRM323 Lab 2 · ${DemoData.currentSemester}',
+                  'Demo cá nhân · PRM323 Lab 2 · ${ReviewRepository.instance.currentSemester}',
                   style: AppText.micro,
                   textAlign: TextAlign.center,
                 ),

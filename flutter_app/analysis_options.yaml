@@ -1,1 +1,28 @@
+# Cấu hình phân tích tĩnh cho flutter_app.
+#
+# Ghi chú có chủ đích — không tắt lint im lặng:
+#
+# Dự án áp CMPlan (xem ../docs/CMPlan.md), trong đó tên file mang MÃ TẦNG
+# theo công thức `[Mã_Layer]_[Mã_Module]_[Mã_US]_[Tên]`, ví dụ:
+#     011_REVIEW_US04_workspace_screen.dart
+#
+# Quy ước này dùng CHỮ HOA cho mã layer/module (001_CORE, 011_REVIEW, US04)
+# để nhìn tên file là biết ngay tầng nào, phân hệ nào, phục vụ user story nào —
+# đúng mục đích "SKU kho hàng" của CMPlan.
+#
+# Dart lint `file_names` mặc định đòi `lower_case_with_underscores`, nên nó
+# báo 16 thông tin (info), KHÔNG phải lỗi biên dịch. Ta chấp nhận đánh đổi này
+# có ý thức: đổi sang chữ thường sẽ mất khả năng đọc tầng từ tên file.
+#
+# Cách kiểm chứng đánh đổi vẫn an toàn:
+#   - `dart analyze --fatal-infos` sẽ đỏ -> đừng dùng cờ đó cho repo này.
+#   - `flutter analyze` (mặc định) chỉ ra info, exit 0.
+#   - Ràng buộc thật của CMPlan do `../rules/check-cmplan.py` kiểm, không phải lint.
+
 include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # Giữ nguyên mọi luật mặc định của flutter_lints.
+    # Chỉ hạ `file_names` vì đã có quy ước CMPlan thay thế (nêu ở trên).
+    file_names: false

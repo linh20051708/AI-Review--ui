@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'screens/ai_result_screen.dart';
-import 'screens/app_shell.dart';
-import 'screens/login_screen.dart';
-import 'screens/review_workspace_screen.dart';
-import 'theme/app_theme.dart';
+import './011_presentation/review/us05/011_REVIEW_US05_ai_result_screen.dart';
+import './011_presentation/011_CORE_app_shell.dart';
+import './011_presentation/auth/us01/011_AUTH_US01_login_screen.dart';
+import './011_presentation/review/us04/011_REVIEW_US04_workspace_screen.dart';
+import './001_core/theme/001_CORE_app_theme.dart';
 
 void main() => runApp(const MobiReviewApp());
 

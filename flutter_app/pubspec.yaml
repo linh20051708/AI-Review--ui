@@ -10,6 +10,10 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^8.2.1
+  # Dùng trực tiếp cho @immutable ở tầng 101 (thực thể bất biến).
+  # Vốn đã có sẵn như dependency bắc cầu của flutter; khai tường minh vì
+  # tầng domain không import material.dart nữa (luật cô lập tầng).
+  meta: ^1.18.0
 
 dev_dependencies:
   flutter_test:

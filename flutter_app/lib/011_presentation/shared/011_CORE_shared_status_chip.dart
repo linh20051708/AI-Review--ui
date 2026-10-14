@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../data/models.dart';
-import '../theme/app_space.dart';
-import '../theme/app_text.dart';
+import '../../101_domain_entities/101_DOMAIN_review_entities.dart';
+import '../../001_core/theme/001_CORE_spacing.dart';
+import '../../001_core/theme/001_CORE_typography.dart';
+import './011_CORE_tone_colors.dart';
 
 /// Chip trạng thái — luôn hiển thị nhãn tiếng Việt, không chỉ dựa vào màu.
 class StatusChip extends StatelessWidget {

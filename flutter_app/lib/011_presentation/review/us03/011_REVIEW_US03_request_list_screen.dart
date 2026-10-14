@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../data/demo_data.dart';
-import '../data/models.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_space.dart';
-import '../theme/app_text.dart';
-import '../widgets/review_card.dart';
-import '../widgets/states.dart';
+import '../../../101_domain_entities/101_DOMAIN_review_entities.dart';
+import '../../../001_core/theme/001_CORE_color_tokens.dart';
+import '../../../001_core/theme/001_CORE_spacing.dart';
+import '../../../001_core/theme/001_CORE_typography.dart';
+import './011_REVIEW_US03_review_card.dart';
+import '../../shared/011_CORE_US11_offline_banner.dart';
+import '../../../202_data_repositories/202_DOMAIN_review_repository.dart';
+import '../../../111_domain_usecases/111_DOMAIN_us03_filter_requests_uc.dart';
 
 /// S03 — Yêu cầu review.
 ///
@@ -38,17 +39,13 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
     super.dispose();
   }
 
-  List<ReviewRequest> get _visible {
-    final k = _keyword.toLowerCase();
-    return DemoData.reviewRequests.where((r) {
-      if (_filter != null && r.status != _filter) return false;
-      if (k.isEmpty) return true;
-      return r.documentTitle.toLowerCase().contains(k) ||
-          r.projectName.toLowerCase().contains(k) ||
-          r.groupName.toLowerCase().contains(k) ||
-          r.submitter.toLowerCase().contains(k);
-    }).toList();
-  }
+  /// Luật lọc nằm ở tầng 111 (use case), không phải ở màn hình.
+  /// Màn hình chỉ truyền tham số và hiển thị kết quả.
+  List<ReviewRequest> get _visible => FilterRequestsUseCase.run(
+    source: ReviewRepository.instance.requests(),
+    keyword: _keyword,
+    statuses: _filter == null ? const <DocStatus>[] : <DocStatus>[_filter!],
+  );
 
   @override
   Widget build(BuildContext context) => Column(
