@@ -1,0 +1,252 @@
+// CMPlan: tầng 202 — mã SKU giữ nguyên; đường dẫn đã đổi theo tính năng.
+import 'package:flutter/foundation.dart';
+
+import '../../domain/entities/review_entities.dart';
+import '../../domain/usecases/filter_requests_uc.dart';
+import '../../data/sources/mock_datasource.dart';
+
+/// Trạng thái kết nối do tầng dữ liệu theo dõi.
+enum NetState { online, offline }
+
+/// Hàng đợi một thao tác ghi chờ mạng trở lại.
+@immutable
+class PendingWrite {
+  const PendingWrite({required this.id, required this.label, required this.payload});
+
+  final String id;
+  final String label;
+  final String payload;
+}
+
+/// Repository — chuẩn hoá dữ liệu từ tầng 201 và xử lý phục hồi khi mất mạng.
+///
+/// Đây là tầng duy nhất mà giao diện (011) được phép gọi để lấy dữ liệu.
+/// Giải đúng pain point của `US11`: mất mạng thì vẫn đọc được bản cache, thao tác
+/// ghi vào hàng đợi và tự gửi lại khi có mạng — không mất dữ liệu, không treo app.
+class ReviewRepository extends ChangeNotifier {
+  ReviewRepository._();
+
+  static final ReviewRepository instance = ReviewRepository._();
+
+  NetState _net = NetState.online;
+  final List<PendingWrite> _queue = <PendingWrite>[];
+
+  /// Bản cache trong bộ nhớ, nạp một lần từ tầng 201.
+  List<ReviewRequest>? _cache;
+
+  NetState get net => _net;
+  bool get isOffline => _net == NetState.offline;
+  List<PendingWrite> get queue => List.unmodifiable(_queue);
+  int get pendingCount => _queue.length;
+
+  /// Mô phỏng mất / có mạng. Khi có mạng trở lại, tự đẩy hàng đợi đi.
+  void setNet(NetState next) {
+    if (next == _net) return;
+    _net = next;
+    if (_net == NetState.online) {
+      _flushQueue();
+    }
+    notifyListeners();
+  }
+
+  void _flushQueue() {
+    // Không có backend thật, nhưng quyết định đã xếp hàng phải được ÁP DỤNG khi
+    // có mạng lại — nếu chỉ xoá hàng đợi thì người dùng mất quyết định của mình.
+    for (final w in _queue) {
+      debugPrint('[202] da gui lai: ${w.label} (${w.id})');
+      _apply(w);
+    }
+    _queue.clear();
+    notifyListeners();
+  }
+
+  /// Đọc danh sách yêu cầu review.
+  ///
+  /// Nếu đang offline và chưa có cache thì trả rỗng (giao diện hiện trạng thái rỗng),
+  /// KHÔNG bịa dữ liệu.
+  List<ReviewRequest> requests() {
+    // `List.of(...)`: phải SAO CHÉP, không được alias thẳng list của `DemoData`.
+    // Ghi quyết định vào bản sao thì `DemoData` gốc vẫn nguyên — nếu alias thì
+    // mọi test trong cùng tiến trình sẽ dính trạng thái của test chạy trước.
+    _cache ??= List<ReviewRequest>.of(DemoData.reviewRequests);
+    return _cache!;
+  }
+
+  /// Lọc theo từ khoá và trạng thái — uỷ quyền cho use case tầng 111.
+  List<ReviewRequest> filtered({String keyword = '', List<DocStatus> statuses = const []}) {
+    return FilterRequestsUseCase.run(
+      source: requests(),
+      keyword: keyword,
+      statuses: statuses,
+    );
+  }
+
+  ReviewRequest? byId(String id) {
+    for (final r in requests()) {
+      if (r.id == id) return r;
+    }
+    return null;
+  }
+
+  List<AttentionItem> attention() => DemoData.attentionItems;
+
+  /// Cảnh báo của MỘT tài liệu — đừng trả toàn bộ (§3m).
+  ///
+  /// Trước đợt 12 sửa, hàm này trả nguyên `DemoData.aiFindings` cho mọi màn,
+  /// nên mở tài liệu nào cũng thấy đủ 7 cảnh báo và chip đếm 7/7/7 — dù mỗi tài
+  /// liệu tự khai báo `aiErrors/aiWarnings/aiSuggestions` riêng. Giảng viên đọc
+  /// hai bộ số mâu thuẫn trên cùng màn. Gọi không tham số vẫn trả toàn bộ, nhưng
+  /// MÀN PHẢI gọi kèm `reviewId` để hai bộ số cùng một nguồn.
+  List<AiFinding> findings([String? reviewId]) {
+    final all = DemoData.aiFindings;
+    if (reviewId == null) return all;
+    return all.where((f) => f.reviewId == reviewId).toList();
+  }
+
+  List<AiCheck> checks() => DemoData.aiChecks;
+  /// Lịch sử phiên bản của MỘT tài liệu cụ thể.
+  ///
+  /// Dữ liệu mẫu không có "kho version" đầy đủ, nên ta DỰNG lịch sử từ chính
+  /// yêu cầu: phiên bản hiện tại (`r.version`) cộng một bản tiền nhiệm giả định
+  /// cùng `documentTitle`. Quan trọng: tên file phải sinh từ `documentTitle`
+  /// của TÀI LIỆU ĐANG MỞ, không phải từ một danh sách chung. (Đợt 6 sửa lỗi
+  /// "lịch sử phiên bản hiện sai tài liệu".)
+  List<({String version, String fileName, String at, String status})> versions(
+    String reviewId,
+  ) {
+    final r = byId(reviewId);
+    if (r == null) return const [];
+    final slug = r.documentTitle.toLowerCase().replaceAll(' ', '-');
+    final cur = r.version;
+    final status = r.status.label;
+    // Tiền nhiệm: v1 nếu bản hiện tại mới hơn, ngược lại chỉ có một bản.
+    final prevNum = int.tryParse(RegExp(r'\d+').firstMatch(cur)?.group(0) ?? '1') ?? 1;
+    if (prevNum <= 1) {
+      return [
+        (version: cur, fileName: '$slug-$cur.pdf', at: r.submittedAt, status: status),
+      ];
+    }
+    final prev = 'v${prevNum - 1}';
+    return [
+      (
+        version: cur,
+        fileName: '$slug-$cur.pdf',
+        at: r.submittedAt,
+        status: status,
+      ),
+      (
+        version: prev,
+        fileName: '$slug-$prev.pdf',
+        at: '—',
+        status: 'Bản trước',
+      ),
+    ];
+  }
+
+  /// US08 (`1-UC-09`) — hai phiên bản gần nhất của MỘT tài liệu để so sánh.
+  ///
+  /// Thay vì danh sách chung tĩnh, sinh ra từ `reviewId` (xem `versions`).
+  List<DocVersion> docVersions(String reviewId) {
+    return [
+      for (final v in versions(reviewId))
+        DocVersion(
+          label: v.version,
+          fileName: v.fileName,
+          at: v.at,
+          author: byId(reviewId)?.submitter ?? '—',
+          note: v.status,
+        ),
+    ];
+  }
+
+  /// US12 (`1-UC-13`) — sức khoẻ các nhóm, nhóm quá hạn lên trước.
+  List<GroupHealth> groupHealth() {
+    final list = [...DemoData.groupHealth];
+    list.sort((a, b) => b.overdue.compareTo(a.overdue));
+    return list;
+  }
+
+  /// US12 — chỉ các nhóm đang có việc quá hạn.
+  List<GroupHealth> overdueGroups() =>
+      groupHealth().where((g) => g.overdue > 0).toList();
+
+  /// US13 (`1-UC-14`) — chuẩn đang áp.
+  List<ActiveRuleSet> ruleSets() => DemoData.activeRuleSets;
+
+  /// US10 (`1-UC-11`) — lý do nút nộp bị khoá. Trả về danh sách rỗng nếu nộp được.
+  ///
+  /// Nút nộp bị khoá khi còn mục `blocking && !done`. Màn hình PHẢI hiện
+  /// `reason` của từng mục, không được để nút mờ im lặng (PN-08, `4-TC-11`).
+  List<SubmitChecklistItem> submitBlockers() =>
+      DemoData.submitChecklist.where((i) => i.blocking && !i.done).toList();
+
+  /// US10 — danh sách kiểm đầy đủ để hiển thị, gồm cả mục không chặn.
+  List<SubmitChecklistItem> submitChecklist() => DemoData.submitChecklist;
+
+  /// US10 — nộp được hay không.
+  bool get canSubmit => submitBlockers().isEmpty;
+
+  String get currentUserName => DemoData.currentUserName;
+  String get currentUserInitials => DemoData.currentUserInitials;
+  String get currentUserRole => DemoData.currentUserRole;
+  String get currentUserEmail => DemoData.currentUserEmail;
+  String get currentSemester => DemoData.currentSemester;
+
+  /// Ghi một quyết định (phê duyệt / yêu cầu chỉnh sửa / nộp).
+  ///
+  /// Offline thì vào hàng đợi; online thì "gửi" ngay.
+  /// Trả về `true` nếu đã gửi đi, `false` nếu đang xếp hàng chờ mạng.
+  bool write({required String id, required String label, required String payload}) {
+    final w = PendingWrite(id: id, label: label, payload: payload);
+    if (isOffline) {
+      _queue.add(w);
+      notifyListeners();
+      return false;
+    }
+    // SỬA GỐC (đợt 9): từng `_apply(w); return true;` — trả "thành công" kể cả
+    // khi KHÔNG áp được gì. Ba lần lỗi cùng một gốc này (§3d, §3i, §3j):
+    // màn hiện "Trạng thái đã cập nhật" / "Đã nộp" còn dữ liệu đứng im, vì
+    // id không tồn tại hoặc payload không phải tên `DocStatus`, còn `write()`
+    // vẫn báo true. Giờ `write()` CHỈ trả true khi thật sự đổi được trạng thái.
+    return _apply(w);
+  }
+
+  /// Áp dụng một quyết định đã "gửi": đổi `status` của tài liệu.
+  ///
+  /// LỖI THẬT ĐÃ SỬA (14/10, đợt 3): bản trước chỉ `debugPrint` rồi trả `true`.
+  /// Giao diện US04/US06 hiện "Trạng thái đã cập nhật." nhưng `byId(id).status`
+  /// KHÔNG đổi — bấm Phê duyệt xong quay lại danh sách vẫn thấy "Chờ giảng viên
+  /// review". App báo sai cho người dùng. Xem `test/repository_write_test.dart`.
+  ///
+  /// `payload` không map được sang `DocStatus` thì BỎ QUA (không ghi bừa trạng
+  /// thái) — dữ liệu lạ không được làm hỏng bản ghi.
+  ///
+  /// Trả về `true` KHI VÀ CHỈ KHI trạng thái thật sự đổi. Đổi id/payload gõ
+  /// tay thì `false` để màn biết mà KHÔNG báo thành công giả dối.
+  bool _apply(PendingWrite w) {
+    final next = DocStatus.values.where((s) => s.name == w.payload).firstOrNull;
+    final list = requests();
+    final at = list.indexWhere((r) => r.id == w.id);
+    if (at < 0) {
+      debugPrint('[202] bo qua: khong co tai lieu ${w.id}');
+      return false;
+    }
+    if (next == null) {
+      debugPrint('[202] bo qua: payload "${w.payload}" khong phai trang thai');
+      return false;
+    }
+    if (list[at].status == next) return false;
+    list[at] = list[at].copyWith(status: next);
+    debugPrint('[202] da gui: ${w.label} (${w.id}) -> ${next.name}');
+    notifyListeners();
+    return true;
+  }
+
+  /// Chỉ dùng cho test: xoá cache và hàng đợi về trạng thái ban đầu.
+  @visibleForTesting
+  void resetForTest() {
+    _cache = null;
+    _queue.clear();
+    _net = NetState.online;
+  }
+}

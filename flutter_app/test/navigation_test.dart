@@ -3,15 +3,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:mobi_review/main.dart';
-import 'package:mobi_review/011_presentation/review/us05/011_REVIEW_US05_ai_result_screen.dart';
-import 'package:mobi_review/011_presentation/011_CORE_app_shell.dart';
-import 'package:mobi_review/011_presentation/dashboard/us02/011_DASH_US02_dashboard_screen.dart';
-import 'package:mobi_review/011_presentation/auth/us01/011_AUTH_US01_login_screen.dart';
-import 'package:mobi_review/011_presentation/review/us03/011_REVIEW_US03_request_list_screen.dart';
-import 'package:mobi_review/011_presentation/review/us04/011_REVIEW_US04_workspace_screen.dart';
-import 'package:mobi_review/001_core/theme/001_CORE_color_tokens.dart';
-import 'package:mobi_review/011_presentation/review/us03/011_REVIEW_US03_review_card.dart';
-import 'package:mobi_review/001_core/theme/001_CORE_spacing.dart';
+import 'package:mobi_review/features/ai_result/ai_result_screen.dart';
+import 'package:mobi_review/shared/app_shell.dart';
+import 'package:mobi_review/features/dashboard/dashboard_screen.dart';
+import 'package:mobi_review/features/login/login_screen.dart';
+import 'package:mobi_review/features/request_list/request_list_screen.dart';
+import 'package:mobi_review/features/review_workspace/workspace_screen.dart';
+import 'package:mobi_review/shared/theme/color_tokens.dart';
+import 'package:mobi_review/features/request_list/review_card.dart';
+import 'package:mobi_review/shared/theme/spacing.dart';
 
 /// Kiểm luồng đi thật của app: mỗi đường đi phải tới được đích, và mỗi
 /// màn phải có đường thoát (C6 — không có ngõ cụt).

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-import './011_presentation/review/us05/011_REVIEW_US05_ai_result_screen.dart';
-import './011_presentation/review/us06/011_REVIEW_US06_approval_screen.dart';
-import './011_presentation/review/us07/011_REVIEW_US07_revision_screen.dart';
-import './011_presentation/review/us08/011_REVIEW_US08_compare_screen.dart';
-import './011_presentation/review/us13/011_REVIEW_US13_rule_set_screen.dart';
-import './011_presentation/submit/us09/011_SUBMIT_US09_submit_screen.dart';
-import './011_presentation/submit/us10/011_SUBMIT_US10_submit_gate_screen.dart';
-import './011_presentation/dashboard/us12/011_DASH_US12_group_health_screen.dart';
-import './011_presentation/011_CORE_app_shell.dart';
-import './011_presentation/auth/us01/011_AUTH_US01_login_screen.dart';
-import './011_presentation/review/us04/011_REVIEW_US04_workspace_screen.dart';
-import './001_core/theme/001_CORE_app_theme.dart';
+import './features/ai_result/ai_result_screen.dart';
+import './features/approval/approval_screen.dart';
+import './features/revision_request/revision_screen.dart';
+import './features/version_compare/compare_screen.dart';
+import './features/rule_sets/rule_set_screen.dart';
+import './features/document_submit/submit_screen.dart';
+import './features/submit_gate/submit_gate_screen.dart';
+import './features/group_health/group_health_screen.dart';
+import './shared/app_shell.dart';
+import './features/login/login_screen.dart';
+import './features/review_workspace/workspace_screen.dart';
+import './shared/theme/app_theme.dart';
 
 void main() => runApp(const MobiReviewApp());
 

@@ -150,9 +150,11 @@ def main() -> int:
             declared_us.add(r["us"])
 
         # --- code: '—' la trung thuc; duong dan phai la FILE co that ---
-        code_cell = r["code"]
+        # Đợt 13: cột code ghi đường dẫn từ GỐC REPO
+        # (`flutter_app/lib/features/login/login_screen.dart`) cho rõ ràng.
+        code_cell = r["code"].strip().strip("`")
+        target = ROOT / code_cell
         if not is_none_mark(code_cell):
-            target = LIB / code_cell
             if not target.is_file():
                 problems.append(
                     f"CODE MA: {tag} tro toi '{code_cell}' nhung file khong ton tai"

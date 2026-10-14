@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:mobi_review/011_presentation/auth/us01/011_AUTH_US01_login_screen.dart';
-import 'package:mobi_review/011_presentation/dashboard/us02/011_DASH_US02_dashboard_screen.dart';
-import 'package:mobi_review/011_presentation/dashboard/us12/011_DASH_US12_group_health_screen.dart';
-import 'package:mobi_review/011_presentation/profile/us14/011_PROFILE_US14_profile_screen.dart';
-import 'package:mobi_review/011_presentation/review/us03/011_REVIEW_US03_request_list_screen.dart';
-import 'package:mobi_review/011_presentation/review/us04/011_REVIEW_US04_workspace_screen.dart';
-import 'package:mobi_review/011_presentation/review/us05/011_REVIEW_US05_ai_result_screen.dart';
-import 'package:mobi_review/011_presentation/review/us06/011_REVIEW_US06_approval_screen.dart';
-import 'package:mobi_review/011_presentation/review/us07/011_REVIEW_US07_revision_screen.dart';
-import 'package:mobi_review/011_presentation/review/us08/011_REVIEW_US08_compare_screen.dart';
-import 'package:mobi_review/011_presentation/review/us13/011_REVIEW_US13_rule_set_screen.dart';
-import 'package:mobi_review/011_presentation/submit/us09/011_SUBMIT_US09_submit_screen.dart';
-import 'package:mobi_review/011_presentation/submit/us10/011_SUBMIT_US10_submit_gate_screen.dart';
+import 'package:mobi_review/features/login/login_screen.dart';
+import 'package:mobi_review/features/dashboard/dashboard_screen.dart';
+import 'package:mobi_review/features/group_health/group_health_screen.dart';
+import 'package:mobi_review/features/profile/profile_screen.dart';
+import 'package:mobi_review/features/request_list/request_list_screen.dart';
+import 'package:mobi_review/features/review_workspace/workspace_screen.dart';
+import 'package:mobi_review/features/ai_result/ai_result_screen.dart';
+import 'package:mobi_review/features/approval/approval_screen.dart';
+import 'package:mobi_review/features/revision_request/revision_screen.dart';
+import 'package:mobi_review/features/version_compare/compare_screen.dart';
+import 'package:mobi_review/features/rule_sets/rule_set_screen.dart';
+import 'package:mobi_review/features/document_submit/submit_screen.dart';
+import 'package:mobi_review/features/submit_gate/submit_gate_screen.dart';
 
 /// Quét TRÀN NGANG cho MỌI màn, ở nhiều bề rộng.
 ///

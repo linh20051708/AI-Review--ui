@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:mobi_review/101_domain_entities/101_DOMAIN_review_entities.dart';
-import 'package:mobi_review/202_data_repositories/202_DOMAIN_review_repository.dart';
-import 'package:mobi_review/011_presentation/submit/us09/011_SUBMIT_US09_submit_screen.dart';
+import 'package:mobi_review/domain/entities/review_entities.dart';
+import 'package:mobi_review/data/repositories/review_repository.dart';
+import 'package:mobi_review/features/document_submit/submit_screen.dart';
 
 /// Bấm "Nộp tài liệu" trên màn US09 phải làm ĐỔI dữ liệu thật, không chỉ đổi chữ.
 ///

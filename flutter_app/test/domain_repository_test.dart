@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobi_review/101_domain_entities/101_DOMAIN_review_entities.dart';
-import 'package:mobi_review/111_domain_usecases/111_DOMAIN_us03_filter_requests_uc.dart';
-import 'package:mobi_review/202_data_repositories/202_DOMAIN_review_repository.dart';
+import 'package:mobi_review/domain/entities/review_entities.dart';
+import 'package:mobi_review/domain/usecases/filter_requests_uc.dart';
+import 'package:mobi_review/data/repositories/review_repository.dart';
 
 /// Test cho tầng 111 (use case) và tầng 202 (repository).
 ///

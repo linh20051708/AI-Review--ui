@@ -48,7 +48,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.1 · `US01` — Dang nhap SSO truong
 
-**Truy vết:** `P01` → `UC01` → `US01` → Figma `011_*_US01_*` → code `011_presentation/*/us01/`
+**Truy vết:** `P01` → `UC01` → `US01` → Figma `011_*_US01_*` → code `features/login/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|
@@ -65,7 +65,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.2 · `US02` — Thay viec gap trong ngay
 
-**Truy vết:** `P01` → `UC02` → `US02` → Figma `011_*_US02_*` → code `011_presentation/*/us02/`
+**Truy vết:** `P01` → `UC02` → `US02` → Figma `011_*_US02_*` → code `features/dashboard/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|
@@ -82,7 +82,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.3 · `US03` — Loc danh sach yeu cau review
 
-**Truy vết:** `P01` → `UC03` → `US03` → Figma `011_*_US03_*` → code `011_presentation/*/us03/`
+**Truy vết:** `P01` → `UC03` → `US03` → Figma `011_*_US03_*` → code `features/request_list/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|
@@ -99,7 +99,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.4 · `US04` — Mo tai lieu, du thong tin quyet dinh
 
-**Truy vết:** `P01` → `UC04` → `US04` → Figma `011_*_US04_*` → code `011_presentation/*/us04/`
+**Truy vết:** `P01` → `UC04` → `US04` → Figma `011_*_US04_*` → code `features/review_workspace/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|
@@ -116,7 +116,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.5 · `US05` — Hieu vi sao AI bao loi
 
-**Truy vết:** `P01` → `UC05` → `US05` → Figma `011_*_US05_*` → code `011_presentation/*/us05/`
+**Truy vết:** `P01` → `UC05` → `US05` → Figma `011_*_US05_*` → code `features/ai_result/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|
@@ -133,7 +133,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.6 · `US06` — Phe duyet voi it bam nhat
 
-**Truy vết:** `P01` → `UC06` → `US06` → Figma `011_*_US06_*` → code `011_presentation/*/us06/`
+**Truy vết:** `P01` → `UC06` → `US06` → Figma `011_*_US06_*` → code `features/approval/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|
@@ -150,7 +150,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.7 · `US07` — Yeu cau chinh sua va huy duoc
 
-**Truy vết:** `P01` → `UC07` → `US07` → Figma `011_*_US07_*` → code `011_presentation/*/us07/`
+**Truy vết:** `P01` → `UC07` → `US07` → Figma `011_*_US07_*` → code `features/revision_request/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|
@@ -167,7 +167,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.8 · `US08` — So sanh hai phien ban
 
-**Truy vết:** `P01` → `UC08` → `US08` → Figma `011_*_US08_*` → code `011_presentation/*/us08/`
+**Truy vết:** `P01` → `UC08` → `US08` → Figma `011_*_US08_*` → code `features/version_compare/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|
@@ -184,7 +184,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.9 · `US09` — Nop tai lieu cho nhom
 
-**Truy vết:** `P02` → `UC09` → `US09` → Figma `011_*_US09_*` → code `011_presentation/*/us09/`
+**Truy vết:** `P02` → `UC09` → `US09` → Figma `011_*_US09_*` → code `features/document_submit/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|
@@ -201,7 +201,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.10 · `US10` — Biet vi sao nut nop bi khoa
 
-**Truy vết:** `P02` → `UC10` → `US10` → Figma `011_*_US10_*` → code `011_presentation/*/us10/`
+**Truy vết:** `P02` → `UC10` → `US10` → Figma `011_*_US10_*` → code `features/submit_gate/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|
@@ -218,7 +218,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.11 · `US11` — Khong bi ket khi mat mang
 
-**Truy vết:** `P01+P02` → `UC11` → `US11` → Figma `011_*_US11_*` → code `011_presentation/*/us11/`
+**Truy vết:** `P01+P02` → `UC11` → `US11` → Figma `011_*_US11_*` → code `features/*/us11/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|
@@ -235,7 +235,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.12 · `US12` — Thay suc khoe nhom
 
-**Truy vết:** `P01` → `UC12` → `US12` → Figma `011_*_US12_*` → code `011_presentation/*/us12/`
+**Truy vết:** `P01` → `UC12` → `US12` → Figma `011_*_US12_*` → code `features/group_health/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|
@@ -252,7 +252,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.13 · `US13` — Biet chuan nao dang ap
 
-**Truy vết:** `P01` → `UC13` → `US13` → Figma `011_*_US13_*` → code `011_presentation/*/us13/`
+**Truy vết:** `P01` → `UC13` → `US13` → Figma `011_*_US13_*` → code `features/rule_sets/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|
@@ -269,7 +269,7 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 
 ### 2.14 · `US14` — Xem ho so va dang xuat
 
-**Truy vết:** `P01+P02` → `UC14` → `US14` → Figma `011_*_US14_*` → code `011_presentation/*/us14/`
+**Truy vết:** `P01+P02` → `UC14` → `US14` → Figma `011_*_US14_*` → code `features/profile/`
 
 | Mã SKU | Loại | Tình huống kiểm thử | Tầng code | Kết quả mong đợi |
 |---|---|---|---|---|

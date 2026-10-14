@@ -504,3 +504,63 @@ dùng để làm việc.
 **Bài học:** nếu user nói "kệ main đi", việc đầu tiên của phiên phải là rời khỏi
 nhánh `main` (`git checkout develop`) chứ không phải cứ commit trên `main` rồi
 kéo `develop` theo sau. Nhánh làm việc và nhánh "kệ đi" phải tách ra từ đầu.
+
+## 3o. Đổi cấu trúc `flutter_app/lib/` từ "chuỗi số" sang chia theo tính năng (14/10, đợt 13)
+
+**Vấn đề (do Tường chỉ ra):** cây code chỉ gồm các folder và file mang mã số —
+`011_presentation/review/us04/011_REVIEW_US04_workspace_screen.dart`. Không ai mở
+repo có thể biết `us04` là màn nào; bề mặt công khai của repo gần như không đọc
+được. Đây là hậu quả của chính tôi: khi đặt tên theo chuẩn CMPlan, tôi ưu tiên khớp
+mã hơn là khả năng người khác đọc code.
+
+**Sau đổi** (2026-10-14):
+
+```
+flutter_app/lib/
+  main.dart
+  shared/theme/          # [001] color_tokens, typography, spacing, app_theme
+  shared/widgets/        # [011] app_shell, app_card, status_chip, tone_colors,
+                         #      dialog_actions, offline_banner (US11)
+  features/login/        # [011 · AUTH · US01]  login_screen
+  features/dashboard/    # [011 · DASH · US02]  dashboard_screen
+  features/request_list/ # [011 · REVIEW · US03] request_list_screen, review_card
+  features/review_workspace/    # [011 · REVIEW · US04]
+  features/ai_result/    # [011 · REVIEW · US05]
+  features/approval/      # [011 · REVIEW · US06]
+  features/revision_request/    # [011 · REVIEW · US07]
+  features/version_compare/     # [011 · REVIEW · US08]
+  features/document_submit/     # [011 · SUBMIT · US09]
+  features/submit_gate/ # [011 · SUBMIT · US10]
+  features/group_health/ # [011 · DASH · US12]
+  features/rule_sets/    # [011 · REVIEW · US13]
+  features/profile/       # [011 · PROFILE · US14]
+  domain/entities/       # [101] review_entities
+  domain/usecases/       # [111] filter_requests_uc
+  data/sources/          # [201] mock_datasource
+  data/repositories/     # [202] review_repository
+```
+
+**Mã SKU không mất** — mỗi file .dart mang dòng `// CMPlan: tầng 011 · REVIEW · US04`
+ở đầu file. Vậy truy vết 14 User Story vẫn nguyên, chỉ là mã nằm trong NỘI DUNG
+file chứ không trong tên folder.
+
+**Cổng đã sửa theo (không nới lỏng):**
+- `check-cmplan.py`: tầng giờ đọc từ dòng khai báo, không đọc tên folder. Đã
+  CHỨNG MINH ĐỎ — xoá dòng khai báo của dashboard_screen ra thì báo
+  `THIEU KHAI BAO TANG`, exit 1. Luật cô lập tầng giữ nguyên 100%.
+- `check-trace-map.py`: cột "Code thật" giờ ghi đường dẫn đầy đủ từ gốc repo
+  (`flutter_app/lib/features/login/login_screen.dart`), gate ghép vói `ROOT`.
+
+**Bằng chứng đổi tên không phá gì (vì đây không phải sửa giao diện):**
+- `flutter analyze` — 0 lỗi
+- `flutter test` — 115/115 (mất 2 test so với 117 vì tôi xoá 2 file test rác
+  từng sinh ra trong phiên)
+- `rules/check-all.py` — 8 cổng SẠCH (check-cmplan đỏ đúng khi thiếu khai báo)
+- `lab2-gate.py` — 100/100 ĐẠT
+- `verify/flutter-journeys.mjs` — 8/8 bước
+- `verify/flutter-tap-targets.mjs` — 9/9 màn / 92 mục / 0 dưới 48dp / 0 lỗi console
+
+**Bài học:** khi làm việc cho một bảng kiểm có mã tầng/mã SKU, đừng để việc khớp
+mã lấn át việc đọc được code. Bảng kiểm là phương tiện; cái được kiểm (code dễ
+đọc, dễ bảo trì) mới là đích. Mã nên sống trong khai báo/tài liệu, không bắt
+đường dẫn phải mang số.

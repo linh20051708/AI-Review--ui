@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:mobi_review/202_data_repositories/202_DOMAIN_review_repository.dart';
+import 'package:mobi_review/data/repositories/review_repository.dart';
 import 'package:mobi_review/main.dart';
 
 /// Số liệu AI phải ĐÚNG với tài liệu đang mở, không được "găm cứng" một chuỗi.

@@ -80,23 +80,23 @@ Cây dưới đây là **trạng thái thật của `flutter_app/lib/` sau khi �
 
 ```text
 lib/
-├── 001_core/
+├── shared/
 │   └── theme/
-│       ├── 001_CORE_color_tokens.dart
-│       ├── 001_CORE_typography.dart
-│       ├── 001_CORE_spacing.dart
-│       └── 001_CORE_app_theme.dart
-├── 011_presentation/
+│       ├── color_tokens.dart
+│       ├── typography.dart
+│       ├── spacing.dart
+│       └── app_theme.dart
+├── features/
 │   ├── auth/  (US01)
 │   ├── dashboard/ (US02, US12)
 │   ├── review/ (US03..US08, US13)
 │   ├── submit/ (US09, US10)
 │   ├── profile/ (US14)
 │   └── shared/ (widgets dùng chung, US11)
-├── 101_domain_entities/
-├── 111_domain_usecases/
-├── 201_data_sources/
-└── 202_data_repositories/
+├── domain/entities/
+├── domain/usecases/
+├── data/sources/
+└── data/repositories/
 ```
 
 Chi tiết từng file và US: `docs/CMPlan-MAP.md` §3.
@@ -130,7 +130,7 @@ Chuỗi trên là **đích**, không phải hiện trạng. Đo thật:
 | Use Case | 17 | `1-UC-15/16/17` chưa có User Story |
 | User Story | 14 | — |
 | Wireframe (`figma-svg/output/03-final/`) | 14 (`s01`…`s14`) | — |
-| **Màn Flutter (`011_presentation/`)** | **6** | **8 US chưa dựng** (US06–US10, US12, US13) |
+| **Màn Flutter (`features/`)** | **6** | **8 US chưa dựng** (US06–US10, US12, US13) |
 | Test Case (thiết kế) | 140 | 134 chưa có bằng chứng chạy |
 
 Ô "Code package" trong bảng truy vết ghi `— *(chưa code)*` cho 8 US đó. Điền đường dẫn không tồn tại
@@ -178,9 +178,9 @@ Xem `docs/test-cases-cmplan.md` §2.1. Bảng dưới là bản rút gọn để
 - [ ] **02. `[CRITICAL]` Đồng bộ mã SKU giữa Code và Figma (10đ):** code **đã** theo công thức (§2.2). Figma **chưa** — 48 SVG hiện có sinh theo bố cục Lab 2, không theo page CMPlan. → **CHƯA ĐẠT**, xem §6.
 - [x] **03. `[CRITICAL]` Truy vết dọc từ Persona đến Code (10đ):** `docs/CMPlan-MAP.md` nối `P01`→`UC`→`US`→Figma ID→code package→TC.
 - [x] **04. `[CRITICAL]` Định mức ≥10 TC / 1 US (10đ):** 14 US × 10 = **140 TC** ở `docs/test-cases-cmplan.md`. Cổng đếm lại từng US.
-- [x] **05. `[CRITICAL]` Chuẩn UI/UX trong tầng 001 và nhóm test `UI` (10đ):** `001_core/theme/` giữ đúng token; mỗi US có ≥2 TC nhóm `UI`; test widget đo thật `≥48dp`.
+- [x] **05. `[CRITICAL]` Chuẩn UI/UX trong tầng 001 và nhóm test `UI` (10đ):** `shared/theme/` giữ đúng token; mỗi US có ≥2 TC nhóm `UI`; test widget đo thật `≥48dp`.
 - [x] **06. Phân loại độ bao phủ đủ 5 nhóm (10đ):** mỗi US có đúng 5 nhóm, mỗi nhóm ≥2 TC, không trùng lặp.
-- [x] **07. `[CRITICAL]` Cô lập phụ thuộc giữa các tầng (10đ):** **đã sửa cả hai vi phạm** — (a) `ToneColors` chuyển từ `101` sang `011_presentation/shared/011_CORE_tone_colors.dart`; (b) 7 màn `011` không còn gọi thẳng `201`, đi qua `202_data_repositories/202_DOMAIN_review_repository.dart`. Cổng `check-cmplan.py` mục C2 nay `[OK]`. Chi tiết trước/sau ở §7.1.
+- [x] **07. `[CRITICAL]` Cô lập phụ thuộc giữa các tầng (10đ):** **đã sửa cả hai vi phạm** — (a) `ToneColors` chuyển từ `101` sang `lib/shared/widgets/tone_colors.dart`; (b) 7 màn `011` không còn gọi thẳng `201`, đi qua `lib/data/repositories/review_repository.dart`. Cổng `check-cmplan.py` mục C2 nay `[OK]`. Chi tiết trước/sau ở §7.1.
 - [x] **08. Liên kết Success Criteria của Persona vào TC (10đ):** nhóm `HP` và `UI` chứa số đo lấy từ trường *Success Criteria* của persona (số thao tác, thời gian, tỉ lệ diện tích).
 - [x] **09. Quy tắc quản lý nhánh Git & Commit theo mã SKU (10đ):** định dạng `<type>(<LAYER>_<MODULE>[_USxx]): <mô tả>`. **Đã cưỡng chế bằng hook**, không chỉ ghi giấy: `rules/check-commit-msg.py` + `rules/install-hooks.py` cài hook `commit-msg`. Đã đo: commit sai (`feat(lab2): …`) bị chặn `exit 1`; commit đúng đi qua `exit 0`. 6 commit mới nhất theo đúng định dạng. Lịch sử cũ **không** viết lại (sẽ đổi hash đã push) — xem §6 N5.
 - [x] **10. Kiểm tra chéo & Bằng chứng thực thi Test (10đ):** **đã có** — `verify/flutter-journeys.mjs` chạy 8/8 bước trên app thật, sinh **6 ảnh gắn mã TC** trong `ai-output/flutter-app/` (`TC_US01_HP_01…`, `TC_US02_HP_01…`, `TC_US03_HP_01…`, `TC_US04_HP_01…`, `TC_US05_HP_01…`, `TC_US14_HP_01…`), 6/6 ảnh khác nhau; cộng **60 test** neo mã `TC_USxx_*` trong `flutter_app/test/` (tổng **117/117** xanh — thêm `test/overflow_test.dart` 39 ca quét tràn ngang ở 320/360/412dp, `test/dialog_confirm_test.dart` 3 ca cho hộp thoại xác nhận, `test/repository_write_test.dart` 5 ca khoá việc ghi quyết định, `test/approve_flow_test.dart` 3 ca đi trọn danh sách→chi tiết→phê duyệt→quay lại), và `verify/flutter-tap-targets.mjs` đo **9/9 màn, 79 vùng chạm, 0 mục < 48dp** bằng Chromium thật. Giới hạn còn lại: đây là các TC nhóm `HP` cộng một số `AP/EX/BV`, **chưa** chạy đủ 140 TC. Xem §6 (N2).
@@ -231,8 +231,8 @@ Số thứ tự **không** luôn khớp — `4-TC-05` có thể là `TC_US04_HP_
 |---|---|---|---|
 | N1 | **Figma chưa theo sơ đồ page CMPlan** | Mục 02 `[CRITICAL]` chưa đạt | Viết lại `figma-svg/gen.py` sinh theo `001_/011_/101_/201_`; hoặc dựng tay trong Figma |
 | N2 | **Chỉ 6/140 TC có bằng chứng chạy** | Mục 10 đạt một phần | `verify/flutter-journeys.mjs` sinh 6 ảnh gắn mã `TC_USxx_*` + 17 test neo mã TC. Còn 134 TC là **thiết kế**, chưa chạy |
-| N3 | ~~`011` gọi thẳng `201`~~ | **ĐÃ SỬA** | `202_data_repositories/` đã có; 7 màn đã chuyển sang gọi repository. Cổng C2 `[OK]` |
-| N4 | ~~`101_domain_entities/` và `111_domain_usecases/` rỗng~~ | **ĐÃ SỬA** | `101_DOMAIN_review_entities.dart` (thực thể) + `111_DOMAIN_us03_filter_requests_uc.dart` (luật lọc) đã có thật |
+| N3 | ~~`011` gọi thẳng `201`~~ | **ĐÃ SỬA** | `data/repositories/` đã có; 7 màn đã chuyển sang gọi repository. Cổng C2 `[OK]` |
+| N4 | ~~`domain/entities/` và `domain/usecases/` rỗng~~ | **ĐÃ SỬA** | `review_entities.dart` (thực thể) + `filter_requests_uc.dart` (luật lọc) đã có thật |
 | N5 | **Commit cũ không theo mã SKU** | Mục 09 chỉ đúng từ commit `ae67ba5` | Không viết lại lịch sử đã push. Hook `commit-msg` chặn từ nay; `git log --oneline <a>..HEAD` là phần đã theo chuẩn |
 | N6 | **2 use case chưa có test** (`1-UC-16`, `1-UC-17`) và actor `1-SH-03` chưa có persona | Truy vết có lỗ hổng | Cần persona quản trị học vụ trước |
 | N7 | **8/14 User Story chưa dựng màn Flutter** | Tầng `011` chỉ phủ 6 US | US06–US10, US12, US13 có user story + wireframe thật nhưng **chưa có code**; bảng truy vết ghi `— *(chưa code)*` chứ không bịa đường dẫn. `rules/check-trace-map.py` chặn tái diễn |
@@ -250,15 +250,15 @@ Số thứ tự **không** luôn khớp — `4-TC-05` có thể là `TC_US04_HP_
 | 1 | Thực thể `101` import `001` để lấy `Color` cho `Tone` | Tách `ToneColors` ra khỏi `101`, đưa xuống `011` | **ĐÃ SỬA** |
 | 2 | 7 màn `011` gọi thẳng `201` (bỏ qua `202`) | Dựng `202` bọc nguồn, màn hình gọi repository | **ĐÃ SỬA** |
 
-**Cách sửa (1)** — `Tone` vẫn ở `101_domain_entities/101_DOMAIN_review_entities.dart` nhưng **không còn
+**Cách sửa (1)** — `Tone` vẫn ở `lib/domain/entities/review_entities.dart` nhưng **không còn
 biết màu**: file này bỏ hẳn `import 'package:flutter/material.dart'` và import `001`, chỉ dùng
 `package:meta/meta.dart` cho `@immutable`. Lớp `ToneColors` (enum → `Color`) chuyển sang
-`011_presentation/shared/011_CORE_tone_colors.dart` — đúng tầng giao diện, nơi việc biết màu là hợp lệ.
+`lib/shared/widgets/tone_colors.dart` — đúng tầng giao diện, nơi việc biết màu là hợp lệ.
 
-**Cách sửa (2)** — thêm `202_data_repositories/202_DOMAIN_review_repository.dart`:
+**Cách sửa (2)** — thêm `lib/data/repositories/review_repository.dart`:
 repository giữ bản cache trong bộ nhớ, theo dõi `NetState` (online/offline) và hàng đợi thao tác ghi.
 Không phải lớp bọc rỗng: khi mất mạng, thao tác ghi vào hàng đợi và **tự gửi lại** khi có mạng — đây
-chính là pain point của `US11`. Luật lọc chuyển xuống `111_domain_usecases/111_DOMAIN_us03_filter_requests_uc.dart`
+chính là pain point của `US11`. Luật lọc chuyển xuống `lib/domain/usecases/filter_requests_uc.dart`
 để kiểm được bằng test mà không cần dựng giao diện.
 
 **Đo lại sau khi sửa:** `python3 rules/check-cmplan.py` → mục C `[OK]` và C2 `[OK]`.

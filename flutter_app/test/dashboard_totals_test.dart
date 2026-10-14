@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:mobi_review/101_domain_entities/101_DOMAIN_review_entities.dart';
-import 'package:mobi_review/202_data_repositories/202_DOMAIN_review_repository.dart';
+import 'package:mobi_review/domain/entities/review_entities.dart';
+import 'package:mobi_review/data/repositories/review_repository.dart';
 import 'package:mobi_review/main.dart';
-import 'package:mobi_review/011_presentation/shared/011_CORE_shared_status_chip.dart';
+import 'package:mobi_review/shared/widgets/status_chip.dart';
 
 /// Số liệu trên Tổng quan phải ĐẾM ĐỦ, không được bỏ sót tài liệu nào.
 ///

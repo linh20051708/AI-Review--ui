@@ -11,20 +11,20 @@ Tra ở đây, **đừng suy số** từ mã này sang mã kia.
 
 | Persona | Scenario | Use Case | User Story | Figma ID (CMPlan) | Wireframe thật (`figma-svg/output/03-final/`) | Code thật trong `flutter_app/lib/` | Test Cases |
 |---|---|---|---|---|---|---|---|
-| `P01` giảng viên | `SC01` | `1-UC-01` | `1-US-01` | `011_AUTH_US01_login_screen` | `s01-dang-nhap.svg` | `011_presentation/auth/us01/011_AUTH_US01_login_screen.dart` | `TC_US01_*` |
-| `P01` giảng viên | `SC02` | `1-UC-02` | `1-US-02` | `011_DASH_US02_dashboard_screen` | `s02-tong-quan.svg` | `011_presentation/dashboard/us02/011_DASH_US02_dashboard_screen.dart` | `TC_US02_*` |
-| `P01` giảng viên | `SC03` | `1-UC-03` | `1-US-03` | `011_REVIEW_US03_request_list` | `s03-yeu-cau-review.svg` | `011_presentation/review/us03/011_REVIEW_US03_request_list_screen.dart` | `TC_US03_*` |
-| `P01` giảng viên | `SC04` | `1-UC-04` | `1-US-04` | `011_REVIEW_US04_workspace_screen` | `s04-khong-gian-review.svg` | `011_presentation/review/us04/011_REVIEW_US04_workspace_screen.dart` | `TC_US04_*` |
-| `P01` giảng viên | `SC05` | `1-UC-05` | `1-US-05` | `011_REVIEW_US05_ai_result_screen` | `s05-ket-qua-ai.svg` | `011_presentation/review/us05/011_REVIEW_US05_ai_result_screen.dart` | `TC_US05_*` |
-| `P01` giảng viên | `SC06` | `1-UC-06` | `1-US-06` | `011_REVIEW_US06_approval_screen` | `s06-lop-hoc.svg` | `011_presentation/review/us06/011_REVIEW_US06_approval_screen.dart` | `TC_US06_*` |
-| `P01` giảng viên | `SC07` | `1-UC-07` | `1-US-07` | `011_REVIEW_US07_revision_screen` | `s07-project.svg` | `011_presentation/review/us07/011_REVIEW_US07_revision_screen.dart` | `TC_US07_*` |
-| `P01` giảng viên | `SC08` | `1-UC-08` | `1-US-08` | `011_REVIEW_US08_compare_screen` | `s08-tai-lieu.svg` | `011_presentation/review/us08/011_REVIEW_US08_compare_screen.dart` | `TC_US08_*` |
-| `P02` sinh viên | `SC09` | `1-UC-09` | `1-US-09` | `011_SUBMIT_US09_submit_screen` | `s09-hoc-ky.svg` | `011_presentation/submit/us09/011_SUBMIT_US09_submit_screen.dart` | `TC_US09_*` |
-| `P02` sinh viên | `SC10` | `1-UC-10` | `1-US-10` | `011_SUBMIT_US10_submit_gate_screen` | `s10-rule-set.svg` | `011_presentation/submit/us10/011_SUBMIT_US10_submit_gate_screen.dart` | `TC_US10_*` |
-| `P01`+`P02` | `SC11` | `1-UC-11` | `1-US-11` | `011_CORE_US11_offline_banner` | `s11-sinh-vien.svg` | `011_presentation/shared/011_CORE_US11_offline_banner.dart` | `TC_US11_*` |
-| `P01` giảng viên | `SC12` | `1-UC-12` | `1-US-12` | `011_DASH_US12_group_health_screen` | `s12-nhom.svg` | `011_presentation/dashboard/us12/011_DASH_US12_group_health_screen.dart` | `TC_US12_*` |
-| `P01` giảng viên | `SC13` | `1-UC-13` | `1-US-13` | `011_REVIEW_US13_rule_set_screen` | `s13-thong-bao.svg` | `011_presentation/review/us13/011_REVIEW_US13_rule_set_screen.dart` | `TC_US13_*` |
-| `P01`+`P02` | `SC14` | `1-UC-14` | `1-US-14` | `011_PROFILE_US14_profile_screen` | `s14-tai-khoan.svg` | `011_presentation/profile/us14/011_PROFILE_US14_profile_screen.dart` | `TC_US14_*` |
+| `P01` giảng viên | `SC01` | `1-UC-01` | `1-US-01` | `011_AUTH_US01_login_screen` | `s01-dang-nhap.svg` | `flutter_app/lib/features/login/login_screen.dart` | `TC_US01_*` |
+| `P01` giảng viên | `SC02` | `1-UC-02` | `1-US-02` | `011_DASH_US02_dashboard_screen` | `s02-tong-quan.svg` | `flutter_app/lib/features/dashboard/dashboard_screen.dart` | `TC_US02_*` |
+| `P01` giảng viên | `SC03` | `1-UC-03` | `1-US-03` | `011_REVIEW_US03_request_list` | `s03-yeu-cau-review.svg` | `flutter_app/lib/features/request_list/request_list_screen.dart` | `TC_US03_*` |
+| `P01` giảng viên | `SC04` | `1-UC-04` | `1-US-04` | `011_REVIEW_US04_workspace_screen` | `s04-khong-gian-review.svg` | `flutter_app/lib/features/review_workspace/workspace_screen.dart` | `TC_US04_*` |
+| `P01` giảng viên | `SC05` | `1-UC-05` | `1-US-05` | `011_REVIEW_US05_ai_result_screen` | `s05-ket-qua-ai.svg` | `flutter_app/lib/features/ai_result/ai_result_screen.dart` | `TC_US05_*` |
+| `P01` giảng viên | `SC06` | `1-UC-06` | `1-US-06` | `011_REVIEW_US06_approval_screen` | `s06-lop-hoc.svg` | `flutter_app/lib/features/approval/approval_screen.dart` | `TC_US06_*` |
+| `P01` giảng viên | `SC07` | `1-UC-07` | `1-US-07` | `011_REVIEW_US07_revision_screen` | `s07-project.svg` | `flutter_app/lib/features/revision_request/revision_screen.dart` | `TC_US07_*` |
+| `P01` giảng viên | `SC08` | `1-UC-08` | `1-US-08` | `011_REVIEW_US08_compare_screen` | `s08-tai-lieu.svg` | `flutter_app/lib/features/version_compare/compare_screen.dart` | `TC_US08_*` |
+| `P02` sinh viên | `SC09` | `1-UC-09` | `1-US-09` | `011_SUBMIT_US09_submit_screen` | `s09-hoc-ky.svg` | `flutter_app/lib/features/document_submit/submit_screen.dart` | `TC_US09_*` |
+| `P02` sinh viên | `SC10` | `1-UC-10` | `1-US-10` | `011_SUBMIT_US10_submit_gate_screen` | `s10-rule-set.svg` | `flutter_app/lib/features/submit_gate/submit_gate_screen.dart` | `TC_US10_*` |
+| `P01`+`P02` | `SC11` | `1-UC-11` | `1-US-11` | `011_CORE_US11_offline_banner` | `s11-sinh-vien.svg` | `flutter_app/lib/shared/widgets/offline_banner.dart` | `TC_US11_*` |
+| `P01` giảng viên | `SC12` | `1-UC-12` | `1-US-12` | `011_DASH_US12_group_health_screen` | `s12-nhom.svg` | `flutter_app/lib/features/group_health/group_health_screen.dart` | `TC_US12_*` |
+| `P01` giảng viên | `SC13` | `1-UC-13` | `1-US-13` | `011_REVIEW_US13_rule_set_screen` | `s13-thong-bao.svg` | `flutter_app/lib/features/rule_sets/rule_set_screen.dart` | `TC_US13_*` |
+| `P01`+`P02` | `SC14` | `1-UC-14` | `1-US-14` | `011_PROFILE_US14_profile_screen` | `s14-tai-khoan.svg` | `flutter_app/lib/features/profile/profile_screen.dart` | `TC_US14_*` |
 
 ### 1.1 Ghi chú trung thực về bảng trên
 
@@ -44,7 +44,7 @@ user story và wireframe có thật, nhưng bản demo Flutter **chưa dựng m�
 > `rules/check-trace-map.py` đã **bắt đúng 7 vi phạm "MÀN MỒ CÔI"** khi 7 file mới xuất hiện
 > mà bảng chưa cập nhật — cổng chạy đúng như thiết kế.
 
-> US11 có file `011_CORE_US11_offline_banner.dart` nhưng là **component dùng chung**, không phải màn riêng.
+> US11 có file `offline_banner.dart` nhưng là **component dùng chung**, không phải màn riêng.
 > 8 US chưa code **không** phải "đã xong" — `docs/CMPlan.md` §6 ghi ở N4.
 
 **Vì sao không dựng 8 màn giả:** gate yêu cầu đường dẫn phải có thật; cách duy nhất để nó xanh là
@@ -63,48 +63,45 @@ dựng màn thật hoặc khai `—`. Điền đường dẫn không tồn tại
 
 ```
 flutter_app/lib/
-├── main.dart                                   # điểm vào, không thuộc tầng nào
+├── main.dart                        # điếm vào, không thuộc tầng nào
 │
-├── 001_core/                                   # [001] Cấp 1 — nguyên tử, dùng chung
-│   └── theme/
-│       ├── 001_CORE_color_tokens.dart          # 16 token màu, contrast 4.5:1/3:1
-│       ├── 001_CORE_typography.dart            # thang chữ, body >= 14sp
-│       ├── 001_CORE_spacing.dart               # kMinTouchTarget = 48.0
-│       └── 001_CORE_app_theme.dart             # ThemeData gộp từ 3 file trên
+├── shared/                          # tầng [001]/[011] — dùng chung mọi màn
+│   ├── theme/                       # [001]
+│   │   ├── color_tokens.dart        # 16 token màu, contrast 4.5:1/3:1
+│   │   ├── typography.dart          # thang chữ, body >= 14sp
+│   │   ├── spacing.dart             # kMinTouchTarget = 48.0
+│   │   └── app_theme.dart           # ThemeData gộp từ 3 file trên
+│   └── widgets/                     # [011] widget dùng lại, + app_shell
+│       ├── app_shell.dart           # khung điều hướng 4 tab
+│       ├── app_card.dart  status_chip.dart  tone_colors.dart
+│       └── dialog_actions.dart      # nút AlertDialog đủ 48dp · offline_banner.dart [011 · CORE · US11]
 │
-├── 011_presentation/                           # [011] Cấp 2 — màn hình theo US
-│   ├── auth/       us01/   → 011_AUTH_US01_login_screen.dart
-│   ├── dashboard/  us02/   → 011_DASH_US02_dashboard_screen.dart
-│   │                us12/  → 011_DASH_US12_group_health_card.dart
-│   ├── review/     us03/   → 011_REVIEW_US03_request_list_screen.dart
-│   │                us04/  → 011_REVIEW_US04_workspace_screen.dart
-│   │                us05/  → 011_REVIEW_US05_ai_result_screen.dart
-│   │                us06/  → 011_REVIEW_US06_decision_bar.dart
-│   │                us07/  → 011_REVIEW_US07_revision_dialog.dart
-│   │                us08/  → 011_REVIEW_US08_version_compare.dart
-│   │                us13/  → 011_REVIEW_US13_rule_context.dart
-│   ├── submit/     us09/   → 011_SUBMIT_US09_submit_screen.dart
-│   │                us10/  → 011_SUBMIT_US10_submit_locked.dart
-│   ├── profile/    us14/   → 011_PROFILE_US14_profile_screen.dart
-│   ├── shared/     us11/   → 011_CORE_US11_offline_banner.dart
-│   └── app_shell.dart                          # khung điều hướng 4 tab
+├── features/                        # tầng [011] — MỘT THƯ MỤC / MỘT MÀN
+│   ├── login/login_screen.dart                # [011 · AUTH · US01]
+│   ├── dashboard/dashboard_screen.dart       # [011 · DASH · US02]
+│   ├── request_list/request_list_screen.dart  # [011 · REVIEW · US03]
+│   │                                    review_card.dart
+│   ├── review_workspace/workspace_screen.dart  # [011 · REVIEW · US04]
+│   ├── ai_result/ai_result_screen.dart       # [011 · REVIEW · US05]
+│   ├── approval/approval_screen.dart         # [011 · REVIEW · US06]
+│   ├── revision_request/revision_screen.dart # [011 · REVIEW · US07]
+│   ├── version_compare/compare_screen.dart   # [011 · REVIEW · US08]
+│   ├── document_submit/submit_screen.dart   # [011 · SUBMIT · US09]
+│   ├── submit_gate/submit_gate_screen.dart  # [011 · SUBMIT · US10]
+│   ├── group_health/group_health_screen.dart # [011 · DASH · US12]
+│   ├── rule_sets/rule_set_screen.dart        # [011 · REVIEW · US13]
+│   └── profile/profile_screen.dart           # [011 · PROFILE · US14]
 │
-├── 101_domain_entities/                        # [101] Cấp 1 — thực thể thuần
-│   └── 101_DOMAIN_review_entities.dart         # ReviewRequest, AiFinding, Tone (KHÔNG có Color)
+├── domain/                          # tầng thuần, KHÔNG biết Flutter có Color
+│   ├── entities/review_entities.dart   # [101] ReviewRequest, AiFinding, Tone
+│   └── usecases/filter_requests_uc.dart # [111] lọc/tìm yêu cầu
 │
-├── 111_domain_usecases/                        # [111] Cấp 2 — luật nghiệp vụ
-│   ├── 111_DOMAIN_us03_filter_requests_uc.dart # lọc/tìm yêu cầu
-│   └── 111_DOMAIN_us04_load_workspace_uc.dart  # gộp dữ liệu cho màn workspace
-│
-├── 201_data_sources/                           # [201] Cấp 1 — nguồn thô
-│   └── 201_DOMAIN_mock_datasource.dart         # dữ liệu mẫu, chưa biến đổi
-│
-└── 202_data_repositories/                      # [202] Cấp 2 — chuẩn hoá + phục hồi
-    ├── 202_DOMAIN_review_repository.dart       # bọc 201, cache, trạng thái offline
-    └── 202_DOMAIN_sync_manager.dart            # hàng đợi khi mất mạng, tự gửi lại
+├── data/
+│   ├── sources/mock_datasource.dart     # [201] dữ liệu mẫu, chưa biến đổi
+│   └── repositories/review_repository.dart # [202] chuẩn hoá + phục hồi offline
 ```
 
-**File .dart không thuộc tầng nào:** chỉ `main.dart` (điểm vào). Cổng kiểm cho phép miễn trừ đúng file này.
+**File .dart không thuộc tầng nào:****File .dart không thuộc tầng nào:** chỉ `main.dart` (điểm vào). Cổng kiểm cho phép miễn trừ đúng file này.
 
 ---
 

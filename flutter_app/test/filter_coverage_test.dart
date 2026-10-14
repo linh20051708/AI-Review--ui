@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:mobi_review/101_domain_entities/101_DOMAIN_review_entities.dart';
-import 'package:mobi_review/202_data_repositories/202_DOMAIN_review_repository.dart';
-import 'package:mobi_review/011_presentation/review/us03/011_REVIEW_US03_request_list_screen.dart';
+import 'package:mobi_review/domain/entities/review_entities.dart';
+import 'package:mobi_review/data/repositories/review_repository.dart';
+import 'package:mobi_review/features/request_list/request_list_screen.dart';
 
 /// Bộ lọc ở danh sách yêu cầu review phải phủ ĐỦ trạng thái có trong dữ liệu.
 ///

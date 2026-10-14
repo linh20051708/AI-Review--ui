@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:mobi_review/main.dart';
-import 'package:mobi_review/101_domain_entities/101_DOMAIN_review_entities.dart';
-import 'package:mobi_review/202_data_repositories/202_DOMAIN_review_repository.dart';
+import 'package:mobi_review/domain/entities/review_entities.dart';
+import 'package:mobi_review/data/repositories/review_repository.dart';
 
 /// Đi TRỌN đường người dùng: danh sách → chi tiết → phê duyệt → quay lại danh sách.
 ///

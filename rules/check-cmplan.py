@@ -4,8 +4,14 @@
 Kiểm 4 nhóm luật theo `docs/CMPlan.md`:
 
   A. Mã tầng hợp lệ — chỉ 6 mã 001/011/101/111/201/202 tồn tại.
-  B. Đặt tên file theo công thức `[Mã_Layer]_...` — file .dart dưới lib/ phải
-     bắt đầu bằng một mã tầng hợp lệ (miễn trừ `main.dart`).
+  B. Khai báo tầng — mỗi file .dart dưới lib/ (trừ main.dart) phải khai báo
+     mã tầng bằng dòng `// CMPlan: tầng 011 ...` ở đầu file.
+     LÝ DO ĐỔI (đợt 13): trước đây mã tầng bắt buộc nằm trong TÊN FILE và TÊN
+     FOLDER (`011_presentation/review/us03/011_REVIEW_US03_...`). Cách đó khiến
+     cây code chỉ là chuỗi số — không đọc được, ngược với architectural-overview
+     của Flutter (chia theo trang → widget → state). Nay đường dẫn mang tên tính
+     năng (`features/review_workspace/`), mã tầng chuyển vào dòng khai báo;
+     luật CÔ LẬP TẦNG không hề nới.
   C. Cô lập tầng — import KHÔNG được đi ngược từ tầng thấp lên tầng cao.
      Đây là luật mục 07 [CRITICAL] của checklist.
   D. Định mức ≥10 test case / 1 user story, đủ 5 nhóm HP/AP/BV/EX/UI (≥2 mỗi nhóm).
@@ -29,15 +35,10 @@ TC_DOC = ROOT / "docs" / "test-cases-cmplan.md"
 VALID_LAYERS = {"001", "011", "101", "111", "201", "202"}
 
 # --- C. Bản đồ tầng cho luật import -----------------------------------------
-# Tên folder tầng (dưới lib/) -> mã tầng
-FOLDER_LAYER = {
-    "001_core": "001",
-    "011_presentation": "011",
-    "101_domain_entities": "101",
-    "111_domain_usecases": "111",
-    "201_data_sources": "201",
-    "202_data_repositories": "202",
-}
+# Cây `lib/` giờ chia THEO TÍNH NĂNG (theo architectural-overview của Flutter) nên
+# không còn folder mang mã tầng. Mã tầng được KHAI BÁO bằng dòng comment ở đầu
+# mỗi file, dạng: `// CMPlan: tầng 011 · ...` hoặc `// CMPlan: tầng 001 ...`.
+DECL_RE = re.compile(r"^\s*//\s*CMPlan:\s*tầng\s+(\d{3})\b")
 
 # Quan hệ cho phép: tầng này được import những tầng nào (theo docs/CMPlan-MAP.md §3)
 ALLOWED_IMPORTS = {
@@ -74,19 +75,25 @@ def rel(p: Path) -> str:
 
 
 def layer_of(path: Path) -> str | None:
-    """Suy mã tầng của một file .dart từ folder chứa nó."""
+    """Suy mã tầng của một file .dart từ DÒNG KHAI BÁO trong file.
+
+    Đợt 13: trước đây đọc tên folder (`011_presentation/...`). Nay cây chia theo
+    tính năng nên mã tầng nằm ở dòng `// CMPlan: tầng 011 ...` đầu mỗi file.
+    Chỉ nhìn 10 dòng đầu — nếu khai báo nằm tít dưới thì coi như không khai báo.
+    """
     try:
-        parts = path.relative_to(LIB).parts
-    except ValueError:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
         return None
-    for part in parts:
-        if part in FOLDER_LAYER:
-            return FOLDER_LAYER[part]
+    for line in text.splitlines()[:10]:
+        m = DECL_RE.match(line)
+        if m:
+            return m.group(1)
     return None
 
 
 def check_naming() -> list[str]:
-    """B. Tên file .dart dưới lib/ phải mang mã tầng (trừ main.dart)."""
+    """B. Mỗi file .dart dưới lib/ phải KHAI BÁO mã tầng hợp lệ."""
     problems: list[str] = []
     if not LIB.exists():
         return problems
@@ -94,23 +101,16 @@ def check_naming() -> list[str]:
         r = rel(dart)
         if r in EXEMPT_FILES:
             continue
-        m = LAYER_PREFIX_RE.match(dart.name)
-        if not m:
+        code = layer_of(dart)
+        if code is None:
             problems.append(
-                f"TEN FILE THIEU MA TANG: {r} — phai bat dau bang mot trong {sorted(VALID_LAYERS)}"
+                f"THIEU KHAI BAO TANG: {r} — phai co dong `// CMPlan: tầng <ma>` "
+                f"o 10 dong dau, voi ma trong {sorted(VALID_LAYERS)}"
             )
             continue
-        code = m.group(1)
         if code not in VALID_LAYERS:
             problems.append(
                 f"MA TANG KHONG HOP LE: {r} — `{code}` khong nam trong {sorted(VALID_LAYERS)}"
-            )
-            continue
-        # Ma trong ten file phai khop folder chua no
-        folder_layer = layer_of(dart)
-        if folder_layer and code != folder_layer:
-            problems.append(
-                f"MA TANG LECH FOLDER: {r} — ten file ghi `{code}` nhung folder la `{folder_layer}`"
             )
     return problems
 
