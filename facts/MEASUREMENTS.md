@@ -194,3 +194,27 @@ cuối, log `[202] da gui: Phê duyệt (review-001)` có chạy. Nguyên nhân 
 cây semantics Flutter-web**: sau khi hộp thoại đóng, phần cây semantics được dựng lại và
 Playwright không đọc ra nội dung mới. **App đúng, dụng cụ đọc sai** — đúng loại lỗi đã gặp ở mục 3
 (`Xem tất cả` 20,5dp giả).
+
+## 3d. Ba lỗi "app báo sai cho người dùng" (14/10, đợt 3)
+
+Tìm bằng cách tự hỏi: *thông báo trên màn có đúng với dữ liệu thật không?* Cả ba đều **im lặng** —
+không cổng nào bắt được, vì mọi cổng chỉ kiểm hình thức (mã ID, tầng, số TC), không kiểm ngữ nghĩa.
+
+| # | Chỗ sai | Biểu hiện người dùng thấy | Bằng chứng |
+|---|---|---|---|
+| 1 | `202_DOMAIN_review_repository.dart` `write()` | Bấm Phê duyệt → hiện "Trạng thái đã cập nhật." nhưng `byId(id).status` **không đổi**. `write()` chỉ `debugPrint` rồi `return true` | `test/repository_write_test.dart` — 3 ca ĐỎ trước khi sửa |
+| 2 | `review/us04/...workspace_screen.dart` | Màn chi tiết **không hề gọi `write()`** — hai nút quyết định chỉ hiện toast. Màn là `StatelessWidget` nên cũng không thể đổi chip | `test/approve_flow_test.dart` TC_US06_HP_04 |
+| 3 | Không màn nào nghe `ReviewRepository` | `ChangeNotifier` có `notifyListeners()` nhưng **0 người đăng ký** (`grep -rn "addListener\|ListenableBuilder"` = rỗng). Duyệt xong, danh sách và Tổng quan vẫn hiện số cũ | `grep` = 0 kết quả trước khi sửa |
+
+**Sửa:** thêm `ReviewRequest.copyWith`; `write()` áp dụng thật (`_apply`), `_flushQueue()` áp dụng
+quyết định xếp hàng; `requests()` **sao chép** thay vì alias list `DemoData`; US04 thành
+`StatefulWidget` và gọi `write()`; US03 + US02 đăng ký `addListener`.
+
+**Kiểm chứng cổng ĐỎ được** (bắt buộc — test luôn-xanh là test vô giá trị): tắt
+`addListener` ở Tổng quan → `TC_US02_HP_03` **ĐỎ** (`Found 0 widgets with text "2"`), bật lại → XANH.
+Lần đầu tôi viết test này SAI: `boot()` để màn ở tab Review nên phép đếm khớp nhầm chỗ và test
+xanh cả khi tắt listener — đã sửa để đi tới Tổng quan rồi mới khẳng định.
+
+**Bẫy đã gặp:** `AppShell` dùng `switch (_index)`, nên **đổi tab là dựng lại màn từ đầu**. Muốn
+chứng minh một màn có nghe repository thì phải để màn **yên tại chỗ** mà dữ liệu đổi; đi vòng qua
+tab khác rồi quay lại thì màn mới đọc dữ liệu mới **kể cả khi không có listener**.

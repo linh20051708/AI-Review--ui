@@ -49,11 +49,14 @@ class ReviewRepository extends ChangeNotifier {
   }
 
   void _flushQueue() {
-    // Không có backend thật: chỉ ghi log và xoá hàng đợi.
+    // Không có backend thật, nhưng quyết định đã xếp hàng phải được ÁP DỤNG khi
+    // có mạng lại — nếu chỉ xoá hàng đợi thì người dùng mất quyết định của mình.
     for (final w in _queue) {
       debugPrint('[202] da gui lai: ${w.label} (${w.id})');
+      _apply(w);
     }
     _queue.clear();
+    notifyListeners();
   }
 
   /// Đọc danh sách yêu cầu review.
@@ -61,7 +64,10 @@ class ReviewRepository extends ChangeNotifier {
   /// Nếu đang offline và chưa có cache thì trả rỗng (giao diện hiện trạng thái rỗng),
   /// KHÔNG bịa dữ liệu.
   List<ReviewRequest> requests() {
-    _cache ??= DemoData.reviewRequests;
+    // `List.of(...)`: phải SAO CHÉP, không được alias thẳng list của `DemoData`.
+    // Ghi quyết định vào bản sao thì `DemoData` gốc vẫn nguyên — nếu alias thì
+    // mọi test trong cùng tiến trình sẽ dính trạng thái của test chạy trước.
+    _cache ??= List<ReviewRequest>.of(DemoData.reviewRequests);
     return _cache!;
   }
 
@@ -134,8 +140,35 @@ class ReviewRepository extends ChangeNotifier {
       notifyListeners();
       return false;
     }
-    debugPrint('[202] da gui: ${w.label} (${w.id})');
+    _apply(w);
     return true;
+  }
+
+  /// Áp dụng một quyết định đã "gửi": đổi `status` của tài liệu.
+  ///
+  /// LỖI THẬT ĐÃ SỬA (14/10, đợt 3): bản trước chỉ `debugPrint` rồi trả `true`.
+  /// Giao diện US04/US06 hiện "Trạng thái đã cập nhật." nhưng `byId(id).status`
+  /// KHÔNG đổi — bấm Phê duyệt xong quay lại danh sách vẫn thấy "Chờ giảng viên
+  /// review". App báo sai cho người dùng. Xem `test/repository_write_test.dart`.
+  ///
+  /// `payload` không map được sang `DocStatus` thì BỎ QUA (không ghi bừa trạng
+  /// thái) — dữ liệu lạ không được làm hỏng bản ghi.
+  void _apply(PendingWrite w) {
+    final next = DocStatus.values.where((s) => s.name == w.payload).firstOrNull;
+    final list = requests();
+    final at = list.indexWhere((r) => r.id == w.id);
+    if (at < 0) {
+      debugPrint('[202] bo qua: khong co tai lieu ${w.id}');
+      return;
+    }
+    if (next == null) {
+      debugPrint('[202] bo qua: payload "${w.payload}" khong phai trang thai');
+      return;
+    }
+    if (list[at].status == next) return;
+    list[at] = list[at].copyWith(status: next);
+    debugPrint('[202] da gui: ${w.label} (${w.id}) -> ${next.name}');
+    notifyListeners();
   }
 
   /// Chỉ dùng cho test: xoá cache và hàng đợi về trạng thái ban đầu.

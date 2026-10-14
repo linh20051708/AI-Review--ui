@@ -33,12 +33,6 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
     DocStatus.approved,
   ];
 
-  @override
-  void dispose() {
-    _query.dispose();
-    super.dispose();
-  }
-
   /// Luật lọc nằm ở tầng 111 (use case), không phải ở màn hình.
   /// Màn hình chỉ truyền tham số và hiển thị kết quả.
   List<ReviewRequest> get _visible => FilterRequestsUseCase.run(
@@ -46,6 +40,29 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
     keyword: _keyword,
     statuses: _filter == null ? const <DocStatus>[] : <DocStatus>[_filter!],
   );
+
+  // Nghe `ReviewRepository` để dựng lại khi có quyết định mới.
+  //
+  // VÌ SAO CẦN (14/10, đợt 3): `ReviewRepository` là `ChangeNotifier` và có gọi
+  // `notifyListeners()`, nhưng **không màn nào đăng ký nghe** — nên phê duyệt
+  // xong quay lại danh sách vẫn thấy chip trạng thái cũ. Người nghe đặt ở đây,
+  // tại màn hiển thị danh sách, vì đây là chỗ dữ liệu đổi được nhìn thấy.
+  @override
+  void initState() {
+    super.initState();
+    ReviewRepository.instance.addListener(_onRepoChanged);
+  }
+
+  @override
+  void dispose() {
+    ReviewRepository.instance.removeListener(_onRepoChanged);
+    _query.dispose();
+    super.dispose();
+  }
+
+  void _onRepoChanged() {
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) => Column(

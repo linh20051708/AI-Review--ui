@@ -73,6 +73,27 @@ class ReviewRequest {
   final String? note;
 
   int get aiTotal => aiErrors + aiWarnings + aiSuggestions;
+
+  /// Bản sao có đổi một vài trường.
+  ///
+  /// Cần cho `ReviewRepository.write()`: quyết định phê duyệt / yêu cầu chỉnh sửa
+  /// phải **đổi được `status` thật**, nhưng entity là `@immutable` nên phải tạo
+  /// bản mới thay vì sửa tại chỗ.
+  ReviewRequest copyWith({DocStatus? status, String? note}) => ReviewRequest(
+        id: id,
+        classCode: classCode,
+        groupName: groupName,
+        projectName: projectName,
+        documentTitle: documentTitle,
+        version: version,
+        submitter: submitter,
+        submittedAt: submittedAt,
+        aiErrors: aiErrors,
+        aiWarnings: aiWarnings,
+        aiSuggestions: aiSuggestions,
+        status: status ?? this.status,
+        note: note ?? this.note,
+      );
 }
 
 /// Phát hiện của AI trên một tài liệu.

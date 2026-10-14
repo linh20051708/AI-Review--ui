@@ -24,6 +24,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool _loading = false;
   bool _offline = false;
 
+  // Nghe `ReviewRepository`: 4 thẻ số liệu (_pending/_inReview/_approved/
+  // _needsRevision) đọc thẳng từ repository, nên sau khi phê duyệt ở màn khác
+  // thì Tổng quan phải tự dựng lại. Trước 14/10 không màn nào đăng ký nghe
+  // (`notifyListeners()` gọi mà không ai nhận) nên số liệu đứng im.
+  @override
+  void initState() {
+    super.initState();
+    ReviewRepository.instance.addListener(_onRepoChanged);
+  }
+
+  @override
+  void dispose() {
+    ReviewRepository.instance.removeListener(_onRepoChanged);
+    super.dispose();
+  }
+
+  void _onRepoChanged() {
+    if (mounted) setState(() {});
+  }
+
   void _simulateReload() {
     setState(() => _loading = true);
     Future<void>.delayed(const Duration(milliseconds: 400), () {

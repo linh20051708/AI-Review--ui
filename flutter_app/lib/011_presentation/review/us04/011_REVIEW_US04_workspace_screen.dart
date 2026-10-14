@@ -16,13 +16,29 @@ import '../../shared/011_CORE_dialog_actions.dart';
 ///
 /// Có thanh quyết định dính đáy (2 nút, cao >= 48dp) và hộp thoại xác nhận
 /// trước khi phê duyệt — không có ngõ cụt.
-class ReviewWorkspaceScreen extends StatelessWidget {
+class ReviewWorkspaceScreen extends StatefulWidget {
   const ReviewWorkspaceScreen({super.key, required this.reviewId});
 
   final String reviewId;
 
   @override
+  State<ReviewWorkspaceScreen> createState() => _ReviewWorkspaceScreenState();
+}
+
+class _ReviewWorkspaceScreenState extends State<ReviewWorkspaceScreen> {
+  /// Quyết định đã ghi trong phiên này (`null` = chưa quyết định).
+  ///
+  /// VÌ SAO CẦN (14/10, đợt 3): màn này trước là `StatelessWidget` và hai nút
+  /// quyết định **chỉ hiện toast**, KHÔNG gọi `ReviewRepository.write()`. Nghĩa
+  /// là bấm "Phê duyệt" → hiện "Đã phê duyệt tài liệu." nhưng `status` không hề
+  /// đổi và màn vẫn hiện chip cũ. App báo sai cho người dùng — cùng loại lỗi đã
+  /// sửa ở `202_DOMAIN_review_repository.dart`. Xem
+  /// `test/approve_flow_test.dart` (TC_US06_HP_04) khoá lại hành vi này.
+  DocStatus? _decided;
+
+  @override
   Widget build(BuildContext context) {
+    final reviewId = widget.reviewId;
     final r = ReviewRepository.instance.byId(reviewId);
 
     // Tài liệu không tồn tại (id sai, hoặc đã bị xoá) -> trạng thái lỗi rõ ràng,
@@ -123,7 +139,8 @@ class ReviewWorkspaceScreen extends StatelessWidget {
             ),
             // `Flexible`: chip phai chiu duoc be rong hep, thieu thi `Row`
             // tran 6,3px o 320dp (do bang `flutter test`).
-            Flexible(child: StatusChip.of(r.status)),
+            // Hiện trạng thái VỪA quyết định nếu có, không thì lấy từ dữ liệu.
+            Flexible(child: StatusChip.of(_decided ?? r.status)),
           ],
         ),
         const SizedBox(height: AppSpace.s),
@@ -364,7 +381,12 @@ class ReviewWorkspaceScreen extends StatelessWidget {
                       'phiên bản mới. Hành động này không thu hồi được.',
                   confirmLabel: 'Gửi yêu cầu chỉnh sửa',
                   destructive: true,
-                  onDone: () => _toast(context, 'Đã gửi yêu cầu chỉnh sửa.'),
+                  onDone: () => _decide(
+                    r.id,
+                    DocStatus.needsRevision,
+                    'Yêu cầu chỉnh sửa',
+                    'Đã gửi yêu cầu chỉnh sửa.',
+                  ),
                 ),
                 child: const Text('Cần chỉnh sửa'),
               ),
@@ -383,7 +405,12 @@ class ReviewWorkspaceScreen extends StatelessWidget {
                       'đã phê duyệt và sinh viên có thể làm bước tiếp theo.',
                   confirmLabel: 'Phê duyệt',
                   destructive: false,
-                  onDone: () => _toast(context, 'Đã phê duyệt tài liệu.'),
+                  onDone: () => _decide(
+                    r.id,
+                    DocStatus.approved,
+                    'Phê duyệt',
+                    'Đã phê duyệt tài liệu.',
+                  ),
                 ),
                 child: const Text('Phê duyệt'),
               ),
@@ -393,6 +420,26 @@ class ReviewWorkspaceScreen extends StatelessWidget {
       ),
     ),
   );
+
+  /// Ghi quyết định vào tầng dữ liệu RỒI mới báo cho người dùng.
+  ///
+  /// Ghi trước, báo sau: nếu `write` thất bại (đang offline thì nó xếp hàng và
+  /// trả `false`) thì thông báo phải nói đúng là đang chờ mạng, không được nói
+  /// "đã phê duyệt" khi chưa ghi được gì.
+  void _decide(String id, DocStatus next, String label, String okMessage) {
+    final sent = ReviewRepository.instance.write(
+      id: id,
+      label: label,
+      payload: next.name,
+    );
+    setState(() => _decided = sent ? next : _decided);
+    _toast(
+      context,
+      sent
+          ? okMessage
+          : 'Đang mất mạng — đã xếp hàng, sẽ gửi lại khi có mạng.',
+    );
+  }
 
   void _toast(BuildContext context, String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
