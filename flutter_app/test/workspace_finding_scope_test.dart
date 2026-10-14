@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:mobi_review/data/repositories/review_repository.dart';
-import 'package:mobi_review/features/review_workspace/workspace_screen.dart';
+import 'package:mobi_review/features/review_workspace/page/workspace_page.dart';
 
 /// MÀN WORKSPACE cũng phải chỉ hiển thị phát hiện của TÀI LIỆU ĐANG MỞ.
 ///
@@ -13,6 +13,10 @@ import 'package:mobi_review/features/review_workspace/workspace_screen.dart';
 ///
 ///   `features/review_workspace/workspace_screen.dart:104`
 ///   `features/review_workspace/workspace_screen.dart:117`
+///
+/// (Đợt 15 tách file theo `page -> state -> widget`, hai dòng trên nay nằm ở
+/// `features/review_workspace/page/workspace_page.dart` — đường dẫn trong bài
+/// học này giữ nguyên để vết sửa lịch sử còn đọc được.)
 ///
 /// Hệ quả: mở workspace của `review-001` (chỉ có 7 cảnh báo) thì danh sách "Phát
 /// hiện của AI" lại lôi CẢ 7 cảnh báo toàn cục — trong đó có cảnh báo không

@@ -14,7 +14,7 @@ Tra ở đây, **đừng suy số** từ mã này sang mã kia.
 | `P01` giảng viên | `SC01` | `1-UC-01` | `1-US-01` | `011_AUTH_US01_login_screen` | `s01-dang-nhap.svg` | `flutter_app/lib/features/login/login_screen.dart` | `TC_US01_*` |
 | `P01` giảng viên | `SC02` | `1-UC-02` | `1-US-02` | `011_DASH_US02_dashboard_screen` | `s02-tong-quan.svg` | `flutter_app/lib/features/dashboard/dashboard_screen.dart` | `TC_US02_*` |
 | `P01` giảng viên | `SC03` | `1-UC-03` | `1-US-03` | `011_REVIEW_US03_request_list` | `s03-yeu-cau-review.svg` | `flutter_app/lib/features/request_list/request_list_screen.dart` | `TC_US03_*` |
-| `P01` giảng viên | `SC04` | `1-UC-04` | `1-US-04` | `011_REVIEW_US04_workspace_screen` | `s04-khong-gian-review.svg` | `flutter_app/lib/features/review_workspace/workspace_screen.dart` | `TC_US04_*` |
+| `P01` giảng viên | `SC04` | `1-UC-04` | `1-US-04` | `011_REVIEW_US04_workspace_screen` | `s04-khong-gian-review.svg` | `flutter_app/lib/features/review_workspace/page/workspace_page.dart` | `TC_US04_*` |
 | `P01` giảng viên | `SC05` | `1-UC-05` | `1-US-05` | `011_REVIEW_US05_ai_result_screen` | `s05-ket-qua-ai.svg` | `flutter_app/lib/features/ai_result/ai_result_screen.dart` | `TC_US05_*` |
 | `P01` giảng viên | `SC06` | `1-UC-06` | `1-US-06` | `011_REVIEW_US06_approval_screen` | `s06-lop-hoc.svg` | `flutter_app/lib/features/approval/approval_screen.dart` | `TC_US06_*` |
 | `P01` giảng viên | `SC07` | `1-UC-07` | `1-US-07` | `011_REVIEW_US07_revision_screen` | `s07-project.svg` | `flutter_app/lib/features/revision_request/revision_screen.dart` | `TC_US07_*` |
@@ -46,6 +46,13 @@ user story và wireframe có thật, nhưng bản demo Flutter **chưa dựng m�
 
 > US11 có file `offline_banner.dart` nhưng là **component dùng chung**, không phải màn riêng.
 > 8 US chưa code **không** phải "đã xong" — `docs/CMPlan.md` §6 ghi ở N4.
+
+> **Cập nhật 14/10 (đợt tách tệp):** màn US04 được tách theo kiến trúc
+> `page -> state -> widget` (https://docs.flutter.dev/resources/architectural-overview) nên đường
+> dẫn trong bảng §1 đổi từ `review_workspace/workspace_screen.dart` sang
+> `review_workspace/page/workspace_page.dart`. **Tên lớp công khai giữ nguyên
+> `ReviewWorkspaceScreen`** — đổi tên lớp là đổi giao diện nên phải sửa mọi nơi gọi trong cùng
+> một thay đổi; ở đây tách tệp thuần, hành vi không đổi.
 
 **Vì sao không dựng 8 màn giả:** gate yêu cầu đường dẫn phải có thật; cách duy nhất để nó xanh là
 dựng màn thật hoặc khai `—`. Điền đường dẫn không tồn tại cho xanh là **bịa**, đúng thứ cổng này sinh ra để chặn.
@@ -81,7 +88,10 @@ flutter_app/lib/
 │   ├── dashboard/dashboard_screen.dart       # [011 · DASH · US02]
 │   ├── request_list/request_list_screen.dart  # [011 · REVIEW · US03]
 │   │                                    review_card.dart
-│   ├── review_workspace/workspace_screen.dart  # [011 · REVIEW · US04]
+│   ├── review_workspace/                      # [011 · REVIEW · US04]
+│   │   ├── page/workspace_page.dart           # điều phối màn, giữ tên lớp công khai
+│   │   ├── state/workspace_state.dart         # InheritedWidget cho trạng thái quyết định
+│   │   └── widget/                            # thẻ tài liệu, tiến trình, tệp, phiên bản, AI, thanh quyết định
 │   ├── ai_result/ai_result_screen.dart       # [011 · REVIEW · US05]
 │   ├── approval/approval_screen.dart         # [011 · REVIEW · US06]
 │   ├── revision_request/revision_screen.dart # [011 · REVIEW · US07]

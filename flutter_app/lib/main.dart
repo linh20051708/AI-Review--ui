@@ -10,7 +10,7 @@ import './features/submit_gate/submit_gate_screen.dart';
 import './features/group_health/group_health_screen.dart';
 import './shared/app_shell.dart';
 import './features/login/login_screen.dart';
-import './features/review_workspace/workspace_screen.dart';
+import './features/review_workspace/page/workspace_page.dart';
 import './shared/theme/app_theme.dart';
 
 void main() => runApp(const MobiReviewApp());

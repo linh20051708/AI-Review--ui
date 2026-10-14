@@ -8,7 +8,7 @@ import 'package:mobi_review/shared/app_shell.dart';
 import 'package:mobi_review/features/dashboard/dashboard_screen.dart';
 import 'package:mobi_review/features/login/login_screen.dart';
 import 'package:mobi_review/features/request_list/request_list_screen.dart';
-import 'package:mobi_review/features/review_workspace/workspace_screen.dart';
+import 'package:mobi_review/features/review_workspace/page/workspace_page.dart';
 import 'package:mobi_review/shared/theme/color_tokens.dart';
 import 'package:mobi_review/features/request_list/review_card.dart';
 import 'package:mobi_review/shared/theme/spacing.dart';

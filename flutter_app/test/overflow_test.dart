@@ -7,7 +7,7 @@ import 'package:mobi_review/features/dashboard/dashboard_screen.dart';
 import 'package:mobi_review/features/group_health/group_health_screen.dart';
 import 'package:mobi_review/features/profile/profile_screen.dart';
 import 'package:mobi_review/features/request_list/request_list_screen.dart';
-import 'package:mobi_review/features/review_workspace/workspace_screen.dart';
+import 'package:mobi_review/features/review_workspace/page/workspace_page.dart';
 import 'package:mobi_review/features/ai_result/ai_result_screen.dart';
 import 'package:mobi_review/features/approval/approval_screen.dart';
 import 'package:mobi_review/features/revision_request/revision_screen.dart';
