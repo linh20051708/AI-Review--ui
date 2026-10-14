@@ -37,8 +37,8 @@ class DemoData {
       version: 'v2',
       submitter: 'Trần Hoàng Nam',
       submittedAt: '03/10/2026 · 07:40',
-      aiErrors: 2,
-      aiWarnings: 3,
+      aiErrors: 1,
+      aiWarnings: 0,
       aiSuggestions: 1,
       status: DocStatus.waiting,
       note: 'Nộp lại sau feedback v1 · sửa thứ tự message',
@@ -199,7 +199,7 @@ class DemoData {
       pageRef: 'Trang 9',
     ),
     AiFinding(
-      reviewId: 'review-001',
+      reviewId: 'review-008',
       level: FindingLevel.suggestion,
       category: 'Logic Issue',
       message:
@@ -207,7 +207,7 @@ class DemoData {
       pageRef: 'Trang 8',
     ),
     AiFinding(
-      reviewId: 'review-001',
+      reviewId: 'review-008',
       level: FindingLevel.suggestion,
       category: 'Naming Issue',
       message: 'Dùng động từ thống nhất cho tên Use Case (Submit / Upload).',

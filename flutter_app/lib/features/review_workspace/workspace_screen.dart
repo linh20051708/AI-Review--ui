@@ -101,7 +101,12 @@ class _ReviewWorkspaceScreenState extends State<ReviewWorkspaceScreen> {
               const SizedBox(height: AppSpace.s),
               _aiSummary(r),
               const SizedBox(height: AppSpace.s),
-              ...ReviewRepository.instance.findings()
+              // Đợt 14 sửa: phải lọc theo tài liệu ĐANG MỞ. Đợt 12 (§3m) tôi chỉ
+              // sửa `ai_result_screen.dart` và QUÊN MẮT chỗ này, nên màn này lại
+              // hiện tất cả cảnh báo toàn cục — kể cả cảnh báo không thuộc tài
+              // liệu này. Bài học: sửa một triệu chứng ở một chỗ, không quét mọi
+              // chỗ cùng dùng. `test/workspace_finding_scope_test.dart` chặn.
+              ...ReviewRepository.instance.findings(reviewId)
                   .take(3)
                   .map((f) => AiFindingCard(finding: f)),
               const SizedBox(height: AppSpace.s),
@@ -114,7 +119,7 @@ class _ReviewWorkspaceScreenState extends State<ReviewWorkspaceScreen> {
                   ),
                   icon: const Icon(Icons.auto_awesome_outlined, size: 18),
                   label: Text(
-                      'Xem tất cả ${ReviewRepository.instance.findings().length} phát hiện'),
+                      'Xem tất cả ${ReviewRepository.instance.findings(reviewId).length} phát hiện'),
                 ),
               ),
               const SizedBox(height: AppSpace.huge),

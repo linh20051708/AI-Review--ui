@@ -564,3 +564,28 @@ file chứ không trong tên folder.
 mã lấn át việc đọc được code. Bảng kiểm là phương tiện; cái được kiểm (code dễ
 đọc, dễ bảo trì) mới là đích. Mã nên sống trong khai báo/tài liệu, không bắt
 đường dẫn phải mang số.
+
+## 3p. Sửa §3m xong QUÊN MẮT chỗ thứ hai cùng dùng (14/10, đợt 14)
+
+Đợt 12 tôi sửa "7 cảnh báo AI không thuộc tài liệu nào" cho
+`features/ai_result/ai_result_screen.dart` — rồi coi như xong. Khi đổi cấu trúc
+(`git mv` đợt 13) tôi mới thấy **`features/review_workspace/workspace_screen.dart`
+vẫn gọi `findings()` không tham số** ở 2 chỗ (dòng 104 và 117). Tức §3m chỉ được
+sửa **một màn trong hai**, và màn workspace — chính màn hiển thị danh sách "Phát
+hiện của AI" cho tài liệu — vẫn lôi cả 7 cảnh báo toàn cục.
+
+**Sửa:** cả hai chỗ truyền `reviewId`. Và thêm cổng quét cả `lib/`: không còn
+dòng LỜI GỌI `findings()` (bỏ qua comment) nào thiếu tham số. Cổng này không cần
+tôi nhớ gọi đúng.
+
+**Bài học (lặp lần thứ 2):** "sửa một triệu chứng ở một chỗ, không quét toàn bộ
+chỗ cùng dùng". Cần cổng ĐẾM CHỖ DÙNG, không chỉ một test xác nhận chỗ đã xong.
+
+**Tiền đề test của tôi so sánn sai lúc đầu:** tôi đổi phân bổ cảnh báo sao cho
+tất cả 7 vẫn thuộc review-001 → global == scoped == 7, test không thể đỏ được.
+Chi phải gán cho 2 tài liệu (review-001: 5, review-008: 2) và sửa khai báo
+`review-008` cho khớp (1/0/1) thì test mới phân biệt được hai nguồn. **Bài học:
+test phải chọn dữ liệu sao cho hai bên có thể khác nhau — nếu không nó luôn xanh.**
+
+**Bận test lần thứ 5:** nút "Xem tất cả N phát hiện" nằm cuối màn 577 dòng,
+ListView dọc dựng lazily → phải cuộn 14 lần mới thấy. Giống §3k (cuộn NGANG).
