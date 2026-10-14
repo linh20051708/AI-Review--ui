@@ -35,10 +35,14 @@ class _SubmitDocumentScreenState extends State<SubmitDocumentScreen> {
 
   void _submit() {
     final repo = ReviewRepository.instance;
+    // payload phải là MỘT `DocStatus.name` (đợt 8 sửa): từng truyền `_fileName`
+    // (`sequence-diagram-v2.pdf`) — chuỗi không ánh xạ được trạng thái nào, nên
+    // `_apply()` lặng lẽ bỏ qua và màn vẫn báo "Vừa xong" giả dối. Tên tệp vẫn
+    // hiện trong nhãn để người dùng biết đang nộp cái gì.
     final sent = repo.write(
       id: widget.projectId,
-      label: 'Nộp tài liệu',
-      payload: _fileName,
+      label: 'Nộp $_fileName',
+      payload: DocStatus.submitted.name,
     );
     setState(() => _submittedAt = sent
         ? 'Vừa xong'

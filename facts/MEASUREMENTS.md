@@ -340,3 +340,36 @@ TC_US04_BV_03 — mở "Activity Diagram" (0/1/2), assert KHÔNG có chuỗi gă
 doneCount/totalCount`, `pct` suy từ đó, 3 nhóm (4/4, 1/4, 2/4) đều khớp, không
 có số găm cứng. US05 đọc `r.aiErrors/Warnings/Suggestions` trực tiếp (đúng).
 US06/US07 không hiện số AI chi tiết nên không có sai số ở chỗ đó.
+
+## 3i. Nút "Nộp tài liệu" ghi nhầm id và payload (14/10, đợt 8)
+
+Màn nộp tài liệu (`us09`) gọi `repo.write(id: widget.projectId, ..., payload: _fileName)`:
+- route `/submit` mặc định `projectId = 'smart-campus-management'` — mã **KHÔNG TỒN TẠI**
+  trong dữ liệu (id thật là `review-001`…`review-010`);
+- `payload` là **TÊN TỆP** (`sequence-diagram-v2.pdf`) — không ánh xạ được sang
+  `DocStatus` nào.
+
+`_apply()` (đã viết cẩn thận từ đợt 3) lặng lẽ bỏ qua **cả hai** trường hợp, nên màn
+hiện "Vừa xong" còn dữ liệu **không đổi một milimet**. Đây là lỗi **lặp lại đợt 3**
+("toast báo thành công mà dữ liệu không đổi"), lần này qua id/payload sai thay vì
+thiếu `write()`.
+
+**Sửa:** `/submit` mặc định `'review-009'` (tài liệu đang "Cần chỉnh sửa" — đúng
+ngữ cảnh nộp lại); payload đổi sang `DocStatus.submitted.name` (tên tệp vẫn hiện
+trong nhãn "Nộp <tệp>").
+
+**Cổng chống tái phát:** `test/submit_persist_test.dart` 2 ca —
+HP: bấm Nộp → **phải có** tài liệu chuyển sang "Đã nộp" (ĐỎ trước sửa: không đổi
+tài liệu nào); AP: mất mạng → xếp hàng, `pendingCount==1`, trạng thái chưa đổi;
+có mạng → `_flushQueue` ghi thật. Xanh cả hai.
+
+**Hai lỗi của riêng tôi khi viết test** (ghi ra để không lặp): (a) `find.text('Nộp
+tài liệu')` khớp NHIỀU (tiêu đề AppBar + nút) → dùng `.last`; (b) giữ biến `target`
+từ `byId` trước khi ghi → đọc **object cũ**, vì `_apply` THAY THẾ phần tử
+(`list[at] = ...copyWith`) nên phải HỎI LẠI qua `byId` sau mỗi lần ghi.
+
+**Bằng chứng trình duyệt:** đã cố chứng minh trực tiếp trên build thật nhưng
+**không xong** — sau khi bấm SSO, semantics tree của Flutter-web đổi và Playwright
+đọc/click không ổn định (đúng bản chất §3c). Trình duyệt chỉ dùng được làm cổng hồi
+quy (journeys 8/8, tap-target 9/9, 0 lỗi console); **dụng cụ có thẩm quyền cho
+trạng thái sau nộp là widget test** — đã chứng minh ĐỎ→XANH.

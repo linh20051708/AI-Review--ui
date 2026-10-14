@@ -113,8 +113,13 @@ class MobiReviewApp extends StatelessWidget {
         return _page(
           _DetailScaffold(
             title: 'Nộp tài liệu',
+            // Id TÀI LIỆU THẬT (đợt 8 sửa): từng mặc định
+            // 'smart-campus-management' — mã không tồn tại trong dữ liệu, nên
+            // `repo.write()` lặng lẽ bỏ qua và màn báo "Vừa xong" giả dối.
+            // 'review-009' là tài liệu đang "Cần chỉnh sửa" — đúng ngữ cảnh
+            // sinh viên nộp lại. Không truyền arguments thì vẫn có id hợp lệ.
             child: SubmitDocumentScreen(
-              projectId: settings.arguments as String? ?? 'smart-campus-management',
+              projectId: settings.arguments as String? ?? 'review-009',
             ),
           ),
           settings,
