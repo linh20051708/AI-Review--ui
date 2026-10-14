@@ -93,6 +93,12 @@ Mã không chỉ để đọc — nó **buộc cấu trúc folder phải khớp*
 Một mã `3-SC-04` xuất hiện trong `docs/` → **hợp lệ** (tầng 4 tham chiếu tầng 3).
 Một mã `1-UC-16` được **định nghĩa** trong `docs/` → **lỗi** (tầng 4 định nghĩa lại tầng 1).
 
+> **Điểm yếu đã biết:** tầng 1 và tầng 2 **cùng nằm trong `ux/`**, nên **không thể kiểm tầng bằng
+> folder** cho hai tầng này. Phải suy tầng từ **tiền tố loại mã** (`1-UC` là tầng 1, `2-FL` là tầng 2).
+> `rules/check-layers.py` vì vậy chỉ kiểm được các tầng có folder riêng (`docs/`, `rules/`, `verify/`).
+> Muốn tách tầng 1 và 2 bằng folder thì phải đổi cấu trúc repo sang `ux/business/` + `ux/flow/` —
+> **chưa làm**, vì sẽ phá mọi tham chiếu hiện có. Đây là nợ kỹ thuật, không phải đã xong.
+
 Ánh xạ sang code thật của ứng dụng:
 
 | Mã tài liệu | Trỏ tới code |
