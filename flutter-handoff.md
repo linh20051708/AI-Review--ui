@@ -8,8 +8,21 @@
 > **`flutter_app/`** — app Flutter **viết mới**, port 6 màn chính từ `app/` (React) sang, dùng đúng
 > token trong file này. Đây **không phải** code của giảng viên và **không phải** bản port của
 > `srs-review-ai`. App không có backend; dữ liệu chép từ `app/src/data/mockData.ts`.
-> Trạng thái đo được: `flutter analyze` sạch · `flutter test` 19/19 xanh · `flutter build web` ra artifact.
-> Ảnh chạy thật ở `ai-output/flutter-app/`. Token nguồn vẫn lấy từ code nền React thật
+> Trạng thái đo được (14/10/2026): `flutter analyze` sạch · `flutter test` **36/36** xanh · `flutter build web` ra artifact.
+> Ảnh chạy thật ở `ai-output/flutter-app/` — 6 ảnh, tên gắn mã TC.
+
+```bash
+cd flutter_app
+flutter pub get                 # BAT BUOC voi ban clone moi
+flutter analyze --no-pub
+flutter test
+flutter build web --release
+```
+>
+> **Bản clone mới phải chạy `flutter pub get` TRƯỚC `flutter analyze`.** Nếu không, `--no-pub`
+> không giải được package và analyzer báo hàng nghìn lỗi giả kiểu `Undefined class 'ThemeData'`.
+> Đây là hiện tượng thiếu dependency, **không phải** lỗi code — đã đo: clone sạch trước `pub get`
+> ra 1493 lỗi, sau `pub get` ra `No issues found!`. Token nguồn vẫn lấy từ code nền React thật
 > (`app/src/index.css`), không phải tự đặt.
 
 ---

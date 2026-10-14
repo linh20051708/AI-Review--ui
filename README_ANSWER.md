@@ -41,7 +41,7 @@ Hướng dẫn dựng file Figma: `README.md` §2.2. Điền link tự động: 
 | — | **Kiến trúc theo tầng** | — | `docs/ARCHITECTURE-LAYERS.md` + `rules/check-layers.py` |
 | — | **Use case / User story / Test case** | — | `ux/use-cases.md` (17) · `ux/user-stories.md` (14) · `docs/test-cases.md` (22) |
 | — | **Bảng truy vết** | — | `docs/traceability.md` + `rules/check-trace.py` |
-| — | **App Flutter chạy được** | — | `flutter_app/` · 3 ảnh ở `ai-output/flutter-app/` |
+| — | **App Flutter chạy được** | — | `flutter_app/` · **6 ảnh** ở `ai-output/flutter-app/` (tên gắn mã TC) |
 
 Chạy `python3 lab2-gate.py` để tự chấm.
 

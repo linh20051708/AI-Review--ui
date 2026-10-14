@@ -125,8 +125,10 @@ Bản cuối nộp là `figma-svg/output/03-final/` (script sinh theo token dự
 | | `figma-svg/output/04-design-system/`, `05-components/` | 14 khung SVG |
 | **F** Prototype tương tác | `ux/prototype-spec.md` | 3 luồng dạng từng bước, script demo 5 phút |
 | **G** Handoff Flutter | `flutter-handoff.md` | Token → Dart, component → widget, spec 14 màn hình |
-| | `flutter_app/` | **App Flutter chạy được** (6 màn), `flutter analyze` sạch, `flutter test` 19/19 xanh |
-| | `ai-output/flutter-app/` | 3 ảnh chụp app Flutter chạy thật trong Chromium |
+| | `flutter_app/` | **App Flutter chạy được** (6 màn), `flutter analyze` sạch, `flutter test` **36/36** xanh |
+| | `ai-output/flutter-app/` | **6 ảnh** chụp app Flutter chạy thật, tên file gắn mã TC (`TC_USxx_*`) |
+| | `rules/check-trace-map.py` | Cổng kiểm bảng truy vết dọc trỏ tới file có thật |
+| | `rules/check-commit-msg.py`, `rules/install-hooks.py` | Cưỡng chế commit theo mã SKU |
 | **Bổ sung 14/10** | `rules/QUALITY-RULES.md` | Bộ quy tắc chất lượng dạng **checkbox** (rubric A–H + C1–C8) |
 | | `rules/ID-SCHEME.md` | Cơ chế đặt mã định danh kiểu SKU (4 tầng, 15 loại) |
 | | `docs/ARCHITECTURE-LAYERS.md` | Kiến trúc tài liệu theo tầng, biết thông tin ở cấp mấy |
