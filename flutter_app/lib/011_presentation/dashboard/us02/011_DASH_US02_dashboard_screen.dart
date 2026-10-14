@@ -6,6 +6,7 @@ import '../../../001_core/theme/001_CORE_spacing.dart';
 import '../../../001_core/theme/001_CORE_typography.dart';
 import '../../review/us03/011_REVIEW_US03_review_card.dart';
 import '../../shared/011_CORE_US11_offline_banner.dart';
+import '../../shared/011_CORE_shared_app_card.dart';
 import '../../shared/011_CORE_shared_status_chip.dart';
 import '../../shared/011_CORE_tone_colors.dart';
 import '../../../202_data_repositories/202_DOMAIN_review_repository.dart';
@@ -93,6 +94,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 _greeting(),
                 const SizedBox(height: AppSpace.xl),
+                // Đợt 11 sửa: `pendingCount` (số việc đang chờ mạng) chỉ nằm
+                // trong repository, KHÔNG màn nào nói ra — nên người dùng nộp
+                // khi mất mạng, rời màn, rồi không còn cách nào biết còn mấy
+                // việc chưa gửi. Nếu tắt app tưởng đã đồng bộ là mất quyết định.
+                if (ReviewRepository.instance.pendingCount > 0) ...[
+                  _pendingNotice(ReviewRepository.instance.pendingCount),
+                  const SizedBox(height: AppSpace.l),
+                ],
                 _statGrid(),
                 const SizedBox(height: AppSpace.xl),
                 _section(
@@ -152,6 +161,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ],
     );
   }
+
+  /// Báo rõ còn mấy việc chờ mạng (đợt 11).
+  ///
+  /// Nói thẳng con số và hậu quả nếu tắt app: nếu không, người dùng nộp khi mất
+  /// mạng xong rời màn, không còn cách nào biết còn chưa gửi — đó là lỗi "giao
+  /// diện nói thiếu sự thật" (§3f/§3k): dữ liệu có, người dùng không thấy.
+  Widget _pendingNotice(int count) => AppCard(
+        child: Row(
+          children: [
+            Icon(Icons.cloud_upload_outlined,
+                size: 20, color: ToneColors.fg(Tone.amber)),
+            const SizedBox(width: AppSpace.m),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Còn $count việc chờ gửi',
+                    style: AppText.bodySmall.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: AppSpace.xs),
+                  Text(
+                    'Bạn đang mất mạng nên các quyết định vừa rồi được xếp hàng. '
+                    'Mở mạng lại để gửi.',
+                    style: AppText.micro,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
 
   /// Nút điều hướng đủ 48dp — KHÔNG dựa vào theme (xem ghi chú ở chỗ gọi).
   ///

@@ -440,3 +440,25 @@ chip "Không đạt"; (b) bấm chip thì danh sách còn đúng số tài liệ
 lazily) → `find.text` không thấy dù code đã đúng. Phải `tester.drag(lv,
 Offset(-600, 0))` tới khi thấy. Bài học: với list theo hướng nào thì phải cuộn
 đúng hướng ấy TRƯỚC, và "không tìm thấy" chưa chắc là "không có".
+
+## 3l. Có việc chờ gửi nhưng không màn nào nói ra (14/10, đợt 11)
+
+`pendingCount` — số quyết định đang xếp hàng chờ mạng — **chỉ nằm trong
+repository, KHÔNG màn nào hiển thị**. Hệ quả: người dùng chỉnh sửa/nộp khi mất
+mạng, thấy một lần "đã xếp hàng", rời màn, rồi **không còn cách nào biết còn mấy
+việc chưa gửi**. Nếu tắt app tưởng đã đồng bộ thì mất quyết định.
+
+Đây là lỗi cùng lớp §3f/§3k nhưng theo hướng TON TẠI-NHƯNG-THẤY-ĐƯỢC: bộ đếm
+đúng, dữ liệu đúng, duy nhất đường hiển thị với người dùng không có. Khác §3d
+(ghi sai) ở chỗ không có màn nào nói sai — là không nói gì cả.
+
+**Sửa:** dashboard hiện `Còn N việc chờ gửi` khi `pendingCount > 0`, kèm hậu quả
+("Mở mạng lại để gửi"). Hết hàng đợi thì tự biến mất.
+
+**Cổng chống tái phát:** `test/pending_visibility_test.dart` 2 ca — (a) còn 2 việc
+chờ thì Tổng quan phải nói số lượng; (b) hết hàng đợi thì không được báo nữa.
+Chứng minh ĐỎ trước sửa, và chứng minh không hư test: hiện lại thẻ sau cổng `if
+(false)` thì ca (a) lại ĐỎ cùng thông điệp.
+
+**Đo thêm:** ở 320dp thẻ rộng 280dp (= 320 − 2×20 padding màn) → không tràn, đặt
+side-by-side trong `Row` với icon 20 + gutter 12.
