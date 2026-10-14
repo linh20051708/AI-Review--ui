@@ -23,7 +23,7 @@ Repo này gồm 2 phần:
 - **Tài liệu Lab 2** — phần phân tích, sinh UI bằng AI, critique, design system, prototype spec,
   handoff — tất cả bám theo code nền thật, không phải đề tài tự nghĩ ra.
 - **`flutter_app/`** — app Flutter **chạy được**, viết mới trong Lab 2 để minh hoạ phần handoff (mục G).
-  Đây **không** phải code của giảng viên; nó port 6 màn chính từ `app/` sang Flutter, dùng đúng token
+  Đây **không** phải code của giảng viên; nó port **13 màn + 1 banner dùng chung** từ `app/` sang Flutter, dùng đúng token
   trong `app/src/index.css`, dữ liệu chép từ `app/src/data/mockData.ts`, **không có backend**.
 - **`rules/` + `docs/`** — bộ quy tắc chất lượng dạng checkbox, cơ chế đặt mã định danh kiểu SKU,
   kiến trúc tài liệu theo tầng, use case / user story, test case và bảng truy vết.
@@ -125,8 +125,8 @@ Bản cuối nộp là `figma-svg/output/03-final/` (script sinh theo token dự
 | | `figma-svg/output/04-design-system/`, `05-components/` | 14 khung SVG |
 | **F** Prototype tương tác | `ux/prototype-spec.md` | 3 luồng dạng từng bước, script demo 5 phút |
 | **G** Handoff Flutter | `flutter-handoff.md` | Token → Dart, component → widget, spec 14 màn hình |
-| | `flutter_app/` | **App Flutter chạy được** (6 màn), `flutter analyze` sạch, `flutter test` **36/36** xanh |
-| | `ai-output/flutter-app/` | **6 ảnh** chụp app Flutter chạy thật, tên file gắn mã TC (`TC_USxx_*`) |
+| | `flutter_app/` | **App Flutter chạy được** (13 màn, phủ đủ 14/14 US), `flutter analyze` sạch, `flutter test` **48/48** xanh |
+| | `ai-output/flutter-app/` | **ảnh** chụp app Flutter chạy thật, tên file gắn mã TC (`TC_USxx_*`); thêm `verify/flutter-tap-targets.mjs` đo 77 vùng chạm / 8 màn, 0 mục < 48dp |
 | | `rules/check-trace-map.py` | Cổng kiểm bảng truy vết dọc trỏ tới file có thật |
 | | `rules/check-commit-msg.py`, `rules/install-hooks.py` | Cưỡng chế commit theo mã SKU |
 | **Bổ sung 14/10** | `rules/QUALITY-RULES.md` | Bộ quy tắc chất lượng dạng **checkbox** (rubric A–H + C1–C8) |

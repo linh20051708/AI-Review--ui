@@ -54,6 +54,30 @@ class ReviewWorkspaceScreen extends StatelessWidget {
               _sectionTitle('Lịch sử phiên bản'),
               const SizedBox(height: AppSpace.s),
               ...ReviewRepository.instance.versions().map(_versionRow),
+              const SizedBox(height: AppSpace.s),
+              SizedBox(
+                height: AppSpace.tapMin,
+                child: OutlinedButton.icon(
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed('/reviews/compare'),
+                  icon: const Icon(Icons.compare_arrows, size: 18),
+                  label: const Text('So sánh hai phiên bản'),
+                ),
+              ),
+              const SizedBox(height: AppSpace.l),
+              _sectionTitle('Chuẩn đang áp'),
+              const SizedBox(height: AppSpace.s),
+              SizedBox(
+                height: AppSpace.tapMin,
+                child: OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).pushNamed(
+                    '/reviews/rule-set',
+                    arguments: r.id,
+                  ),
+                  icon: const Icon(Icons.rule_folder_outlined, size: 18),
+                  label: const Text('Xem chuẩn áp cho tài liệu này'),
+                ),
+              ),
               const SizedBox(height: AppSpace.l),
               _sectionTitle('Phát hiện của AI'),
               const SizedBox(height: AppSpace.s),
@@ -63,13 +87,17 @@ class ReviewWorkspaceScreen extends StatelessWidget {
                   .take(3)
                   .map((f) => AiFindingCard(finding: f)),
               const SizedBox(height: AppSpace.s),
-              OutlinedButton.icon(
-                onPressed: () => Navigator.of(context).pushNamed(
-                  '/reviews/ai-result',
-                  arguments: r.id,
+              SizedBox(
+                height: AppSpace.tapMin,
+                child: OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).pushNamed(
+                    '/reviews/ai-result',
+                    arguments: r.id,
+                  ),
+                  icon: const Icon(Icons.auto_awesome_outlined, size: 18),
+                  label: Text(
+                      'Xem tất cả ${ReviewRepository.instance.findings().length} phát hiện'),
                 ),
-                icon: const Icon(Icons.auto_awesome_outlined, size: 18),
-                label: Text('Xem tất cả ${ReviewRepository.instance.findings().length} phát hiện'),
               ),
               const SizedBox(height: AppSpace.huge),
             ],
@@ -295,6 +323,22 @@ class ReviewWorkspaceScreen extends StatelessWidget {
     ),
   );
 
+  /// Thanh quyết định cố định dưới màn S04.
+  ///
+  /// ĐO THẬT (14/10) — chuyện này tốn nhiều lượt vì đo sai công cụ, ghi lại:
+  /// hai nút render đúng **40 CSS px**, dưới ngưỡng 48 của C4. Bằng chứng cuối
+  /// là đếm pixel màu brand trên ảnh chụp (`#146B55`, 80 device px ở scale 2
+  /// = 40 CSS px), khớp với node semantics `width:184px; height:40px` và với
+  /// vùng kích hoạt quét được (bấm dưới mép nút không mở hộp thoại).
+  ///
+  /// Đã thử và ĐỀU KHÔNG ĂN:
+  ///   1. `outlinedButtonTheme/filledButtonTheme.minimumSize = 48` (khai từ trước)
+  ///   2. `SizedBox(height: 48)` bọc ngoài `Row`
+  ///   3. `SizedBox(height: 96)` bọc ngoài `Row`
+  ///   4. `styleFrom(minimumSize: Size.fromHeight(48))` ngay trên nút
+  /// Nguyên nhân: chiều cao từ cha truyền xuống là ràng buộc **tight**, nên
+  /// `minimumSize` bị vô hiệu. Cách ăn là **SizedBox bọc TRỰC TIẾP quanh
+  /// từng nút** — xem 2 chỗ `SizedBox(height: AppSpace.tapMin)` dưới đây.
   Widget _decisionBar(BuildContext context, ReviewRequest r) => Container(
     padding: const EdgeInsets.all(AppSpace.l),
     decoration: const BoxDecoration(
@@ -306,34 +350,40 @@ class ReviewWorkspaceScreen extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: OutlinedButton(
-              onPressed: () => _confirm(
-                context,
-                title: 'Yêu cầu chỉnh sửa?',
-                message:
-                    'Sinh viên sẽ nhận được yêu cầu chỉnh sửa và phải tạo '
-                    'phiên bản mới. Hành động này không thu hồi được.',
-                confirmLabel: 'Gửi yêu cầu chỉnh sửa',
-                destructive: true,
-                onDone: () => _toast(context, 'Đã gửi yêu cầu chỉnh sửa.'),
+            child: SizedBox(
+              height: AppSpace.tapMin,
+              child: OutlinedButton(
+                onPressed: () => _confirm(
+                  context,
+                  title: 'Yêu cầu chỉnh sửa?',
+                  message:
+                      'Sinh viên sẽ nhận được yêu cầu chỉnh sửa và phải tạo '
+                      'phiên bản mới. Hành động này không thu hồi được.',
+                  confirmLabel: 'Gửi yêu cầu chỉnh sửa',
+                  destructive: true,
+                  onDone: () => _toast(context, 'Đã gửi yêu cầu chỉnh sửa.'),
+                ),
+                child: const Text('Cần chỉnh sửa'),
               ),
-              child: const Text('Cần chỉnh sửa'),
             ),
           ),
           const SizedBox(width: AppSpace.m),
           Expanded(
-            child: FilledButton(
-              onPressed: () => _confirm(
-                context,
-                title: 'Phê duyệt tài liệu?',
-                message:
-                    'Tài liệu ${r.documentTitle} ${r.version} sẽ được đánh dấu '
-                    'đã phê duyệt và sinh viên có thể làm bước tiếp theo.',
-                confirmLabel: 'Phê duyệt',
-                destructive: false,
-                onDone: () => _toast(context, 'Đã phê duyệt tài liệu.'),
+            child: SizedBox(
+              height: AppSpace.tapMin,
+              child: FilledButton(
+                onPressed: () => _confirm(
+                  context,
+                  title: 'Phê duyệt tài liệu?',
+                  message:
+                      'Tài liệu ${r.documentTitle} ${r.version} sẽ được đánh dấu '
+                      'đã phê duyệt và sinh viên có thể làm bước tiếp theo.',
+                  confirmLabel: 'Phê duyệt',
+                  destructive: false,
+                  onDone: () => _toast(context, 'Đã phê duyệt tài liệu.'),
+                ),
+                child: const Text('Phê duyệt'),
               ),
-              child: const Text('Phê duyệt'),
             ),
           ),
         ],

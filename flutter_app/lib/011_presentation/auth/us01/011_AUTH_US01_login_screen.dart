@@ -86,10 +86,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: AppText.micro,
                 ),
                 const SizedBox(height: AppSpace.xl),
-                FilledButton.icon(
-                  onPressed: _loading ? null : _submitSso,
-                  icon: const Icon(Icons.school_outlined, size: 18),
-                  label: const Text('Đăng nhập bằng SSO trường'),
+                // 48dp: xem ghi chu o `_decisionBar` cua S04 — `minimumSize`
+                // bi rang buoc TIGHT cua cha vo hieu, phai boc SizedBox.
+                SizedBox(
+                  height: AppSpace.tapMin,
+                  child: FilledButton.icon(
+                    onPressed: _loading ? null : _submitSso,
+                    icon: const Icon(Icons.school_outlined, size: 18),
+                    label: const Text('Đăng nhập bằng SSO trường'),
+                  ),
                 ),
                 const SizedBox(height: AppSpace.xl),
                 const _OrDivider(),
@@ -130,26 +135,32 @@ class _LoginScreenState extends State<LoginScreen> {
                   _errorBox(_error!),
                 ],
                 const SizedBox(height: AppSpace.xl),
-                FilledButton(
-                  onPressed: _loading ? null : _submit,
-                  child: _loading
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Text('Đăng nhập'),
+                SizedBox(
+                  height: AppSpace.tapMin,
+                  child: FilledButton(
+                    onPressed: _loading ? null : _submit,
+                    child: _loading
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text('Đăng nhập'),
+                  ),
                 ),
                 const SizedBox(height: AppSpace.l),
-                TextButton(
-                  onPressed: () => setState(
-                    () => _error =
-                        'Hãy liên hệ Phòng Đào tạo để được cấp lại mật khẩu.',
+                SizedBox(
+                  height: AppSpace.tapMin,
+                  child: TextButton(
+                    onPressed: () => setState(
+                      () => _error =
+                          'Hãy liên hệ Phòng Đào tạo để được cấp lại mật khẩu.',
+                    ),
+                    child: const Text('Quên mật khẩu?'),
                   ),
-                  child: const Text('Quên mật khẩu?'),
                 ),
                 const SizedBox(height: AppSpace.xl),
                 Text(

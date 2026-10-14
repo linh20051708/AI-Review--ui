@@ -43,7 +43,11 @@ class EmptyState extends StatelessWidget {
           Text(message, style: AppText.micro, textAlign: TextAlign.center),
           if (actionLabel != null && onAction != null) ...[
             const SizedBox(height: AppSpace.xl),
-            OutlinedButton(onPressed: onAction, child: Text(actionLabel!)),
+            // 48dp — cung ly do nhu S04: `minimumSize` bi rang buoc tight vo hieu.
+            SizedBox(
+              height: AppSpace.tapMin,
+              child: OutlinedButton(onPressed: onAction, child: Text(actionLabel!)),
+            ),
           ],
         ],
       ),
@@ -77,7 +81,10 @@ class OfflineBanner extends StatelessWidget {
             style: AppText.micro.copyWith(color: AppColors.amber),
           ),
         ),
-        TextButton(onPressed: onRetry, child: const Text('Thử lại')),
+        SizedBox(
+          height: AppSpace.tapMin,
+          child: TextButton(onPressed: onRetry, child: const Text('Thử lại')),
+        ),
       ],
     ),
   );
@@ -171,7 +178,10 @@ class ErrorState extends StatelessWidget {
           const SizedBox(height: AppSpace.s),
           Text(message, style: AppText.micro, textAlign: TextAlign.center),
           const SizedBox(height: AppSpace.xl),
-          FilledButton(onPressed: onRetry, child: const Text('Thử lại')),
+          SizedBox(
+            height: AppSpace.tapMin,
+            child: FilledButton(onPressed: onRetry, child: const Text('Thử lại')),
+          ),
         ],
       ),
     ),

@@ -179,10 +179,14 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
           children: [
             Text('${items.length} yêu cầu', style: AppText.micro),
             const Spacer(),
-            TextButton.icon(
-              onPressed: () => setState(() => _hasError = true),
-              icon: const Icon(Icons.error_outline, size: 16),
-              label: const Text('Mô phỏng lỗi'),
+            // 48dp — đo được 40dp trước sửa (xem ghi chú ở S04 `_decisionBar`).
+            SizedBox(
+              height: AppSpace.tapMin,
+              child: TextButton.icon(
+                onPressed: () => setState(() => _hasError = true),
+                icon: const Icon(Icons.error_outline, size: 16),
+                label: const Text('Mô phỏng lỗi'),
+              ),
             ),
           ],
         ),

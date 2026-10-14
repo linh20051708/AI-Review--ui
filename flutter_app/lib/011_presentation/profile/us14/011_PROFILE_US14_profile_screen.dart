@@ -38,12 +38,17 @@ class ProfileScreen extends StatelessWidget {
       _toggle('Gửi phản hồi theo mẫu có sẵn', false),
       const SizedBox(height: AppSpace.l),
       _section('Phiên làm việc'),
-      OutlinedButton.icon(
-        onPressed: () {
-          Navigator.of(context).pushNamedAndRemoveUntil('/login', (_) => false);
-        },
-        icon: const Icon(Icons.logout, size: 18),
-        label: const Text('Đăng xuất'),
+      // 48dp — đo được 40dp trước sửa (xem ghi chú ở S04 `_decisionBar`).
+      SizedBox(
+        height: AppSpace.tapMin,
+        child: OutlinedButton.icon(
+          onPressed: () {
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/login', (_) => false);
+          },
+          icon: const Icon(Icons.logout, size: 18),
+          label: const Text('Đăng xuất'),
+        ),
       ),
       const SizedBox(height: AppSpace.xl),
       Text(

@@ -122,3 +122,92 @@ class AttentionItem {
   final Tone tone;
   final String reviewId;
 }
+
+/// Một phiên bản tài liệu — dùng cho màn so sánh (`1-UC-09`, US08).
+@immutable
+class DocVersion {
+  const DocVersion({
+    required this.label,
+    required this.fileName,
+    required this.at,
+    required this.author,
+    required this.note,
+  });
+
+  final String label;
+  final String fileName;
+  final String at;
+  final String author;
+  final String note;
+}
+
+/// Sức khoẻ một nhóm — US12 (`1-UC-13`). `overdue` là số việc quá hạn.
+@immutable
+class GroupHealth {
+  const GroupHealth({
+    required this.groupName,
+    required this.projectName,
+    required this.classCode,
+    required this.memberCount,
+    required this.doneCount,
+    required this.totalCount,
+    required this.overdue,
+  });
+
+  final String groupName;
+  final String projectName;
+  final String classCode;
+  final int memberCount;
+  final int doneCount;
+  final int totalCount;
+
+  /// Số hạng mục quá hạn — chỉ báo đỏ khi > 0.
+  final int overdue;
+
+  double get progress => totalCount == 0 ? 0 : doneCount / totalCount;
+
+  /// Suy ra sắc thái để tô màu, KHÔNG lưu màu trong domain (luật cô lập tầng).
+  Tone get tone {
+    if (overdue > 0) return Tone.danger;
+    if (progress >= 1) return Tone.brand;
+    if (progress >= 0.5) return Tone.olive;
+    return Tone.amber;
+  }
+}
+
+/// Chuẩn đang áp tại chỗ ra quyết định — US13 (`1-UC-14`).
+@immutable
+class ActiveRuleSet {
+  const ActiveRuleSet({
+    required this.name,
+    required this.version,
+    required this.appliesTo,
+    required this.deadline,
+    required this.checks,
+  });
+
+  final String name;
+  final String version;
+  final String appliesTo;
+  final String deadline;
+  final List<String> checks;
+}
+
+/// Một mục trong danh sách kiểm trước khi nộp — US10 (`1-UC-11`).
+///
+/// `blocking = true` nghĩa là mục này chưa xong **và** đang chặn nút nộp.
+/// Nhãn `reason` phải nói rõ *vì sao*, không được để nút khoá im lặng (PN-08).
+@immutable
+class SubmitChecklistItem {
+  const SubmitChecklistItem({
+    required this.label,
+    required this.done,
+    required this.blocking,
+    required this.reason,
+  });
+
+  final String label;
+  final bool done;
+  final bool blocking;
+  final String reason;
+}

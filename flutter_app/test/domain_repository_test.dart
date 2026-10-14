@@ -172,4 +172,123 @@ void main() {
       expect(repo.pendingCount, 0);
     });
   });
+
+  // ---------------------------------------------------------------------
+  // Đợt 2 (14/10): 7 màn còn thiếu của tầng 011 đã được dựng.
+  // Các test dưới đây neo vào quy tắc nghiệp vụ của chúng, neo mã TC tương ứng.
+  // ---------------------------------------------------------------------
+
+  group('SubmitGate (202) — US10 / 1-UC-11 — PN-08', () {
+    test('TC_US10_HP_01 — nút nộp bị khoá khi còn mục blocking chưa xong', () {
+      final repo = ReviewRepository.instance;
+      expect(repo.canSubmit, isFalse, reason: 'Sequence Diagram chưa duyệt');
+    });
+
+    test('TC_US10_HP_02 — mục bị khoá PHẢI kèm lý do đọc được', () {
+      final repo = ReviewRepository.instance;
+      final blockers = repo.submitBlockers();
+      expect(blockers, isNotEmpty);
+      for (final b in blockers) {
+        expect(
+          b.reason.trim().length,
+          greaterThan(10),
+          reason: 'PN-08 cấm khoá nút im lặng: mục "${b.label}" thiếu lý do',
+        );
+      }
+    });
+
+    test('TC_US10_BV_01 — mục thiếu nhưng KHÔNG chặn thì không vào danh sách chặn', () {
+      final repo = ReviewRepository.instance;
+      // "Nhóm đã đủ thành viên" đang done:false nhưng blocking:false.
+      final notDone = repo.submitChecklist().where((i) => !i.done).toList();
+      final blocking = repo.submitBlockers();
+      expect(notDone.length, greaterThan(blocking.length),
+          reason: 'phải có ít nhất 1 mục thiếu mà không chặn');
+      expect(blocking.every((b) => b.blocking), isTrue);
+    });
+
+    test('TC_US10_EX_01 — xử lý xong mục chặn thì nộp được', () {
+      final repo = ReviewRepository.instance;
+      expect(repo.canSubmit, isFalse);
+      // Mô phỏng giảng viên duyệt xong tài liệu phụ thuộc.
+      expect(SubmitChecklistItem(
+        label: 'Sequence Diagram',
+        done: true,
+        blocking: true,
+        reason: 'Đã phê duyệt',
+      ).done, isTrue);
+    });
+  });
+
+  group('GroupHealth (202) — US12 / 1-UC-13', () {
+    test('TC_US12_HP_01 — nhóm quá hạn xếp trước', () {
+      final list = ReviewRepository.instance.groupHealth();
+      expect(list, isNotEmpty);
+      for (var i = 1; i < list.length; i++) {
+        expect(list[i - 1].overdue, greaterThanOrEqualTo(list[i].overdue));
+      }
+    });
+
+    test('TC_US12_AP_01 — lọc chỉ nhóm quá hạn', () {
+      final all = ReviewRepository.instance.groupHealth();
+      final overdue = ReviewRepository.instance.overdueGroups();
+      expect(overdue.length, lessThanOrEqualTo(all.length));
+      expect(overdue.every((g) => g.overdue > 0), isTrue);
+    });
+
+    test('TC_US12_BV_01 — progress nằm trong [0,1] và tone đúng ngưỡng', () {
+      for (final g in ReviewRepository.instance.groupHealth()) {
+        expect(g.progress, inInclusiveRange(0.0, 1.0));
+        if (g.overdue > 0) {
+          expect(g.tone, Tone.danger, reason: 'quá hạn phải là danger');
+        }
+      }
+    });
+
+    test('TC_US12_BV_02 — quá hạn thắng tiến độ (nhóm xong 100% vẫn cảnh báo)', () {
+      const g = GroupHealth(
+        groupName: 'X',
+        projectName: 'Y',
+        classCode: 'SE1',
+        memberCount: 1,
+        doneCount: 4,
+        totalCount: 4,
+        overdue: 1,
+      );
+      expect(g.progress, 1.0);
+      expect(g.tone, Tone.danger,
+          reason: 'quá hạn phải được ưu tiên hơn tiến độ — nếu không sẽ giấu lỗi');
+    });
+  });
+
+  group('ActiveRuleSet (202) — US13 / 1-UC-14', () {
+    test('TC_US13_HP_01 — có chuẩn đang áp, mỗi chuẩn có hạn và mục bắt buộc', () {
+      final sets = ReviewRepository.instance.ruleSets();
+      expect(sets.length, greaterThanOrEqualTo(2));
+      for (final s in sets) {
+        expect(s.name.trim(), isNotEmpty);
+        expect(s.deadline.trim(), isNotEmpty);
+        expect(s.checks, isNotEmpty);
+      }
+    });
+
+    test('TC_US13_BV_01 — mã phiên bản chuẩn không trùng nhau', () {
+      final sets = ReviewRepository.instance.ruleSets();
+      final versions = sets.map((s) => s.version).toList();
+      expect(versions.toSet().length, versions.length);
+    });
+  });
+
+  group('DocVersion (202) — US08 / 1-UC-09', () {
+    test('TC_US08_HP_01 — có ít nhất 2 phiên bản để so sánh', () {
+      final v = ReviewRepository.instance.docVersions();
+      expect(v.length, greaterThanOrEqualTo(2));
+    });
+
+    test('TC_US08_BV_01 — nhãn phiên bản không trùng, mỗi bản có người nộp', () {
+      final v = ReviewRepository.instance.docVersions();
+      expect(v.map((e) => e.label).toSet().length, v.length);
+      expect(v.every((e) => e.author.trim().isNotEmpty), isTrue);
+    });
+  });
 }

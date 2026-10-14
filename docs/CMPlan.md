@@ -183,7 +183,7 @@ Xem `docs/test-cases-cmplan.md` §2.1. Bảng dưới là bản rút gọn để
 - [x] **07. `[CRITICAL]` Cô lập phụ thuộc giữa các tầng (10đ):** **đã sửa cả hai vi phạm** — (a) `ToneColors` chuyển từ `101` sang `011_presentation/shared/011_CORE_tone_colors.dart`; (b) 7 màn `011` không còn gọi thẳng `201`, đi qua `202_data_repositories/202_DOMAIN_review_repository.dart`. Cổng `check-cmplan.py` mục C2 nay `[OK]`. Chi tiết trước/sau ở §7.1.
 - [x] **08. Liên kết Success Criteria của Persona vào TC (10đ):** nhóm `HP` và `UI` chứa số đo lấy từ trường *Success Criteria* của persona (số thao tác, thời gian, tỉ lệ diện tích).
 - [x] **09. Quy tắc quản lý nhánh Git & Commit theo mã SKU (10đ):** định dạng `<type>(<LAYER>_<MODULE>[_USxx]): <mô tả>`. **Đã cưỡng chế bằng hook**, không chỉ ghi giấy: `rules/check-commit-msg.py` + `rules/install-hooks.py` cài hook `commit-msg`. Đã đo: commit sai (`feat(lab2): …`) bị chặn `exit 1`; commit đúng đi qua `exit 0`. 6 commit mới nhất theo đúng định dạng. Lịch sử cũ **không** viết lại (sẽ đổi hash đã push) — xem §6 N5.
-- [x] **10. Kiểm tra chéo & Bằng chứng thực thi Test (10đ):** **đã có** — `verify/flutter-journeys.mjs` chạy 8/8 bước trên app thật, sinh **6 ảnh gắn mã TC** trong `ai-output/flutter-app/` (`TC_US01_HP_01…`, `TC_US02_HP_01…`, `TC_US03_HP_01…`, `TC_US04_HP_01…`, `TC_US05_HP_01…`, `TC_US14_HP_01…`), 6/6 ảnh khác nhau; cộng **17 test** mới ở `flutter_app/test/domain_repository_test.dart` neo vào mã `TC_USxx_*`. Giới hạn còn lại: đây là 6 TC nhóm `HP`, **chưa** chạy đủ 140 TC. Xem §6 (N2).
+- [x] **10. Kiểm tra chéo & Bằng chứng thực thi Test (10đ):** **đã có** — `verify/flutter-journeys.mjs` chạy 8/8 bước trên app thật, sinh **6 ảnh gắn mã TC** trong `ai-output/flutter-app/` (`TC_US01_HP_01…`, `TC_US02_HP_01…`, `TC_US03_HP_01…`, `TC_US04_HP_01…`, `TC_US05_HP_01…`, `TC_US14_HP_01…`), 6/6 ảnh khác nhau; cộng **29 test** neo mã `TC_USxx_*` trong `flutter_app/test/` (tổng **48/48** xanh), và `verify/flutter-tap-targets.mjs` đo **8/8 màn, 77 vùng chạm, 0 mục < 48dp** bằng Chromium thật. Giới hạn còn lại: đây là các TC nhóm `HP` cộng một số `AP/EX/BV`, **chưa** chạy đủ 140 TC. Xem §6 (N2).
 
 **Self-review score hiện tại:** `90 / 100` · **Trạng thái Critical:** **CHƯA ĐẠT**
 
@@ -287,6 +287,6 @@ python3 lab2-gate.py                # tự chấm Lab 2
   trong Lab 2. Tôi **không** áp nó đè lên bộ mã cũ vì sẽ phá 140 định nghĩa đang SẠCH.
 - **Mã tầng 3 chữ số dùng để đặt tên FOLDER và FILE code**, không thay mã tài liệu.
 - Bảng checklist §4 tự chấm **80/100, CHƯA ĐẠT** — mục 07 đã sửa xong (đo lại bằng cổng), **mục 02 `[CRITICAL]` vẫn chưa đạt** vì Figma chưa dựng theo page CMPlan. Không làm tròn lên.
-- Mục 10 đạt **một phần**: 6 ảnh chạy thật gắn mã TC là bằng chứng thật, nhưng chỉ phủ 6 trong 140 TC và đều thuộc nhóm `HP`. Các nhóm `AP/BV/EX/UI` hiện chưa có ảnh.
-- `flutter_app/` là app **viết mới** port 6 màn từ `app/` React của giảng viên; không backend;
+- Mục 10 đạt **một phần**: ảnh chạy thật gắn mã TC là bằng chứng thật, cộng 48 test tự động neo mã TC, nhưng phần lớn trong 140 TC vẫn là **thiết kế** chưa có ảnh. Nhóm `AP/BV/EX` đã có test tự động; nhóm `UI` có bằng chứng vùng chạm (không phải ảnh từng TC).
+- `flutter_app/` là app **viết mới** port **13 màn + 1 banner** từ `app/` React của giảng viên; không backend;
   không phải code của giảng viên và không phải bản port của `srs-review-ai`.

@@ -16,14 +16,14 @@ Tra ở đây, **đừng suy số** từ mã này sang mã kia.
 | `P01` giảng viên | `SC03` | `1-UC-03` | `1-US-03` | `011_REVIEW_US03_request_list` | `s03-yeu-cau-review.svg` | `011_presentation/review/us03/011_REVIEW_US03_request_list_screen.dart` | `TC_US03_*` |
 | `P01` giảng viên | `SC04` | `1-UC-04` | `1-US-04` | `011_REVIEW_US04_workspace_screen` | `s04-khong-gian-review.svg` | `011_presentation/review/us04/011_REVIEW_US04_workspace_screen.dart` | `TC_US04_*` |
 | `P01` giảng viên | `SC05` | `1-UC-05` | `1-US-05` | `011_REVIEW_US05_ai_result_screen` | `s05-ket-qua-ai.svg` | `011_presentation/review/us05/011_REVIEW_US05_ai_result_screen.dart` | `TC_US05_*` |
-| `P01` giảng viên | `SC06` | `1-UC-06` | `1-US-06` | `011_REVIEW_US06_class_screen` | `s06-lop-hoc.svg` | — *(chưa code)* | `TC_US06_*` |
-| `P01` giảng viên | `SC07` | `1-UC-07` | `1-US-07` | `011_REVIEW_US07_project_screen` | `s07-project.svg` | — *(chưa code)* | `TC_US07_*` |
-| `P01` giảng viên | `SC08` | `1-UC-08` | `1-US-08` | `011_REVIEW_US08_document_screen` | `s08-tai-lieu.svg` | — *(chưa code)* | `TC_US08_*` |
-| `P02` sinh viên | `SC09` | `1-UC-09` | `1-US-09` | `011_SUBMIT_US09_semester_screen` | `s09-hoc-ky.svg` | — *(chưa code)* | `TC_US09_*` |
-| `P02` sinh viên | `SC10` | `1-UC-10` | `1-US-10` | `011_SUBMIT_US10_ruleset_screen` | `s10-rule-set.svg` | — *(chưa code)* | `TC_US10_*` |
+| `P01` giảng viên | `SC06` | `1-UC-06` | `1-US-06` | `011_REVIEW_US06_approval_screen` | `s06-lop-hoc.svg` | `011_presentation/review/us06/011_REVIEW_US06_approval_screen.dart` | `TC_US06_*` |
+| `P01` giảng viên | `SC07` | `1-UC-07` | `1-US-07` | `011_REVIEW_US07_revision_screen` | `s07-project.svg` | `011_presentation/review/us07/011_REVIEW_US07_revision_screen.dart` | `TC_US07_*` |
+| `P01` giảng viên | `SC08` | `1-UC-08` | `1-US-08` | `011_REVIEW_US08_compare_screen` | `s08-tai-lieu.svg` | `011_presentation/review/us08/011_REVIEW_US08_compare_screen.dart` | `TC_US08_*` |
+| `P02` sinh viên | `SC09` | `1-UC-09` | `1-US-09` | `011_SUBMIT_US09_submit_screen` | `s09-hoc-ky.svg` | `011_presentation/submit/us09/011_SUBMIT_US09_submit_screen.dart` | `TC_US09_*` |
+| `P02` sinh viên | `SC10` | `1-UC-10` | `1-US-10` | `011_SUBMIT_US10_submit_gate_screen` | `s10-rule-set.svg` | `011_presentation/submit/us10/011_SUBMIT_US10_submit_gate_screen.dart` | `TC_US10_*` |
 | `P01`+`P02` | `SC11` | `1-UC-11` | `1-US-11` | `011_CORE_US11_offline_banner` | `s11-sinh-vien.svg` | `011_presentation/shared/011_CORE_US11_offline_banner.dart` | `TC_US11_*` |
-| `P01` giảng viên | `SC12` | `1-UC-12` | `1-US-12` | `011_DASH_US12_group_health` | `s12-nhom.svg` | — *(chưa code)* | `TC_US12_*` |
-| `P01` giảng viên | `SC13` | `1-UC-13` | `1-US-13` | `011_REVIEW_US13_notify_screen` | `s13-thong-bao.svg` | — *(chưa code)* | `TC_US13_*` |
+| `P01` giảng viên | `SC12` | `1-UC-12` | `1-US-12` | `011_DASH_US12_group_health_screen` | `s12-nhom.svg` | `011_presentation/dashboard/us12/011_DASH_US12_group_health_screen.dart` | `TC_US12_*` |
+| `P01` giảng viên | `SC13` | `1-UC-13` | `1-US-13` | `011_REVIEW_US13_rule_set_screen` | `s13-thong-bao.svg` | `011_presentation/review/us13/011_REVIEW_US13_rule_set_screen.dart` | `TC_US13_*` |
 | `P01`+`P02` | `SC14` | `1-UC-14` | `1-US-14` | `011_PROFILE_US14_profile_screen` | `s14-tai-khoan.svg` | `011_presentation/profile/us14/011_PROFILE_US14_profile_screen.dart` | `TC_US14_*` |
 
 ### 1.1 Ghi chú trung thực về bảng trên
@@ -34,9 +34,15 @@ Cột **Wireframe thật** trỏ tới file SVG có thật trong `figma-svg/outp
 Cột **Code thật** chỉ ghi đường dẫn khi file **tồn tại**. Ô `— *(chưa code)*` là **khai báo trung thực**:
 user story và wireframe có thật, nhưng bản demo Flutter **chưa dựng màn đó**. Cụ thể:
 
-| Có code (6) | Chưa code (8) |
+| Có code (13 màn + 1 banner dùng chung) | Chưa code (0) |
 |---|---|
-| US01 đăng nhập · US02 tổng quan · US03 danh sách review · US04 không gian review · US05 kết quả AI · US14 hồ sơ | US06 lớp học · US07 project · US08 tài liệu · US09 học kỳ · US10 rule set · US11 *(banner dùng chung, có file)* · US12 nhóm · US13 thông báo |
+| US01 đăng nhập · US02 tổng quan · US03 danh sách review · US04 không gian review · US05 kết quả AI · US06 phê duyệt · US07 yêu cầu chỉnh sửa · US08 so sánh phiên bản · US09 nộp tài liệu · US10 vì sao bị khoá · US11 offline banner *(dùng chung)* · US12 sức khoẻ nhóm · US13 chuẩn đang áp · US14 hồ sơ | **không còn** — đủ 14/14 User Story |
+
+> **Cập nhật 14/10 (đợt 2):** 7 màn còn thiếu (US06, US07, US08, US09, US10, US12, US13) đã được
+> dựng, đưa độ phủ tầng `011` từ **6/14 lên 14/14** User Story. Trước đợt này bảng ghi
+> `— *(chưa code)*` cho 8 dòng — đó là khai báo trung thực lúc bấy giờ, không phải lỗi.
+> `rules/check-trace-map.py` đã **bắt đúng 7 vi phạm "MÀN MỒ CÔI"** khi 7 file mới xuất hiện
+> mà bảng chưa cập nhật — cổng chạy đúng như thiết kế.
 
 > US11 có file `011_CORE_US11_offline_banner.dart` nhưng là **component dùng chung**, không phải màn riêng.
 > 8 US chưa code **không** phải "đã xong" — `docs/CMPlan.md` §6 ghi ở N4.

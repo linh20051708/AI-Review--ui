@@ -258,4 +258,120 @@ class DemoData {
 
   static ReviewRequest byId(String id) =>
       reviewRequests.firstWhere((r) => r.id == id, orElse: () => reviewRequests.first);
+
+  /// Phiên bản tài liệu — dùng cho màn so sánh (`1-UC-09`, US08).
+  /// Mốc thời gian và người nộp lấy từ `updatedAt` / `submitter` trong `mockData.ts`.
+  static const docVersions = <DocVersion>[
+    DocVersion(
+      label: 'v1',
+      fileName: 'sequence-diagram-v1.pdf',
+      at: '28/09/2026',
+      author: 'Trần Hoàng Nam',
+      note: 'Bản đầu — chưa có thứ tự message cho luồng phụ.',
+    ),
+    DocVersion(
+      label: 'v2',
+      fileName: 'sequence-diagram-v2.pdf',
+      at: '03/10/2026',
+      author: 'Trần Hoàng Nam',
+      note: 'Nộp lại sau feedback v1: sửa thứ tự message.',
+    ),
+  ];
+
+  /// Sức khoẻ nhóm — suy từ `studentGroups` trong `mockData.ts`
+  /// (`group(classId, n, projectId, health, progress, pendingReviews, lastActivity)`).
+  static const groupHealth = <GroupHealth>[
+    GroupHealth(
+      groupName: 'Group 01 · SE1701',
+      projectName: 'Smart Campus Management',
+      classCode: 'SE1701',
+      memberCount: 7,
+      doneCount: 4,
+      totalCount: 4,
+      overdue: 0,
+    ),
+    GroupHealth(
+      groupName: 'Group 02 · SE1701',
+      projectName: 'Event Management System',
+      classCode: 'SE1701',
+      memberCount: 6,
+      doneCount: 1,
+      totalCount: 4,
+      overdue: 2,
+    ),
+    GroupHealth(
+      groupName: 'Group 03 · SE1702',
+      projectName: 'Library Management',
+      classCode: 'SE1702',
+      memberCount: 5,
+      doneCount: 2,
+      totalCount: 4,
+      overdue: 0,
+    ),
+  ];
+
+  /// Chuẩn đang áp — chép từ `ruleSets` trong `mockData.ts`.
+  static const activeRuleSets = <ActiveRuleSet>[
+    ActiveRuleSet(
+      name: 'SWP Standard Review 2026',
+      version: 'swp-standard-2026',
+      appliesTo: 'Software Project · Project-based Learning',
+      deadline: '15/12/2026 23:59',
+      checks: [
+        'AI review chạy tự động',
+        'Bắt buộc giảng viên phê duyệt',
+        'Tài liệu phụ thuộc phải được duyệt trước',
+        'Định dạng cho phép: PDF, DOCX',
+        'Kích thước tối đa: 20 MB',
+        'SLA review: 3 ngày · Tối đa 5 lần nộp lại',
+      ],
+    ),
+    ActiveRuleSet(
+      name: 'SWR Requirements Review 2026',
+      version: 'swr-requirements-2026',
+      appliesTo: 'Software Requirements · SRS và Use Case Diagram',
+      deadline: '10/11/2026 23:59',
+      checks: [
+        'AI review BẮT BUỘC trước khi giảng viên duyệt',
+        'Bắt buộc giảng viên phê duyệt',
+        'Tài liệu phụ thuộc phải được duyệt trước',
+      ],
+    ),
+  ];
+
+  /// Danh sách kiểm trước khi nộp — suy từ `dependsOn` trong `mockData.ts`:
+  /// State Diagram phụ thuộc Sequence Diagram (chưa được duyệt) nên đang chặn nộp.
+  /// Mục `blocking = false` để chứng minh KHÔNG phải mọi mục thiếu đều chặn.
+  static const submitChecklist = <SubmitChecklistItem>[
+    SubmitChecklistItem(
+      label: 'Use Case Diagram',
+      done: true,
+      blocking: false,
+      reason: 'Đã phê duyệt',
+    ),
+    SubmitChecklistItem(
+      label: 'Activity Diagram',
+      done: true,
+      blocking: false,
+      reason: 'Đã phê duyệt',
+    ),
+    SubmitChecklistItem(
+      label: 'Sequence Diagram',
+      done: false,
+      blocking: true,
+      reason: 'Đang chờ giảng viên review — phải duyệt xong mới nộp được',
+    ),
+    SubmitChecklistItem(
+      label: 'Đúng định dạng (PDF, DOCX)',
+      done: true,
+      blocking: false,
+      reason: 'Đạt',
+    ),
+    SubmitChecklistItem(
+      label: 'Nhóm đã đủ thành viên',
+      done: false,
+      blocking: false,
+      reason: 'Còn thiếu nhưng KHÔNG chặn nộp',
+    ),
+  ];
 }

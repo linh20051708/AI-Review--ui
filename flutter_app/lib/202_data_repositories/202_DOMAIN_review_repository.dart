@@ -87,6 +87,36 @@ class ReviewRepository extends ChangeNotifier {
   List<({String version, String fileName, String at, String status})> versions() =>
       DemoData.versionLog;
 
+  /// US08 (`1-UC-09`) — hai phiên bản gần nhất để so sánh.
+  List<DocVersion> docVersions() => DemoData.docVersions;
+
+  /// US12 (`1-UC-13`) — sức khoẻ các nhóm, nhóm quá hạn lên trước.
+  List<GroupHealth> groupHealth() {
+    final list = [...DemoData.groupHealth];
+    list.sort((a, b) => b.overdue.compareTo(a.overdue));
+    return list;
+  }
+
+  /// US12 — chỉ các nhóm đang có việc quá hạn.
+  List<GroupHealth> overdueGroups() =>
+      groupHealth().where((g) => g.overdue > 0).toList();
+
+  /// US13 (`1-UC-14`) — chuẩn đang áp.
+  List<ActiveRuleSet> ruleSets() => DemoData.activeRuleSets;
+
+  /// US10 (`1-UC-11`) — lý do nút nộp bị khoá. Trả về danh sách rỗng nếu nộp được.
+  ///
+  /// Nút nộp bị khoá khi còn mục `blocking && !done`. Màn hình PHẢI hiện
+  /// `reason` của từng mục, không được để nút mờ im lặng (PN-08, `4-TC-11`).
+  List<SubmitChecklistItem> submitBlockers() =>
+      DemoData.submitChecklist.where((i) => i.blocking && !i.done).toList();
+
+  /// US10 — danh sách kiểm đầy đủ để hiển thị, gồm cả mục không chặn.
+  List<SubmitChecklistItem> submitChecklist() => DemoData.submitChecklist;
+
+  /// US10 — nộp được hay không.
+  bool get canSubmit => submitBlockers().isEmpty;
+
   String get currentUserName => DemoData.currentUserName;
   String get currentUserInitials => DemoData.currentUserInitials;
   String get currentUserRole => DemoData.currentUserRole;

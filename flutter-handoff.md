@@ -5,11 +5,11 @@
 > **Ghi chú trung thực (cập nhật 14/10/2026):** đề bài Lab 2 **không bắt buộc viết code Flutter** —
 > file này vẫn là bản handoff để một lập trình viên Flutter dựng lại giao diện.
 > **Bổ sung sau:** người làm bài yêu cầu "phải có app Flutter chạy được", nên repo có thêm
-> **`flutter_app/`** — app Flutter **viết mới**, port 6 màn chính từ `app/` (React) sang, dùng đúng
+> **`flutter_app/`** — app Flutter **viết mới**, port **13 màn + 1 banner dùng chung** từ `app/` (React) sang, phủ đủ 14/14 User Story, dùng đúng
 > token trong file này. Đây **không phải** code của giảng viên và **không phải** bản port của
 > `srs-review-ai`. App không có backend; dữ liệu chép từ `app/src/data/mockData.ts`.
 > Trạng thái đo được (14/10/2026): `flutter analyze` sạch · `flutter test` **36/36** xanh · `flutter build web` ra artifact.
-> Ảnh chạy thật ở `ai-output/flutter-app/` — 6 ảnh, tên gắn mã TC.
+> Ảnh chạy thật ở `ai-output/flutter-app/`, tên gắn mã TC.
 
 ```bash
 cd flutter_app

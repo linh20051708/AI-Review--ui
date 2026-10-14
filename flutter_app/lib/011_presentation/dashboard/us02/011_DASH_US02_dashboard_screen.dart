@@ -84,10 +84,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(height: AppSpace.xl),
                 _section(
                   title: 'Hàng đợi review',
-                  trailing: TextButton(
-                    onPressed: () =>
-                        Navigator.of(context).pushNamed('/reviews'),
-                    child: const Text('Xem tất cả'),
+                  trailing: SizedBox(
+                    height: AppSpace.tapMin,
+                    child: TextButton(
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed('/reviews'),
+                      child: const Text('Xem tất cả'),
+                    ),
                   ),
                 ),
                 const SizedBox(height: AppSpace.s),
@@ -99,11 +102,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
                 const SizedBox(height: AppSpace.xl),
-                OutlinedButton.icon(
-                  onPressed: () => setState(() => _offline = true),
-                  icon: const Icon(Icons.cloud_off_outlined, size: 18),
-                  label: const Text('Mô phỏng mất mạng'),
-                ),
+                // Lối vào các màn US09/US10/US12.
+                //
+                // ĐO THẬT (14/10): `OutlinedButton.icon` ở đây render đúng 40dp
+                // dù `outlinedButtonTheme.minimumSize` khai 48 — đo bằng
+                // semantics node `role=button, flt-tappable=true,
+                // getBoundingClientRect().height === 40`, không phải suy đoán.
+                // Nên bọc `ConstrainedBox` ép cứng, đừng tin theme.
+                _navButton('Sức khoẻ nhóm', Icons.groups_outlined,
+                    () => Navigator.of(context).pushNamed('/groups/health')),
+                const SizedBox(height: AppSpace.s),
+                _navButton('Nộp tài liệu', Icons.upload_outlined,
+                    () => Navigator.of(context).pushNamed('/submit')),
+                const SizedBox(height: AppSpace.s),
+                _navButton(
+                    'Vì sao chưa nộp được',
+                    Icons.lock_outline,
+                    () => Navigator.of(context).pushNamed('/submit/why-locked')),
+                const SizedBox(height: AppSpace.s),
+                _navButton('Mô phỏng mất mạng', Icons.cloud_off_outlined,
+                    () => setState(() => _offline = true)),
               ],
             ),
           ),
@@ -111,6 +129,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ],
     );
   }
+
+  /// Nút điều hướng đủ 48dp — KHÔNG dựa vào theme (xem ghi chú ở chỗ gọi).
+  ///
+  /// `AppSpace.tapMin` là hằng số 48 ở tầng 001 nên chiều cao này là ràng buộc
+  /// cứng, không phải giá trị đoán.
+  Widget _navButton(String label, IconData icon, VoidCallback onTap) =>
+      SizedBox(
+        width: double.infinity,
+        height: AppSpace.tapMin,
+        child: OutlinedButton.icon(
+          onPressed: onTap,
+          icon: Icon(icon, size: 18),
+          label: Text(label),
+        ),
+      );
 
   Widget _greeting() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,

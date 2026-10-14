@@ -61,6 +61,52 @@ Nhóm nguyên nhân:
 
 Đây là **bằng chứng thật** để dùng cho mục C (critique) và mục Accessibility của Lab 2 — không bịa.
 
+## 3b. FINDING THẬT — tap target app Flutter < 48dp — **ĐÃ SỬA 14/10 (đợt 2)**
+
+> Đo bằng `verify/flutter-tap-targets.mjs` trên **Chromium thật**, bản build
+> `flutter build web --release`, viewport 412×892.
+>
+> **Kết quả cuối: 8/8 màn ĐẠT — 77 vùng chạm đo được, 0 mục < 48dp, 0 lỗi console.**
+>
+> **Trước khi sửa: 7 vùng chạm đo được ở đúng 40dp** (dưới ngưỡng C4 48dp):
+>
+> | Màn | Phần tử | Cao đo được |
+> |---|---|---|
+> | US01 đăng nhập | `Đăng nhập bằng SSO trường` | 40 |
+> | US01 đăng nhập | `Đăng nhập` | 40 |
+> | US01 đăng nhập | `Quên mật khẩu?` | 40 |
+> | US04 không gian review | `Cần chỉnh sửa` | 40 |
+> | US04 không gian review | `Phê duyệt` | 40 |
+> | US03 danh sách review | `Mô phỏng lỗi` | 40 |
+> | US14 hồ sơ | `Đăng xuất` | 40 |
+>
+> **Nguyên nhân gốc:** `outlinedButtonTheme`/`filledButtonTheme`/`textButtonTheme`
+> trong `001_CORE_app_theme.dart` **đều khai `minimumSize = 48`**, nhưng ở những chỗ
+> này chiều cao từ cha truyền xuống là ràng buộc **tight**, nên `minimumSize` bị
+> vô hiệu và nút co về **40** (mặc định Material).
+>
+> **Cách sửa đã kiểm chứng là ăn:** bọc `SizedBox(height: AppSpace.tapMin)` **trực
+> tiếp quanh từng nút**. Đã thử và **KHÔNG ăn** ở bốn cách khác — ghi lại để không
+> ai đi lại: (1) `minimumSize` từ theme; (2) `SizedBox(height: 48)` bọc ngoài `Row`;
+> (3) `SizedBox(height: 96)` (thử quá lên, vẫn 40); (4) `styleFrom(minimumSize:)`
+> ngay trên nút.
+>
+> **Ba cách đo độc lập đều xác nhận 48 sau khi sửa:** node semantics cao đúng 48;
+> quét từng 2px quanh nút cho vùng kích hoạt đúng 48; và **đếm pixel** màu brand
+> `#146B55` trên ảnh chụp — 96 device px ở `deviceScaleFactor: 2` = **48,0 CSS px**
+> (trước sửa: 80 device px = 40,0).
+>
+> **Ba cái bẫy đo lường đã trả giá** (ghi vào header script luôn):
+> 1. Đo node khi trang đang cuộn hoặc node bị cắt ở mép viewport trả về số rác
+>    (đã gặp 20,5dp và 3,3dp cho những nút thực chất 48dp). Phải cuộn nút vào giữa
+>    màn rồi đo lại, và chỉ nhận mục ổn định qua ≥2/3 lần đo.
+> 2. **App KHÔNG lưu session** — `page.goto()` là về màn đăng nhập, nên script
+>    reload giữa các màn từng báo oan "4/8 màn không mở được".
+> 3. Nút **`Back` ở header màn Tổng quan là ĐĂNG XUẤT** (`pushNamedAndRemoveUntil('/login')`),
+>    không phải "quay lại". Điều hướng đúng là **thanh tab đáy** (`Tổng quan`,
+>    `Review`, `Thông báo`, `Hồ sơ`) — nhãn tab thật là `Review`, không phải
+>    `Yêu cầu review` (đó là tiêu đề màn).
+
 ## 4. Contrast WCAG 1.4.3 — ĐẠT toàn bộ cặp màu chữ
 
 Tính theo công thức độ chói tương đối WCAG trên 19 cặp token (script `/tmp/contrast.mjs`):

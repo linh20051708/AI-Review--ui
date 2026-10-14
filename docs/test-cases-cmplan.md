@@ -289,9 +289,10 @@ Cổng `rules/check-cmplan.py` đếm lại từng US và chặn nếu thiếu.
 ## 3. Ghi chú trung thực
 
 - **140 test case này là THIẾT KẾ, không phải bằng chứng chạy.** Bằng chứng thật hiện có:
-  **6 ảnh** chụp app chạy trong Chromium ở `ai-output/flutter-app/`, tên file **đã gắn mã TC**
+  ảnh chụp app chạy trong Chromium ở `ai-output/flutter-app/`, tên file **đã gắn mã TC**
   (`TC_US01_HP_01_dang-nhap-sso-truong.png` … `TC_US14_HP_01_ho-so-giang-vien.png`).
   Sinh bằng `verify/flutter-journeys.mjs` (8/8 bước, 6/6 ảnh khác nhau).
+Đo vùng chạm bằng `verify/flutter-tap-targets.mjs`: **8/8 màn, 77 mục, 0 mục < 48dp**.
 - **36 test tự động** trong `flutter_app/test/` chạy thật (`flutter test` → 36/36 xanh).
   Trong đó **17 test mới** ở `flutter_app/test/domain_repository_test.dart` đã neo vào mã
   `TC_USxx_*` (US03, US04, US11). 19 test cũ vẫn dùng tên tiếng Việt, **chưa** gắn mã.

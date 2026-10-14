@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
 import './011_presentation/review/us05/011_REVIEW_US05_ai_result_screen.dart';
+import './011_presentation/review/us06/011_REVIEW_US06_approval_screen.dart';
+import './011_presentation/review/us07/011_REVIEW_US07_revision_screen.dart';
+import './011_presentation/review/us08/011_REVIEW_US08_compare_screen.dart';
+import './011_presentation/review/us13/011_REVIEW_US13_rule_set_screen.dart';
+import './011_presentation/submit/us09/011_SUBMIT_US09_submit_screen.dart';
+import './011_presentation/submit/us10/011_SUBMIT_US10_submit_gate_screen.dart';
+import './011_presentation/dashboard/us12/011_DASH_US12_group_health_screen.dart';
 import './011_presentation/011_CORE_app_shell.dart';
 import './011_presentation/auth/us01/011_AUTH_US01_login_screen.dart';
 import './011_presentation/review/us04/011_REVIEW_US04_workspace_screen.dart';
@@ -56,6 +63,77 @@ class MobiReviewApp extends StatelessWidget {
             child: AiResultScreen(
               reviewId: settings.arguments as String? ?? 'review-001',
             ),
+          ),
+          settings,
+        );
+
+      case '/reviews/approve':
+        return _page(
+          _DetailScaffold(
+            title: 'Phê duyệt tài liệu',
+            child: ApprovalDecisionScreen(
+              reviewId: settings.arguments as String? ?? 'review-001',
+            ),
+          ),
+          settings,
+        );
+
+      case '/reviews/revision':
+        return _page(
+          _DetailScaffold(
+            title: 'Yêu cầu chỉnh sửa',
+            child: RequestRevisionScreen(
+              reviewId: settings.arguments as String? ?? 'review-001',
+            ),
+          ),
+          settings,
+        );
+
+      case '/reviews/compare':
+        return _page(
+          const _DetailScaffold(
+            title: 'So sánh phiên bản',
+            child: VersionCompareScreen(),
+          ),
+          settings,
+        );
+
+      case '/reviews/rule-set':
+        return _page(
+          _DetailScaffold(
+            title: 'Chuẩn đang áp',
+            child: ActiveRuleSetScreen(
+              reviewId: settings.arguments as String? ?? 'review-001',
+            ),
+          ),
+          settings,
+        );
+
+      case '/submit':
+        return _page(
+          _DetailScaffold(
+            title: 'Nộp tài liệu',
+            child: SubmitDocumentScreen(
+              projectId: settings.arguments as String? ?? 'smart-campus-management',
+            ),
+          ),
+          settings,
+        );
+
+      case '/submit/why-locked':
+        return _page(
+          const _DetailScaffold(
+            title: 'Vì sao chưa nộp được',
+            child: SubmitGateScreen(),
+          ),
+          settings,
+        );
+
+      case '/groups/health':
+        return _page(
+          const _DetailScaffold(
+            title: 'Sức khoẻ nhóm',
+            child: GroupHealthScreen(),
           ),
           settings,
         );
