@@ -418,3 +418,25 @@ này có ai gõ nhầm id/payload lần nữa — lỗi sẽ hiện ra thành l�
 với payload `'x'`) rồi mong đợi `isTrue`. Những test đó từng xanh nhờ chính con lỗi
 đang sửa (API báo true vô điều kiện). Đã đổi sang id + tên trạng thái thật. Nên
 111/111 xanh. **Không có test nào hồi quy do hành vi ứng dụng đổi sai.**
+
+## 3k. Bộ lọc danh sách thiếu chip "Không đạt" (14/10, đợt 10)
+
+Dãy chip lọc của US03 chỉ có `waiting, inReview, needsRevision, approved` — thiếu
+`notAccepted`. Dữ liệu có 1 tài liệu "Không đạt" (`review-010`) nên nó HIỆN ở
+"Tất cả" nhưng **không có cách nào lọc riêng ra**. Cùng kiểu §3f (Tổng quan đếm
+thiếu), nhưng ở đây nói về khả năng THĂM DÒ dữ liệu của người dùng: thấy thì thấy,
+muốn xem riêng thì không có đường — giảng viên không thể rà lại các tài liệu đã bị
+trả về.
+
+**Sửa:** thêm `DocStatus.notAccepted` vào `_filters`, phủ đủ mọi trạng thái có
+trong dữ liệu.
+
+**Cổng chống tái phát:** `test/filter_coverage_test.dart` 2 ca — (a) màn phải có
+chip "Không đạt"; (b) bấm chip thì danh sách còn đúng số tài liệu Không đạt.
+Đã chứng minh ĐỎ trước sửa (`Found 0 widgets with text "Không đạt"`), XANH sau.
+
+**Lỗi của riêng tôi khi viết test (lần thứ 4 cùng loại):** dãy chip nằm trong
+`ListView` NGANG, chip thứ 6 nằm ngoài màn nên **chưa được dựng** (ListView builds
+lazily) → `find.text` không thấy dù code đã đúng. Phải `tester.drag(lv,
+Offset(-600, 0))` tới khi thấy. Bài học: với list theo hướng nào thì phải cuộn
+đúng hướng ấy TRƯỚC, và "không tìm thấy" chưa chắc là "không có".

@@ -34,11 +34,15 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
   final bool _loading = false;
   bool _hasError = false;
 
+  // Đợt 10 sửa: dãy chip thiếu `notAccepted`, nên tài liệu "Không đạt"
+  // (review-010) hiện ở "Tất cả" nhưng KHÔNG có cách nào lọc riêng ra — cùng
+  // kiểu §3f. Phủ đủ mọi trạng thái có trong dữ liệu.
   static const _filters = <DocStatus>[
     DocStatus.waiting,
     DocStatus.inReview,
     DocStatus.needsRevision,
     DocStatus.approved,
+    DocStatus.notAccepted,
   ];
 
   /// Luật lọc nằm ở tầng 111 (use case), không phải ở màn hình.
