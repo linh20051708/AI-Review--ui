@@ -182,14 +182,25 @@ Xem `docs/test-cases-cmplan.md` §2.1. Bảng dưới là bản rút gọn để
 - [x] **06. Phân loại độ bao phủ đủ 5 nhóm (10đ):** mỗi US có đúng 5 nhóm, mỗi nhóm ≥2 TC, không trùng lặp.
 - [x] **07. `[CRITICAL]` Cô lập phụ thuộc giữa các tầng (10đ):** **đã sửa cả hai vi phạm** — (a) `ToneColors` chuyển từ `101` sang `011_presentation/shared/011_CORE_tone_colors.dart`; (b) 7 màn `011` không còn gọi thẳng `201`, đi qua `202_data_repositories/202_DOMAIN_review_repository.dart`. Cổng `check-cmplan.py` mục C2 nay `[OK]`. Chi tiết trước/sau ở §7.1.
 - [x] **08. Liên kết Success Criteria của Persona vào TC (10đ):** nhóm `HP` và `UI` chứa số đo lấy từ trường *Success Criteria* của persona (số thao tác, thời gian, tỉ lệ diện tích).
-- [ ] **09. Quy tắc quản lý nhánh Git & Commit theo mã SKU (10đ):** commit hiện có dùng `feat(lab2):`. Từ commit này áp `feat(011_REVIEW_US04): ...`. Lịch sử cũ **không** viết lại (sẽ đổi hash đã push).
+- [x] **09. Quy tắc quản lý nhánh Git & Commit theo mã SKU (10đ):** định dạng `<type>(<LAYER>_<MODULE>[_USxx]): <mô tả>`. **Đã cưỡng chế bằng hook**, không chỉ ghi giấy: `rules/check-commit-msg.py` + `rules/install-hooks.py` cài hook `commit-msg`. Đã đo: commit sai (`feat(lab2): …`) bị chặn `exit 1`; commit đúng đi qua `exit 0`. 6 commit mới nhất theo đúng định dạng. Lịch sử cũ **không** viết lại (sẽ đổi hash đã push) — xem §6 N5.
 - [x] **10. Kiểm tra chéo & Bằng chứng thực thi Test (10đ):** **đã có** — `verify/flutter-journeys.mjs` chạy 8/8 bước trên app thật, sinh **6 ảnh gắn mã TC** trong `ai-output/flutter-app/` (`TC_US01_HP_01…`, `TC_US02_HP_01…`, `TC_US03_HP_01…`, `TC_US04_HP_01…`, `TC_US05_HP_01…`, `TC_US14_HP_01…`), 6/6 ảnh khác nhau; cộng **17 test** mới ở `flutter_app/test/domain_repository_test.dart` neo vào mã `TC_USxx_*`. Giới hạn còn lại: đây là 6 TC nhóm `HP`, **chưa** chạy đủ 140 TC. Xem §6 (N2).
 
-**Self-review score hiện tại:** `80 / 100` · **Trạng thái Critical:** **CHƯA ĐẠT**
-(chỉ còn mục 02 `[CRITICAL]` chưa đạt — phụ thuộc việc dựng Figma theo page CMPlan, việc chỉ người dùng làm được; mục 09 cũng chưa đạt nhưng không phải `[CRITICAL]`.)
+**Self-review score hiện tại:** `90 / 100` · **Trạng thái Critical:** **CHƯA ĐẠT**
 
-> Mục 07 đã đạt **sau khi sửa code thật**, không phải bằng cách nới cổng: cổng C2 được thêm mới và nay báo `[OK]`.
-> Mục 10 đạt một phần: 6/140 TC có bằng chứng chạy. Điểm 10/10 chỉ nên tính nếu chấp nhận bằng chứng mẫu.
+| Mục | Điểm | Vì sao |
+|---|---|---|
+| 01, 03, 04, 05, 06, 07, 08, 09, 10 | 90 | Có bằng chứng đo được; xem từng dòng ở trên |
+| **02 `[CRITICAL]`** | 0 | **Chưa đạt** — Figma chưa dựng theo page CMPlan |
+
+> **Vì sao vẫn "CHƯA ĐẠT" dù 90/100:** quy chế ghi rõ *bất kỳ mục `[CRITICAL]` nào không đạt thì cả bài
+> là Chưa đạt*. Mục 02 cần dựng 4 page Figma (`001_Design_System`, `011_Feature_Screens`, `101_111_Domain`,
+> `201_202_Data`) — việc này cần **tài khoản Figma cá nhân**, không tự động hoá được từ repo.
+>
+> Các mục đã đạt đều đạt bằng **sửa thật**, không nới cổng: mục 07 sửa 2 vi phạm import; mục 09 thêm hook
+> `commit-msg` và **đo được** nó chặn commit sai; mục 10 sinh 6 ảnh chạy thật gắn mã TC.
+>
+> Mục 10 đạt **một phần** về mặt bằng chứng: 6/140 TC có ảnh chạy, đều thuộc nhóm `HP`.
+> 134 TC còn lại là **thiết kế**, chưa có bằng chứng thực thi.
 
 ---
 
@@ -222,7 +233,7 @@ Số thứ tự **không** luôn khớp — `4-TC-05` có thể là `TC_US04_HP_
 | N2 | **Chỉ 6/140 TC có bằng chứng chạy** | Mục 10 đạt một phần | `verify/flutter-journeys.mjs` sinh 6 ảnh gắn mã `TC_USxx_*` + 17 test neo mã TC. Còn 134 TC là **thiết kế**, chưa chạy |
 | N3 | ~~`011` gọi thẳng `201`~~ | **ĐÃ SỬA** | `202_data_repositories/` đã có; 7 màn đã chuyển sang gọi repository. Cổng C2 `[OK]` |
 | N4 | ~~`101_domain_entities/` và `111_domain_usecases/` rỗng~~ | **ĐÃ SỬA** | `101_DOMAIN_review_entities.dart` (thực thể) + `111_DOMAIN_us03_filter_requests_uc.dart` (luật lọc) đã có thật |
-| N5 | **Lịch sử commit cũ không theo SKU** | Mục 09 | Không viết lại lịch sử đã push — chỉ áp từ commit này |
+| N5 | **Commit cũ không theo mã SKU** | Mục 09 chỉ đúng từ commit `ae67ba5` | Không viết lại lịch sử đã push. Hook `commit-msg` chặn từ nay; `git log --oneline <a>..HEAD` là phần đã theo chuẩn |
 | N6 | **2 use case chưa có test** (`1-UC-16`, `1-UC-17`) và actor `1-SH-03` chưa có persona | Truy vết có lỗ hổng | Cần persona quản trị học vụ trước |
 | N7 | **8/14 User Story chưa dựng màn Flutter** | Tầng `011` chỉ phủ 6 US | US06–US10, US12, US13 có user story + wireframe thật nhưng **chưa có code**; bảng truy vết ghi `— *(chưa code)*` chứ không bịa đường dẫn. `rules/check-trace-map.py` chặn tái diễn |
 
