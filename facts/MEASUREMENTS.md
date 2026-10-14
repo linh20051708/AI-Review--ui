@@ -462,3 +462,24 @@ Chứng minh ĐỎ trước sửa, và chứng minh không hư test: hiện lạ
 
 **Đo thêm:** ở 320dp thẻ rộng 280dp (= 320 − 2×20 padding màn) → không tràn, đặt
 side-by-side trong `Row` với icon 20 + gutter 12.
+
+## 3m. 7 cảnh báo AI không thuộc tài liệu nào — hiện ở MỌI tài liệu (14/10)
+
+`DemoData.aiFindings` chỉ có `level/category/message/pageRef` — **không có
+`reviewId`**. Tức 7 cảnh báo không gắn với tài liệu nào. Nhưng `findings()` trả
+"nguyên" danh sách ấy cho mọi `AiResultScreen`. Trong khi đó mỗi tài liệu TỰ KHAI
+BÁO `aiErrors/aiWarnings/aiSuggestions` riêng.
+
+Mở `review-001` (khai báo 2 lỗi · 3 cảnh báo · 4 gợi ý) thì cùng một màn hiện:
+**2 / 3 / 4** ở tổng luận, nhưng chip lại đếm từ danh sách toàn cục **Lỗi (2),
+Cảnh báo (3), Gợi ý (2), Tất cả (7)**. Số gợi ý (2) KHÔNG khớp số luận (4).
+
+**Sửa (3 bước):**
+1. `AiFinding` thêm trường bắt buộc `reviewId`.
+2. `findings([String? reviewId])` — có tham số thì lọc theo tài liệu; `AiResultScreen`
+   gọi KÈM `reviewId` cho cả chip và danh sách.
+3. Sửa số khai báo của `review-001` cho khớp thực tế: 4 → 2 gợi ý.
+
+Từ nay mọi tài liệu có số lượng cảnh báo gắn đúng ngữ cảnh của nó. Cổng chống
+tái phát: `test/ai_finding_scope_test.dart` so đúng số khai báo với số lọc được —
+trước sửa: 4 gợi ý khai báo vs 2 lọc được, ĐỎ thật.

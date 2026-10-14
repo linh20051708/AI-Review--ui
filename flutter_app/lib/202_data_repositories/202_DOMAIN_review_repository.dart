@@ -88,7 +88,20 @@ class ReviewRepository extends ChangeNotifier {
   }
 
   List<AttentionItem> attention() => DemoData.attentionItems;
-  List<AiFinding> findings() => DemoData.aiFindings;
+
+  /// Cảnh báo của MỘT tài liệu — đừng trả toàn bộ (§3m).
+  ///
+  /// Trước đợt 12 sửa, hàm này trả nguyên `DemoData.aiFindings` cho mọi màn,
+  /// nên mở tài liệu nào cũng thấy đủ 7 cảnh báo và chip đếm 7/7/7 — dù mỗi tài
+  /// liệu tự khai báo `aiErrors/aiWarnings/aiSuggestions` riêng. Giảng viên đọc
+  /// hai bộ số mâu thuẫn trên cùng màn. Gọi không tham số vẫn trả toàn bộ, nhưng
+  /// MÀN PHẢI gọi kèm `reviewId` để hai bộ số cùng một nguồn.
+  List<AiFinding> findings([String? reviewId]) {
+    final all = DemoData.aiFindings;
+    if (reviewId == null) return all;
+    return all.where((f) => f.reviewId == reviewId).toList();
+  }
+
   List<AiCheck> checks() => DemoData.aiChecks;
   /// Lịch sử phiên bản của MỘT tài liệu cụ thể.
   ///

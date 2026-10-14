@@ -24,9 +24,16 @@ class AiResultScreen extends StatefulWidget {
 class _AiResultScreenState extends State<AiResultScreen> {
   FindingLevel? _level;
 
+  // Đợt 12 sửa: chỉ lấy cảnh báo THUỘC tài liệu đang mở (§3m). Trước đây
+  // `findings()` không tham số trả cả 7 cảnh báo toàn cục cho mọi màn, nên chip
+  // đếm "Tất cả (7)" và "Lỗi (2)" trong khi tổng luận của tài liệu lại là 2/3/4
+  // — hai bộ số trên cùng một màn, không bộ nào giải thích được bộ kia.
+  List<AiFinding> get _findings =>
+      ReviewRepository.instance.findings(widget.reviewId);
+
   List<AiFinding> get _visible => _level == null
-      ? ReviewRepository.instance.findings()
-      : ReviewRepository.instance.findings().where((f) => f.level == _level).toList();
+      ? _findings
+      : _findings.where((f) => f.level == _level).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -149,12 +156,12 @@ class _AiResultScreenState extends State<AiResultScreen> {
     child: ListView(
       scrollDirection: Axis.horizontal,
       children: [
-        _chip('Tất cả (${ReviewRepository.instance.findings().length})', _level == null, () {
+        _chip('Tất cả (${_findings.length})', _level == null, () {
           setState(() => _level = null);
         }),
         ...FindingLevel.values.map(
           (l) => _chip(
-            '${l.label} (${ReviewRepository.instance.findings().where((f) => f.level == l).length})',
+            '${l.label} (${_findings.where((f) => f.level == l).length})',
             _level == l,
             () => setState(() => _level = _level == l ? null : l),
           ),

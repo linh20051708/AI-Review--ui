@@ -23,7 +23,7 @@ class DemoData {
       submittedAt: '03/10/2026 · 08:15',
       aiErrors: 2,
       aiWarnings: 3,
-      aiSuggestions: 4,
+      aiSuggestions: 2,
       status: DocStatus.waiting,
       note: 'Nộp lại sau feedback v1 · 1 feedback cũ cần kiểm tra',
     ),
@@ -161,6 +161,7 @@ class DemoData {
 
   static const aiFindings = <AiFinding>[
     AiFinding(
+      reviewId: 'review-001',
       level: FindingLevel.error,
       category: 'Incorrect Relationship',
       message:
@@ -168,24 +169,28 @@ class DemoData {
       pageRef: 'Trang 8',
     ),
     AiFinding(
+      reviewId: 'review-001',
       level: FindingLevel.error,
       category: 'Missing Element',
       message: 'Use Case Login chưa được liên kết với Actor nào.',
       pageRef: 'Trang 7',
     ),
     AiFinding(
+      reviewId: 'review-001',
       level: FindingLevel.warning,
       category: 'Naming Issue',
       message: 'Use Case Manage Project có phạm vi quá rộng.',
       pageRef: 'Trang 8',
     ),
     AiFinding(
+      reviewId: 'review-001',
       level: FindingLevel.warning,
       category: 'Requirement Mismatch',
       message: 'FR-05 (Request Review) chưa được thể hiện bằng Use Case tương ứng.',
       pageRef: 'Mục 2.3',
     ),
     AiFinding(
+      reviewId: 'review-001',
       level: FindingLevel.warning,
       category: 'UML Violation',
       message:
@@ -193,6 +198,7 @@ class DemoData {
       pageRef: 'Trang 9',
     ),
     AiFinding(
+      reviewId: 'review-001',
       level: FindingLevel.suggestion,
       category: 'Logic Issue',
       message:
@@ -200,6 +206,7 @@ class DemoData {
       pageRef: 'Trang 8',
     ),
     AiFinding(
+      reviewId: 'review-001',
       level: FindingLevel.suggestion,
       category: 'Naming Issue',
       message: 'Dùng động từ thống nhất cho tên Use Case (Submit / Upload).',

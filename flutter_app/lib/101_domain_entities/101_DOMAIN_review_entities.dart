@@ -100,11 +100,20 @@ class ReviewRequest {
 @immutable
 class AiFinding {
   const AiFinding({
+    required this.reviewId,
     required this.level,
     required this.category,
     required this.message,
     required this.pageRef,
   });
+
+  /// Tài liệu MÀ CẢNH BÁO NÀY THUỘC VỀ.
+  ///
+  /// Trước đợt 12 sửa, `AiFinding` không có trường này — 7 cảnh báo không thuộc
+  /// tài liệu nào nhưng `findings()` trả cả 7 cho mọi màn, trong khi mỗi tài
+  /// liệu lại tự khai báo `aiErrors/aiWarnings/aiSuggestions` riêng. Màn
+  /// `AiResultScreen` do đó hiển thị hai bộ số mâu thuẫn (xem §3m).
+  final String reviewId;
 
   final FindingLevel level;
   final String category;
