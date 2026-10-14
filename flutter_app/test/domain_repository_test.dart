@@ -281,12 +281,12 @@ void main() {
 
   group('DocVersion (202) — US08 / 1-UC-09', () {
     test('TC_US08_HP_01 — có ít nhất 2 phiên bản để so sánh', () {
-      final v = ReviewRepository.instance.docVersions();
+      final v = ReviewRepository.instance.docVersions('review-001');
       expect(v.length, greaterThanOrEqualTo(2));
     });
 
     test('TC_US08_BV_01 — nhãn phiên bản không trùng, mỗi bản có người nộp', () {
-      final v = ReviewRepository.instance.docVersions();
+      final v = ReviewRepository.instance.docVersions('review-001');
       expect(v.map((e) => e.label).toSet().length, v.length);
       expect(v.every((e) => e.author.trim().isNotEmpty), isTrue);
     });

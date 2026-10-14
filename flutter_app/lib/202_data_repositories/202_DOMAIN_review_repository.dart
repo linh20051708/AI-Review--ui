@@ -90,11 +90,60 @@ class ReviewRepository extends ChangeNotifier {
   List<AttentionItem> attention() => DemoData.attentionItems;
   List<AiFinding> findings() => DemoData.aiFindings;
   List<AiCheck> checks() => DemoData.aiChecks;
-  List<({String version, String fileName, String at, String status})> versions() =>
-      DemoData.versionLog;
+  /// Lịch sử phiên bản của MỘT tài liệu cụ thể.
+  ///
+  /// Dữ liệu mẫu không có "kho version" đầy đủ, nên ta DỰNG lịch sử từ chính
+  /// yêu cầu: phiên bản hiện tại (`r.version`) cộng một bản tiền nhiệm giả định
+  /// cùng `documentTitle`. Quan trọng: tên file phải sinh từ `documentTitle`
+  /// của TÀI LIỆU ĐANG MỞ, không phải từ một danh sách chung. (Đợt 6 sửa lỗi
+  /// "lịch sử phiên bản hiện sai tài liệu".)
+  List<({String version, String fileName, String at, String status})> versions(
+    String reviewId,
+  ) {
+    final r = byId(reviewId);
+    if (r == null) return const [];
+    final slug = r.documentTitle.toLowerCase().replaceAll(' ', '-');
+    final cur = r.version;
+    final status = r.status.label;
+    // Tiền nhiệm: v1 nếu bản hiện tại mới hơn, ngược lại chỉ có một bản.
+    final prevNum = int.tryParse(RegExp(r'\d+').firstMatch(cur)?.group(0) ?? '1') ?? 1;
+    if (prevNum <= 1) {
+      return [
+        (version: cur, fileName: '$slug-$cur.pdf', at: r.submittedAt, status: status),
+      ];
+    }
+    final prev = 'v${prevNum - 1}';
+    return [
+      (
+        version: cur,
+        fileName: '$slug-$cur.pdf',
+        at: r.submittedAt,
+        status: status,
+      ),
+      (
+        version: prev,
+        fileName: '$slug-$prev.pdf',
+        at: '—',
+        status: 'Bản trước',
+      ),
+    ];
+  }
 
-  /// US08 (`1-UC-09`) — hai phiên bản gần nhất để so sánh.
-  List<DocVersion> docVersions() => DemoData.docVersions;
+  /// US08 (`1-UC-09`) — hai phiên bản gần nhất của MỘT tài liệu để so sánh.
+  ///
+  /// Thay vì danh sách chung tĩnh, sinh ra từ `reviewId` (xem `versions`).
+  List<DocVersion> docVersions(String reviewId) {
+    return [
+      for (final v in versions(reviewId))
+        DocVersion(
+          label: v.version,
+          fileName: v.fileName,
+          at: v.at,
+          author: byId(reviewId)?.submitter ?? '—',
+          note: v.status,
+        ),
+    ];
+  }
 
   /// US12 (`1-UC-13`) — sức khoẻ các nhóm, nhóm quá hạn lên trước.
   List<GroupHealth> groupHealth() {

@@ -70,13 +70,13 @@ class _ReviewWorkspaceScreenState extends State<ReviewWorkspaceScreen> {
               const SizedBox(height: AppSpace.l),
               _sectionTitle('Lịch sử phiên bản'),
               const SizedBox(height: AppSpace.s),
-              ...ReviewRepository.instance.versions().map(_versionRow),
+              ...ReviewRepository.instance.versions(reviewId).map(_versionRow),
               const SizedBox(height: AppSpace.s),
               SizedBox(
                 height: AppSpace.tapMin,
                 child: OutlinedButton.icon(
                   onPressed: () =>
-                      Navigator.of(context).pushNamed('/reviews/compare'),
+                      Navigator.of(context).pushNamed('/reviews/compare', arguments: reviewId),
                   icon: const Icon(Icons.compare_arrows, size: 18),
                   label: const Text('So sánh hai phiên bản'),
                 ),

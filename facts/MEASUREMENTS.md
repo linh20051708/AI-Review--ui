@@ -282,3 +282,37 @@ nên 3 số `1` gộp thành 1 → tổng 5; sửa sang đọc đúng `StatCard.
 
 **Quét thêm:** review list (`us03`) lọc rỗng mặc định nên HIỆN ĐỦ 8, không bỏ
 sót. Filter use case nhận `statuses` tường minh từ caller nên không tự bỏ sót.
+
+## 3g. Lịch sử phiên bản hiện SAI tài liệu (14/10, đợt 6)
+
+Tiếp đợt 5: soi "giao diện trình bày sai dữ liệu".
+
+Nút "So sánh hai phiên bản" ở màn chi tiết (`us04`) từng push `/reviews/compare`
+**không kèm `reviewId`**, và `us08` luôn đọc
+`ReviewRepository.instance.docVersions()` — một danh sách tĩnh 2 phần tử
+(sequence-diagram v1/v2) **chung cho mọi tài liệu** (`DemoData.docVersions`).
+Hậu quả: mở "Use Case Diagram" lại thấy lịch sử của *sequence diagram*. Tương tự
+mục "Lịch sử phiên bản" trên `us04` cũng đọc `versions()` (danh sách chung).
+
+Lỗi im lặng: không báo lỗi, chỉ hiện nội dung của tài liệu **khác**. Đặc biệt
+nguy hiểm vì giảng viên có thể so sánh/chấm hai bản của tài liệu mình không hề
+mở.
+
+**Sửa:** `docVersions(reviewId)` và `versions(reviewId)` giờ **sinh lịch sử từ
+chính tài liệu đang mở** — tên file từ `documentTitle`, phiên bản từ `version`.
+US04 truyền `reviewId` vào cả `versions(reviewId)` lẫn `pushNamed(... arguments:
+reviewId)`; US08 nhận `reviewId` từ arguments (thiếu thì dùng tài liệu đầu,
+không bao giờ rơi về danh sách chung). Dữ liệu mẫu không có kho version đầy đủ
+nên sinh bản tiền nhiệm giả định cùng `documentTitle` — **nói rõ** trong docblock,
+không bịa diff máy tính.
+
+**Cổng chống tái phát:** `test/version_scope_test.dart` TC_US08_BV_01 — mở "Use
+Case Diagram", vào so sánh, assert KHÔNG có `sequence-diagram` mà CÓ
+`use-case-diagram`. Đã chứng minh ĐỎ trước sửa (hiện `sequence-diagram-v1.pdf`),
+XANH sau.
+
+**Lỗi phụ của riêng tôi (test tự đúng / sai):** (a) finder `find.text('So sánh
+phiên bản')` sai tên nút thật ("So sánh hai phiên bản"); (b) `find.text(fileName)`
+khớp NHIỀU vì tên file còn ở "Lịch sử phiên bản" -> `scrollUntilVisible` ném
+"Too many elements"; đổi sang `find.byIcon(picture_as_pdf_outlined)`. Lại một lần
+test đỏ giả do finder lỏng — phải dùng định vị duy nhất.

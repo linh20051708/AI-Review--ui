@@ -15,14 +15,22 @@ import '../../../101_domain_entities/101_DOMAIN_review_entities.dart';
 /// `mockData.docVersions[].note`**, không phải diff máy tính — nói rõ để
 /// không hiểu nhầm là đã có tính năng so khớp tự động.
 class VersionCompareScreen extends StatefulWidget {
-  const VersionCompareScreen({super.key});
+  const VersionCompareScreen({super.key, this.reviewId});
+
+  /// Id tài liệu đang mở (truyền từ màn chi tiết). Nếu thiếu, dùng tài liệu
+  /// đầu tiên — không bao giờ rơi vào danh sách chung tĩnh (lỗi đợt 6).
+  final String? reviewId;
 
   @override
   State<VersionCompareScreen> createState() => _VersionCompareScreenState();
 }
 
 class _VersionCompareScreenState extends State<VersionCompareScreen> {
-  final _versions = ReviewRepository.instance.docVersions();
+  late final String _id = widget.reviewId ??
+      ReviewRepository.instance.requests().firstOrNull?.id ??
+      'review-001';
+  late final List<DocVersion> _versions =
+      ReviewRepository.instance.docVersions(_id);
   int _left = 0;
   int _right = 1;
 

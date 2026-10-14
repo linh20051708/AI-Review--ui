@@ -68,11 +68,10 @@ void main() {
 
     // Thẻ tệp: nó tự khai `Semantics(button: true, label: 'Mở tài liệu ...')`
     // nên bấm vào BẮT BUỘC phải có gì đó xảy ra.
-    final fileName =
-        '${target.documentTitle.toLowerCase().replaceAll(' ', '-')}-${target.version}.pdf';
-    final file = find.text(fileName);
-    // Thẻ tệp nằm dưới màn (mục "Tệp đính kèm" trong `ListView`) nên phải cuộn
-    // tới trước khi bấm — bấm vào thứ không nhìn thấy là test sai, không phải app sai.
+    // Thẻ tệp chứa icon `picture_as_pdf_outlined` trong một `InkWell`. Tìm theo
+    // icon đó (duy nhất trên chi tiết này), rồi cuộn tới trước khi bấm. Không
+    // dùng `find.text(fileName)` vì tên file còn xuất hiện ở "Lịch sử phiên bản".
+    final file = find.byIcon(Icons.picture_as_pdf_outlined);
     await tester.scrollUntilVisible(file, 200);
     await tester.pumpAndSettle();
     expect(file, findsWidgets, reason: 'màn chi tiết phải có thẻ tệp đính kèm');
