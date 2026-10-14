@@ -22,6 +22,7 @@ GATES = [
     ("Truy vết", "check-trace.py"),
     ("Tầng / folder", "check-layers.py"),
     ("Tham chiếu code", "check-code-refs.py"),
+    ("CMPlan (PRM393)", "check-cmplan.py"),
 ]
 
 # Rò ký tự CJK vào văn bản tiếng Việt là lỗi đã gặp nhiều lần.

@@ -45,7 +45,19 @@ const settle = (page, ms = 1500) => page.waitForTimeout(ms);
 /// Bật semantics tree để đọc được nhãn + toạ độ thật của widget.
 async function enableSemantics(page) {
   await page.evaluate(() => {
-    document.querySelector('flt-semantics-placeholder')?.click();
+    // Flutter web xoá `flt-semantics-placeholder` sau khi bật semantics lần đầu,
+    // và tắt semantics sau mỗi lần điều hướng. Xoá/thiếu placeholder thì
+    // `.click()` không làm gì -> semantics tree rỗng -> không bấm được.
+    // Vá: nếu thiếu thì tự tạo lại placeholder đúng aria-label rồi click.
+    let ph = document.querySelector('flt-semantics-placeholder');
+    if (!ph) {
+      ph = document.createElement('flt-semantics-placeholder');
+      ph.setAttribute('role', 'button');
+      ph.setAttribute('aria-label', 'Enable accessibility');
+      const host = document.querySelector('flt-semantics-host') || document.body;
+      host.prepend(ph);
+    }
+    ph.click();
   });
   await settle(page, 1500);
 }
@@ -86,12 +98,47 @@ async function tap(page, needle, wait = 2000) {
     nodes = await readNodes(page);
   }
 
-  // Ưu tiên node nhỏ nhất (khớp chính xác nhất) và bấm được.
-  const hits = nodes
+  // Chỉ lấy node BẤM ĐƯỢC và NẰM TRONG viewport.
+  // Lỗi thật đã gặp: node nhỏ nhất khớp `Group` là thẻ thứ 6 ở y=1046,
+  // dưới viewport 892 -> bấm vào khoảng trống, không có gì xảy ra.
+  // LƯU Ý: `readNodes` trả `x`,`y` là TÂM node (đã cộng nửa kích thước),
+  // nên chỉ cần kiểm tâm nằm trong viewport — KHÔNG cộng thêm w/h.
+  const vp = page.viewportSize();
+  const clickable = nodes
     .filter((n) => n.text.includes(needle) && n.pe !== 'none')
+    .filter((n) => n.y >= 0 && n.y <= vp.height && n.x >= 0 && n.x <= vp.width)
+    // Bỏ node boa phủ gần hết màn hình: đó là wrapper gom mọi nhãn con, KHÔNG
+    // phải nút thật. Ca thật: nhãn "Back" khớp cả node 412x892 lẫn nút 48x48;
+    // sắp theo diện tích thì node 48x48 thắng, nhưng phải chặn từ đây cho chắc.
+    .filter((n) => n.w * n.h < vp.width * vp.height * 0.85);
+
+  // Ưu tiên node nhỏ nhất (khớp chính xác nhất) trong số đã lọc.
+  const hits = clickable
     .sort((a, b) => a.w * a.h - b.w * b.h);
 
-  if (hits.length === 0) return null;
+  // Không thấy node -> có thể nó nằm dưới trong một danh sách chưa cuộn tới.
+  // Flutter chỉ dựng semantics cho phần ĐÃ render, nên node chưa tồn tại trong
+  // DOM chứ không phải "ngoài viewport". Phải cuộn dần và đọc lại nhiều lần.
+  if (hits.length === 0) {
+    await page.mouse.move(vp.width / 2, vp.height / 2);
+    for (let i = 0; i < 8; i++) {
+      await page.mouse.wheel(0, Math.round(vp.height * 0.6));
+      await settle(page, 700);
+      const after = await readNodes(page);
+      const found = after
+        .filter((n) => n.text.includes(needle) && n.pe !== 'none')
+        .filter((n) => n.y >= 0 && n.y <= vp.height)
+        .sort((a, b) => a.w * a.h - b.w * b.h);
+      if (found.length > 0) {
+        const tgt = found[0];
+        await page.mouse.click(tgt.x, tgt.y);
+        await settle(page, wait);
+        return tgt;
+      }
+    }
+    console.log(`      (da cuon het danh sach nhung khong thay "${needle}")`);
+    return null;
+  }
 
   const target = hits[0];
   await page.mouse.click(target.x, target.y);
@@ -136,11 +183,13 @@ try {
     return s;
   };
 
-  const login = await capture('01-login');
+  // Tên ảnh mang MÃ TEST CASE để bằng chứng truy vết được về
+  // `docs/test-cases-cmplan.md` (checklist mục 10).
+  const login = await capture('TC_US01_HP_01_dang-nhap-sso-truong');
 
   // --- Đăng nhập bằng SSO trường ---
   const sso = await tap(page, 'Đăng nhập bằng SSO trường', 2500);
-  const dash = await capture('02-dashboard');
+  const dash = await capture('TC_US02_HP_01_tong-quan-giang-vien');
   log(
     sso !== null && dash.hash !== login.hash,
     'Bấm SSO trường → màn Tổng quan',
@@ -149,23 +198,28 @@ try {
 
   // --- Tab Review ---
   const tab = await tap(page, 'Review', 2000);
-  const list = await capture('03-review-list');
+  const list = await capture('TC_US03_HP_01_danh-sach-yeu-cau-review');
   log(tab !== null && list.hash !== dash.hash, 'Mở tab Yêu cầu review');
 
   // --- Mở thẻ review đầu tiên (nhãn bắt đầu bằng "Group") ---
   const card = await tap(page, 'Group', 2500);
-  const ws = await capture('04-workspace');
+  const ws = await capture('TC_US04_HP_01_khong-gian-review');
   log(card !== null && ws.hash !== list.hash, 'Mở không gian review');
 
   // --- Xem tất cả phát hiện AI ---
   const ai = await tap(page, 'Xem tất cả', 2500);
-  const aiShot = await capture('05-ai-result');
+  const aiShot = await capture('TC_US05_HP_01_ket-qua-ai');
   log(ai !== null && aiShot.hash !== ws.hash, 'Mở kết quả AI');
 
   // --- Quay lại rồi sang tab Hồ sơ ---
-  await tap(page, 'Back', 1800);
+  // Màn AI là route riêng -> Back về workspace; Back lần nữa mới về shell có thanh tab.
+  // Bấm Back bằng toạ độ nút AppBar (48x48 @28,28) thay vì `tap`: `tap` có thể
+  // cuộn trang để tìm nhãn, làm thanh tab dưới bị đẩy khỏi tầm đọc semantics.
+  await tap(page, 'Back', 1500);
+  await page.mouse.click(28, 28);
+  await settle(page, 1500);
   const prof = await tap(page, 'Hồ sơ', 2200);
-  const profShot = await capture('06-profile');
+  const profShot = await capture('TC_US14_HP_01_ho-so-giang-vien');
   log(prof !== null && profShot.hash !== aiShot.hash, 'Mở tab Hồ sơ');
 
   const unique = new Set(shots.map((s) => s.hash)).size;
