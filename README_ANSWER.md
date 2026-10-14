@@ -10,8 +10,12 @@ Bài nộp gồm **đúng 2 artifact** theo brief Lab 2:
 
 | # | Artifact | Liên kết |
 |---|---|---|
-| 1 | **GitHub repository** — tài liệu Lab 2 + code nền của giảng viên | https://github.com/linh20051708/AI-Review--ui |
+| 1 | **GitHub repository** — tài liệu Lab 2 + code nền của giảng viên | https://github.com/linh20051708/AI-Review--ui (nhánh `develop`) |
 | 2 | **Figma 6 page** (xem được ở chế độ ẩn danh) | `<điền link>` |
+
+**Ngoài 2 artifact:** repo còn có `flutter_app/` — app Flutter chạy được, viết mới trong Lab 2 để minh
+hoạ phần handoff (mục G). Đây là phần kèm theo, **không** tính là artifact thứ ba, và **không** phải
+code của giảng viên.
 
 Hướng dẫn dựng file Figma: `README.md` §2.2. Điền link tự động: `python3 set-links.py --github <url> --figma <url>`.
 
@@ -30,9 +34,14 @@ Hướng dẫn dựng file Figma: `README.md` §2.2. Điền link tự động: 
 | D | UI/UX cuối (20) | 20 | `ux/final-ui-spec.md`, 24 khung SVG |
 | E | Design system & component (15) | 15 | `design-system.md`, 14 khung SVG |
 | F | Prototype tương tác (10) | 10 | `ux/prototype-spec.md` |
-| G | Handoff Flutter (10) | 10 | `flutter-handoff.md` |
-| H | Tài liệu & nhật ký AI (5) | 5 | file này + `ai-design-log.md` |
-| | **Tổng** | **100** | |
+| G | Handoff Flutter (10) | 10 | `flutter-handoff.md` + app chạy được `flutter_app/` |
+| H | Tài liệu & nhật ký AI (5) | 5 | `README.md`, `README_ANSWER.md`, `ai-design-log.md` |
+| — | **Bộ quy tắc chất lượng** (bổ sung 14/10) | — | `rules/QUALITY-RULES.md` (checkbox A–H + C1–C8) |
+| — | **Mã định danh kiểu SKU** | — | `rules/ID-SCHEME.md` + `rules/check-ids.py` (SẠCH, 140 mã) |
+| — | **Kiến trúc theo tầng** | — | `docs/ARCHITECTURE-LAYERS.md` + `rules/check-layers.py` |
+| — | **Use case / User story / Test case** | — | `ux/use-cases.md` (17) · `ux/user-stories.md` (14) · `docs/test-cases.md` (22) |
+| — | **Bảng truy vết** | — | `docs/traceability.md` + `rules/check-trace.py` |
+| — | **App Flutter chạy được** | — | `flutter_app/` · 3 ảnh ở `ai-output/flutter-app/` |
 
 Chạy `python3 lab2-gate.py` để tự chấm.
 

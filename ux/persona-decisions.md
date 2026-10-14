@@ -1,5 +1,25 @@
 # Persona → Need → UI decision → Test
 
+
+## 0. Mã định danh (tầng 1)
+
+| Mã | Need |
+|---|---|
+| `1-PN-01` | Biết ngay hôm nay phải review gì |
+| `1-PN-02` | Biết tài liệu ở công đoạn nào |
+| `1-PN-03` | Duyệt/yêu cầu sửa không quá 3 lần bấm |
+| `1-PN-04` | Hiểu vì sao AI báo lỗi |
+| `1-PN-05` | Không bỏ sót nhóm quá hạn |
+| `1-PN-06` | Thấy chuẩn đang áp tại chỗ ra quyết định |
+| `1-PN-07` | Thao tác một tay không bấm sai |
+| `1-PN-08` | Hiểu vì sao không gửi được |
+| `1-PN-09` | Biết lỗi AI ở trang nào |
+| `1-PN-10` | Biết đã sửa hết chưa |
+| `1-PN-11` | Không bị kẹt khi mạng lỗi |
+| `1-PN-12` | Đọc rõ chữ trên nền |
+
+Mã cũ tương ứng: `PN-01`…`PN-12`. Chi tiết từng need ở §1.
+
 **Bước Lab 2:** Analyze → Refine · **Phase PRM393:** P2–P4 · **Gate:** G2–G4
 **Trạng thái bằng chứng:** ASSUMED (need) · OBSERVED (test đã chạy — xem `verify/journeys.mjs`).
 

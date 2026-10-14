@@ -7,6 +7,25 @@
 > Board này tái dựng từ **quan sát code nền + phân tích luồng** (chưa có workshop thật).
 > Mọi ghi chú đều gắn mã bằng chứng `E-xx` để truy vết, và nhãn **ASSUMED**.
 
+
+## 0. Mã định danh (tầng 1)
+
+| Mã | Loại | Nội dung |
+|---|---|---|
+| `1-E-01` | Bằng chứng | Không biết bắt đầu từ đâu; phải mở từng lớp mới biết việc cần làm |
+| `1-E-02` | Bằng chứng | Không phân biệt được tài liệu đang chờ AI hay chờ mình |
+| `1-E-03` | Bằng chứng | Không nhớ lần trước đã phản hồi gì; sinh viên nộp lại chưa |
+| `1-E-04` | Bằng chứng | Không rõ chuẩn nào đang áp tại thời điểm ra quyết định |
+| `1-E-05` | Bằng chứng | Không rõ vì sao nút bị khoá |
+| `1-E-06` | Bằng chứng | Muốn biết nhóm sắp quá hạn trước khi quá muộn |
+| `1-IN-A` | Insight | Giảng viên cần *định vị việc gấp*, không cần xem hết |
+| `1-IN-B` | Insight | Tài liệu thiếu *ngữ cảnh công đoạn* khiến phải hỏi lại |
+| `1-IN-C` | Insight | Chuẩn áp dụng phải hiện *tại chỗ ra quyết định*, không ở trang cấu hình |
+| `1-IN-D` | Insight | Vùng chạm nhỏ làm bấm sai một tay |
+| `1-IN-E` | Insight | Trạng thái khoá/lỗi im lặng tạo *dead end* |
+
+Mã cũ tương ứng: `E-01`…`E-06`, `INS-A`…`INS-E`.
+
 ---
 
 ## 1. Cách nhóm

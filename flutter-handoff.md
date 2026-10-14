@@ -2,8 +2,14 @@
 
 **Rubric G — Handoff cho lập trình viên Flutter (10 điểm)**
 
-> **Ghi chú trung thực:** Lab 2 **không yêu cầu viết code Flutter**. File này là bản handoff
-> để một lập trình viên Flutter dựng lại giao diện. Token nguồn lấy từ code nền React thật
+> **Ghi chú trung thực (cập nhật 14/10/2026):** đề bài Lab 2 **không bắt buộc viết code Flutter** —
+> file này vẫn là bản handoff để một lập trình viên Flutter dựng lại giao diện.
+> **Bổ sung sau:** người làm bài yêu cầu "phải có app Flutter chạy được", nên repo có thêm
+> **`flutter_app/`** — app Flutter **viết mới**, port 6 màn chính từ `app/` (React) sang, dùng đúng
+> token trong file này. Đây **không phải** code của giảng viên và **không phải** bản port của
+> `srs-review-ai`. App không có backend; dữ liệu chép từ `app/src/data/mockData.ts`.
+> Trạng thái đo được: `flutter analyze` sạch · `flutter test` 19/19 xanh · `flutter build web` ra artifact.
+> Ảnh chạy thật ở `ai-output/flutter-app/`. Token nguồn vẫn lấy từ code nền React thật
 > (`app/src/index.css`), không phải tự đặt.
 
 ---
@@ -122,7 +128,7 @@ class AppSpace {
   static const huge = 48.0;
 
   static const pagePad = 20.0;   // padding ngang màn hình
-  static const tapMin  = 44.0;   // vùng bấm tối thiểu
+  static const tapMin  = 48.0;   // vùng bấm tối thiểu (WCAG 2.5.8 / Material 3)
   static const headerH = 56.0;
   static const navH    = 64.0;
 }

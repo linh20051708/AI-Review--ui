@@ -1,5 +1,42 @@
 # User Flow — Hệ thống quản lý học vụ & Review tài liệu
 
+
+## 0. Mã định danh (tầng 2 và 3)
+
+| Mã | Flow | Loại |
+|---|---|---|
+| `2-FL-01` | Thuận (happy path): duyệt một tài liệu | Chính |
+| `2-FL-02` | Thay thế: so sánh phiên bản trước khi quyết định | Thay thế |
+| `2-FL-03` | Lỗi & phục hồi | Bắt buộc |
+
+| Mã | Màn hình (tóm tắt) | Route |
+|---|---|---|
+| `3-SC-01` | Đăng nhập | `/login` |
+| `3-SC-02` | Tổng quan | `/dashboard` |
+| `3-SC-03` | Yêu cầu review | `/reviews` |
+| `3-SC-04` | Không gian review | `/reviews/:reviewId` |
+| `3-SC-05` | Kết quả AI Review | `/reviews/:reviewId/ai-result` |
+| `3-SC-06` | Lịch sử phiên bản | `/reviews/:reviewId/versions` |
+| `3-SC-07` | Lịch sử review | `/reviews/:reviewId/history` |
+| `3-SC-08` | Mục lịch sử review | `/review-history` |
+| `3-SC-09` | Lớp học | `/classes` |
+| `3-SC-10` | Chi tiết lớp | `/classes/:classId` |
+| `3-SC-11` | Project | `/projects` |
+| `3-SC-12` | Chi tiết project | `/projects/:projectId` |
+| `3-SC-13` | Tài liệu của project | `/projects/:projectId/documents` |
+| `3-SC-14` | Tài liệu (toàn bộ) | `/documents` |
+| `3-SC-15` | Nhóm | `/groups` |
+| `3-SC-16` | Chi tiết nhóm | `/groups/:groupId` |
+| `3-SC-17` | Học kỳ | `/semesters` |
+| `3-SC-18` | Rule set | `/rule-sets` |
+| `3-SC-19` | Môn học | `/courses` |
+| `3-SC-20` | Chi tiết môn trong kỳ | `/course-offerings/:offeringId` |
+| `3-SC-21` | Sinh viên | `/students` |
+| `3-SC-22` | Thông báo | `/notifications` |
+| `3-SC-23` | Tài khoản | `/profile` |
+
+Mã cũ tương ứng: `F01`–`F03` và `S01`–`S23`. Chi tiết đầy đủ ở §2 và §3.
+
 Tài liệu này bám **đúng 23 route** trong `app/src/app/router.tsx`. Không có màn hình nào được bịa.
 
 ---

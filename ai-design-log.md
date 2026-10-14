@@ -16,6 +16,17 @@ Ba vòng xử lý **ba vấn đề UX khác nhau**, không phải ba lần sửa
 > danh sách yêu cầu review, không gian review, kết quả AI review, lớp học, project, tài liệu.
 > Ưu tiên: giảng viên thấy việc cần làm trong 5 giây đầu.
 
+
+## 0. Mã định danh (tầng 4)
+
+| Mã | Vòng lặp AI | Chủ đề |
+|---|---|---|
+| `4-AI-01` | Vòng 1 | Bố cục ban đầu & vùng bấm quá nhỏ |
+| `4-AI-02` | Vòng 2 | Tương phản chữ & khả năng đọc |
+| `4-AI-03` | Vòng 3 | Yêu cầu >=48dp |
+
+Mã cũ tương ứng: `I01`, `I02`, `I03`.
+
 ### Output
 
 AI sinh bố cục 8 màn hình theo đúng thang màu. Bố cục tổng thể hợp lý.

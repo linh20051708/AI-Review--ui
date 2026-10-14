@@ -13,6 +13,16 @@
 > **Cần kiểm chứng trước khi dùng cho quyết định thiết kế:** tần suất thao tác thật, thiết bị thật,
 > và mức độ đau của từng nỗi đau. Kế hoạch kiểm chứng ở `ux/research-plan.md`.
 
+
+## 0. Mã định danh (tầng 1)
+
+| Mã | Persona | Vai |
+|---|---|---|
+| `1-PS-01` | Giảng viên / Supervisor | Primary |
+| `1-PS-02` | Sinh viên / Trưởng nhóm | Secondary |
+
+Mã cũ tương ứng: `P01`, `P02`. Xem `rules/ID-SCHEME.md` và `docs/traceability.md` §3.
+
 ---
 
 ## 0. Problem statement & Scope

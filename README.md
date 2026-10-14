@@ -8,7 +8,8 @@
 
 ## 1. Bài nộp gồm những gì
 
-Lab 2 yêu cầu **đúng 2 artifact**:
+Lab 2 yêu cầu **đúng 2 artifact** (bài nộp chỉ có 2 thứ này; `flutter_app/` là phần minh hoạ kèm theo,
+không phải artifact thứ ba):
 
 | # | Artifact | Trạng thái | Ở đâu |
 |---|---|---|---|
@@ -21,6 +22,11 @@ Repo này gồm 2 phần:
   Đây là hệ thống thật, đã build và chạy được (xem `facts/MEASUREMENTS.md`).
 - **Tài liệu Lab 2** — phần phân tích, sinh UI bằng AI, critique, design system, prototype spec,
   handoff — tất cả bám theo code nền thật, không phải đề tài tự nghĩ ra.
+- **`flutter_app/`** — app Flutter **chạy được**, viết mới trong Lab 2 để minh hoạ phần handoff (mục G).
+  Đây **không** phải code của giảng viên; nó port 6 màn chính từ `app/` sang Flutter, dùng đúng token
+  trong `app/src/index.css`, dữ liệu chép từ `app/src/data/mockData.ts`, **không có backend**.
+- **`rules/` + `docs/`** — bộ quy tắc chất lượng dạng checkbox, cơ chế đặt mã định danh kiểu SKU,
+  kiến trúc tài liệu theo tầng, use case / user story, test case và bảng truy vết.
 
 ## 2. Ba việc phải làm trước khi nộp
 
@@ -107,6 +113,8 @@ Bản cuối nộp là `figma-svg/output/03-final/` (script sinh theo token dự
 | | `ux/persona-decisions.md` | Ma trận Persona → Need → UI decision → Test + chuỗi truy vết E→P→F→S→T |
 | | `ux/assumption-backlog.md` | Giả định 4 nhãn C2 (Observed/Reported/Inferred/Assumed) + research backlog |
 | | `ux/research-plan.md` | Kế hoạch phỏng vấn/quan sát (chưa thực hiện — ghi rõ) |
+| | `ux/use-cases.md` | 17 use case (`1-UC-xx`) suy từ 23 route thật, 4 đặc tả đầy đủ |
+| | `ux/user-stories.md` | 14 user story 3C (`1-US-xx`), nghiệm thu dạng Given-When-Then |
 | **B** Tạo UI bằng AI | `DESIGN.md` | Prompt Stitch nguyên văn, token, 5 ảnh AI thật vòng 1 + 3 ảnh vòng 2 ở `ai-output/stitch/` |
 | **C** Lặp & critique với AI | `ai-design-log.md` | 3 vòng lặp: prompt → output → critique → quyết định → thay đổi Figma |
 | | `ux/critique.md` | 8 phát hiện UX, có số đo thật |
@@ -117,6 +125,14 @@ Bản cuối nộp là `figma-svg/output/03-final/` (script sinh theo token dự
 | | `figma-svg/output/04-design-system/`, `05-components/` | 14 khung SVG |
 | **F** Prototype tương tác | `ux/prototype-spec.md` | 3 luồng dạng từng bước, script demo 5 phút |
 | **G** Handoff Flutter | `flutter-handoff.md` | Token → Dart, component → widget, spec 14 màn hình |
+| | `flutter_app/` | **App Flutter chạy được** (6 màn), `flutter analyze` sạch, `flutter test` 19/19 xanh |
+| | `ai-output/flutter-app/` | 3 ảnh chụp app Flutter chạy thật trong Chromium |
+| **Bổ sung 14/10** | `rules/QUALITY-RULES.md` | Bộ quy tắc chất lượng dạng **checkbox** (rubric A–H + C1–C8) |
+| | `rules/ID-SCHEME.md` | Cơ chế đặt mã định danh kiểu SKU (4 tầng, 15 loại) |
+| | `docs/ARCHITECTURE-LAYERS.md` | Kiến trúc tài liệu theo tầng, biết thông tin ở cấp mấy |
+| | `docs/test-cases.md` | **22 test case** sinh từ use case + user story, có phân loại và mức bao phủ |
+| | `docs/traceability.md` | Bảng truy vết hợp nhất (C7) + đối chiếu mã cũ ↔ mới |
+| | `rules/check-*.py` | 3 cổng kiểm: mã định danh · truy vết · tầng/folder + cổng tổng |
 | **H** Tài liệu & nhật ký AI | `README.md`, `README_ANSWER.md`, `ai-design-log.md` | Kiến trúc bài nộp, trả lời câu hỏi, nhật ký |
 | Kiểm chứng | `facts/REPO-FACTS.md`, `facts/MEASUREMENTS.md` | Dữ kiện code nền + số đo thật |
 | Cổng kiểm | `lab2-gate.py` | Tự chấm theo rubric 100 điểm |
