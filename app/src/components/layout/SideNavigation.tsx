@@ -21,7 +21,7 @@ const manage = [
 ]
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
-  `flex items-center gap-2.5 rounded-[8px] px-3 py-2.5 text-[13px] font-medium transition-colors ${isActive ? "bg-brand-soft text-brand" : "text-ink hover:bg-subtle"}`
+  `flex min-h-12 items-center gap-2.5 rounded-[8px] px-3 py-2.5 text-[13px] font-medium transition-colors ${isActive ? "bg-brand-soft text-brand" : "text-ink hover:bg-subtle"}`
 
 export default function SideNavigation() {
   const { requests } = useReviewStore()

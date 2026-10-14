@@ -15,14 +15,19 @@ Dữ liệu gốc: `facts/MEASUREMENTS.md`.
 
 | # | Phát hiện | Mức | Nguyên tắc Nielsen | Trạng thái |
 |---|---|---|---|---|
-| 1 | Vùng bấm dưới 48dp ở màn Sinh viên | Nặng | #4 Nhất quán | Đã đề xuất sửa |
-| 2 | Chip lọc cao 28–40px | Nặng | #7 Dùng linh hoạt | Đã đề xuất sửa |
-| 3 | Ô tìm kiếm chỉ cao 20px | Nặng | #6 Nhận ra thay vì nhớ | Đã đề xuất sửa |
-| 4 | Link "Xem tất cả" cao 17px | Vừa | #2 Khớp thế giới thực | Đã đề xuất sửa |
+| 1 | Vùng bấm dưới 48dp ở màn Sinh viên | Nặng | #4 Nhất quán | **ĐÃ SỬA 14/10** |
+| 2 | Chip lọc cao 28–40px | Nặng | #7 Dùng linh hoạt | **ĐÃ SỬA 14/10** |
+| 3 | Ô tìm kiếm chỉ cao 20px | Nặng | #6 Nhận ra thay vì nhớ | **ĐÃ SỬA 14/10** |
+| 4 | Link "Xem tất cả" cao 17px | Vừa | #2 Khớp thế giới thực | **ĐÃ SỬA 14/10** |
 | 5 | Dashboard có khối cuộn ngang không báo | Vừa | #6 Nhận ra thay vì nhớ | Đã ghi nhận |
 | 6 | Chip lọc trùng nhãn với ô sắp xếp | Nhẹ | #4 Nhất quán | Đã ghi nhận |
 | 7 | Không có dấu hiệu "còn nội dung" ở cuối danh sách | Nhẹ | #1 Hiển thị trạng thái | Đã ghi nhận |
-| 8 | Nút "Xóa bộ lọc" chỉ cao 18px | Nặng | #9 Giúp nhận ra & sửa lỗi | Đã đề xuất sửa |
+| 8 | Nút "Xóa bộ lọc" chỉ cao 18px | Nặng | #9 Giúp nhận ra & sửa lỗi | **ĐÃ SỬA 14/10** |
+
+> **Năm phát hiện 1, 2, 3, 4, 8 đã được sửa cùng ngày 14/10.** Đo lại bằng
+> `verify/tap-targets.mjs`: **0/920 vùng chạm < 48×48px** (trước sửa **377/920 = 41,0%**).
+> Gốc rễ chung: các class `min-h-[44px]/[36px]/[40px]/[32px]` **đè lên** `min-h-12` bảo đảm
+> của `<Button>`, và khung `h-12` có viền làm ô `<input>` bên trong co còn 46px.
 
 ---
 

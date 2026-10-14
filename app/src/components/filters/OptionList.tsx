@@ -83,7 +83,7 @@ export default function OptionList({ options, selected, onToggle, single, search
         })}
       </ul>
       {searchable && !expanded && !q && filtered.length > VISIBLE && (
-        <button type="button" onClick={() => setExpanded(true)} className="self-start px-2 py-1 text-[12px] font-semibold text-brand">
+        <button type="button" onClick={() => setExpanded(true)} className="inline-flex min-h-12 items-center self-start px-2 text-[12px] font-semibold text-brand">
           Xem thêm {filtered.length - VISIBLE}
         </button>
       )}

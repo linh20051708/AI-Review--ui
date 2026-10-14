@@ -102,9 +102,9 @@ export default function SmartFilterBar(props: SmartFilterProps) {
   )
 
   const search = (
-    <label className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-[8px] border border-line bg-white px-3 focus-within:border-brand lg:min-w-[220px] lg:max-w-[300px]">
+    <label className="flex h-12 min-w-0 flex-1 items-center gap-2 rounded-[8px] border border-line bg-white px-3 focus-within:border-brand lg:min-w-[220px] lg:max-w-[300px]">
       <Search size={17} strokeWidth={1.75} className="shrink-0 text-muted" />
-      <input type="search" value={state.q} onChange={(e) => onChange({ ...state, q: e.target.value })} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-muted" />
+      <input type="search" value={state.q} onChange={(e) => onChange({ ...state, q: e.target.value })} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="h-full min-h-12 min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-muted" />
     </label>
   )
 
@@ -126,7 +126,7 @@ export default function SmartFilterBar(props: SmartFilterProps) {
           <button
             type="button"
             onClick={() => setDrawer("more")}
-            className={`inline-flex h-10 items-center gap-1.5 rounded-[8px] border px-3 text-[13px] font-medium ${otherCount ? "border-brand bg-brand-soft text-brand" : "border-line bg-white text-ink"}`}
+            className={`inline-flex h-12 items-center gap-1.5 rounded-[8px] border px-3 text-[13px] font-medium ${otherCount ? "border-brand bg-brand-soft text-brand" : "border-line bg-white text-ink"}`}
           >
             <SlidersHorizontal size={15} strokeWidth={1.75} />
             Bộ lọc khác{otherCount ? ` · ${otherCount}` : ""}
@@ -145,7 +145,7 @@ export default function SmartFilterBar(props: SmartFilterProps) {
           <button
             type="button"
             onClick={() => setDrawer("all")}
-            className={`inline-flex h-10 items-center gap-1.5 rounded-[8px] border px-3 text-[13px] font-medium ${mobileCount ? "border-brand bg-brand-soft text-brand" : "border-line bg-white text-ink"}`}
+            className={`inline-flex h-12 items-center gap-1.5 rounded-[8px] border px-3 text-[13px] font-medium ${mobileCount ? "border-brand bg-brand-soft text-brand" : "border-line bg-white text-ink"}`}
           >
             <SlidersHorizontal size={15} strokeWidth={1.75} />
             Bộ lọc{mobileCount ? ` · ${mobileCount}` : ""}
@@ -159,12 +159,12 @@ export default function SmartFilterBar(props: SmartFilterProps) {
       {chips.length > 0 && (
         <div className="-mx-5 flex items-center gap-2 overflow-x-auto px-5 [scrollbar-width:none] lg:mx-0 lg:flex-wrap lg:px-0">
           {chips.map((c) => (
-            <button key={c.key} type="button" onClick={() => set(c.remove())} className="inline-flex shrink-0 items-center gap-1 rounded-full border border-brand/30 bg-brand-soft py-1 pr-2 pl-3 text-[12px] font-medium text-brand">
+            <button key={c.key} type="button" onClick={() => set(c.remove())} className="inline-flex min-h-12 shrink-0 items-center gap-1 rounded-full border border-brand/30 bg-brand-soft py-1 pr-2 pl-3 text-[12px] font-medium text-brand">
               {c.text}
               <X size={13} strokeWidth={2} />
             </button>
           ))}
-          <button type="button" onClick={() => onChange({ facets: {}, q: state.q })} className="shrink-0 px-1 text-[12px] font-semibold text-muted hover:text-ink">
+          <button type="button" onClick={() => onChange({ facets: {}, q: state.q })} className="inline-flex min-h-12 shrink-0 items-center px-1 text-[12px] font-semibold text-muted hover:text-ink">
             Xóa bộ lọc
           </button>
         </div>
@@ -177,7 +177,7 @@ export default function SmartFilterBar(props: SmartFilterProps) {
         {sort && (
           <label className="flex items-center gap-1.5 text-[12px] text-muted">
             Sắp xếp
-            <select value={sort.value} onChange={(e) => sort.onChange(e.target.value)} className="h-8 rounded-[6px] border border-line bg-white px-2 text-[12px] font-medium text-ink outline-none focus:border-brand">
+            <select value={sort.value} onChange={(e) => sort.onChange(e.target.value)} className="h-12 rounded-[6px] border border-line bg-white px-2 text-[12px] font-medium text-ink outline-none focus:border-brand">
               {sort.options.map((o) => <option key={o}>{o}</option>)}
             </select>
           </label>

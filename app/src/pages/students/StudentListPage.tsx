@@ -80,7 +80,7 @@ export default function StudentListPage() {
       {/* Action bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <Button
-          className="w-auto min-h-[40px] px-4"
+          className="w-auto min-h-12 px-4"
           icon={<Plus size={18} strokeWidth={1.75} />}
           onClick={() => setAddOpen(true)}
         >
@@ -204,7 +204,7 @@ export default function StudentListPage() {
                     {cls && (
                       <Link
                         to={`/classes/${cls.id}`}
-                        className="rounded-[6px] bg-subtle px-2.5 py-1 text-[12px] font-medium text-ink hover:bg-subtle/80 hover:text-brand transition"
+                        className="inline-flex min-h-12 items-center rounded-[6px] bg-subtle px-2.5 py-1 text-[12px] font-medium text-ink hover:bg-subtle/80 hover:text-brand transition"
                       >
                         Lớp: <strong>{cls.code}</strong>
                         {crs && <span className="text-muted ml-1">({crs.code})</span>}
@@ -214,7 +214,7 @@ export default function StudentListPage() {
                     {studentGroup ? (
                       <Link
                         to={`/groups/${studentGroup.id}`}
-                        className="inline-flex items-center gap-1"
+                        className="inline-flex min-h-12 items-center gap-1"
                       >
                         <Badge tone="brand">
                           {studentGroup.name}

@@ -28,7 +28,7 @@ export function TimeRangeControl({ value, onChange, count }: { value?: TimeRange
                 type="datetime-local"
                 value={value[k] ?? ""}
                 onChange={(e) => onChange({ ...value, [k]: e.target.value })}
-                className="h-10 rounded-[8px] border border-line bg-white px-2.5 text-[13px] text-ink outline-none focus:border-brand"
+                className="h-12 rounded-[8px] border border-line bg-white px-2.5 text-[13px] text-ink outline-none focus:border-brand"
               />
             </label>
           ))}

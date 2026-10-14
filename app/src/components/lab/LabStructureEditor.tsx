@@ -276,7 +276,7 @@ function LabItemFormModal({ lab, item, allLabs, onSave, onClose }: { lab: Lab; i
           {others.map((o) => {
             const on = d.dependsOn.includes(o.id)
             return (
-              <button key={o.id} type="button" aria-pressed={on} onClick={() => set("dependsOn", on ? d.dependsOn.filter((x) => x !== o.id) : [...d.dependsOn, o.id])} className={`rounded-[6px] border px-2 py-1 text-[12px] ${on ? "border-brand bg-brand-soft font-semibold text-brand" : "border-line text-ink"}`}>
+              <button key={o.id} type="button" aria-pressed={on} onClick={() => set("dependsOn", on ? d.dependsOn.filter((x) => x !== o.id) : [...d.dependsOn, o.id])} className={`inline-flex min-h-12 items-center rounded-[6px] border px-2 py-1 text-[12px] ${on ? "border-brand bg-brand-soft font-semibold text-brand" : "border-line text-ink"}`}>
                 {o.code} {o.title}
               </button>
             )

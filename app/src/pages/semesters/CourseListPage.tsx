@@ -102,7 +102,7 @@ export default function CourseListPage() {
 
                 <Button
                   variant="secondary"
-                  className="w-auto min-h-[36px] py-1.5 px-3 text-[13px]"
+                  className="w-auto min-h-12 py-1.5 px-3 text-[13px]"
                   icon={<Plus size={15} />}
                   onClick={() => handleOpenOfferingModal(c.id)}
                 >
@@ -161,7 +161,7 @@ export default function CourseListPage() {
                             <Link to={`/course-offerings/${off.id}`}>
                               <Button
                                 variant="secondary"
-                                className="w-auto min-h-[32px] py-1 px-2.5 text-[12px]"
+                                className="w-auto min-h-12 py-1 px-2.5 text-[12px]"
                                 icon={<Settings size={13} />}
                               >
                                 Cấu hình Lab & Lớp

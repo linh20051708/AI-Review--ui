@@ -30,7 +30,7 @@ export default function Popover({ label, active, children, width = 280, align = 
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className={`inline-flex h-10 items-center gap-1.5 whitespace-nowrap rounded-[8px] border px-3 text-[13px] font-medium transition ${active ? "border-brand bg-brand-soft text-brand" : "border-line bg-white text-ink hover:border-brand/40"}`}
+        className={`inline-flex h-12 items-center gap-1.5 whitespace-nowrap rounded-[8px] border px-3 text-[13px] font-medium transition ${active ? "border-brand bg-brand-soft text-brand" : "border-line bg-white text-ink hover:border-brand/40"}`}
       >
         {icon}
         {label}

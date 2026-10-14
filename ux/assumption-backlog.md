@@ -18,7 +18,7 @@ Vì Lab 2 **chưa phỏng vấn người dùng**, phần lớn giả định thu
 | AS-04 | 20–35 yêu cầu/tuần, 4 lớp, ~30 nhóm | Assumed | mockData (dữ liệu mẫu, không phải thật) | Hàng đợi bị thiết kế sai quy mô | Trung bình |
 | AS-05 | Người dùng ưu tiên thấy việc gấp hơn thẻ số liệu | Assumed | Thiết kế | Thứ tự màn Tổng quan sai | Trung bình |
 | AS-06 | Sinh viên năm nhất cần hướng dẫn thêm khi nộp | Assumed | `stakeholder-map` §3 | Bỏ sót nhóm người dùng | **Cao** |
-| AS-07 | Vùng chạm < 48dp gây bấm sai với người dùng thật | Inferred | `MEASUREMENTS` §3 (đo thật trên app) | Sửa vùng chạm tốn công mà lợi ích thấp | Thấp (đã đo) |
+| AS-07 | Vùng chạm < 48dp gây bấm sai với người dùng thật | **Observed → đã sửa** | `MEASUREMENTS` §3 (đo thật trên app) | Sửa vùng chạm tốn công mà lợi ích thấp | Thấp (đã đo; **0/920** vi phạm sau sửa) |
 | AS-08 | 3 track trạng thái giúp người dùng hiểu nhanh | Assumed | `E-02` | 3 track gây rối thay vì rõ | Trung bình |
 
 ---

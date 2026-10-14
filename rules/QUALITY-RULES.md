@@ -44,7 +44,8 @@ Mỗi quy tắc có 4 cột:
 
 ### 4-RG-04 — C4: Ngưỡng tiếp cận
 - [x] Tương phản chữ ≥ **4.5:1** (chữ lớn ≥ 3:1)
-- [ ] Vùng chạm ≥ **48×48 dp** — **còn vi phạm trên app nền** (`facts/MEASUREMENTS.md` §3)
+- [x] Vùng chạm ≥ **48×48 dp** — **đã sửa 14/10** trên app nền: `0/920` vi phạm, đo bằng
+  `verify/tap-targets.mjs` (trước khi sửa: `377/920` = 41,0%). Xem `facts/MEASUREMENTS.md` §3
 - [x] Chữ thân ≥ **14 sp**
 - Kiểm bằng (app Flutter): `flutter test test/accessibility_test.dart`
 - Kiểm bằng (app nền React): `node verify/journeys.mjs` + đo `getBoundingClientRect`

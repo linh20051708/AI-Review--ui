@@ -56,7 +56,7 @@ export default function MoreMenu({
                   setOpen(false)
                   item.onSelect()
                 }}
-                className={`flex min-h-[44px] w-full items-center gap-2.5 rounded-[6px] px-3 py-2 text-left text-[14px] font-medium transition hover:bg-subtle ${
+                className={`flex min-h-12 w-full items-center gap-2.5 rounded-[6px] px-3 py-2 text-left text-[14px] font-medium transition hover:bg-subtle ${
                   item.danger ? "text-danger" : "text-ink"
                 }`}
               >

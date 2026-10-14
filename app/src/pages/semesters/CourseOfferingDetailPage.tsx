@@ -108,7 +108,7 @@ export default function CourseOfferingDetailPage() {
             <h2 className="text-[15px] font-semibold text-ink">Thông tin & Cấu hình chung</h2>
           </div>
           <Button
-            className="w-auto min-h-[36px] py-1.5 px-3 text-[13px]"
+            className="w-auto min-h-12 py-1.5 px-3 text-[13px]"
             icon={<Save size={14} />}
             onClick={handleSaveConfig}
           >
@@ -197,7 +197,7 @@ export default function CourseOfferingDetailPage() {
             description="Danh sách các lớp học kế thừa hoặc tùy biến từ cấu hình này."
           />
           <Button
-            className="w-auto min-h-[36px] py-1.5 px-3 text-[13px]"
+            className="w-auto min-h-12 py-1.5 px-3 text-[13px]"
             icon={<Plus size={16} />}
             onClick={() => setAddClassOpen(true)}
           >
@@ -250,7 +250,7 @@ export default function CourseOfferingDetailPage() {
 
                   <div className="pt-2 flex justify-end">
                     <Link to={`/classes/${cls.id}`}>
-                      <Button variant="secondary" className="w-auto min-h-[32px] py-1 px-3 text-[12px]">
+                      <Button variant="secondary" className="w-auto min-h-12 py-1 px-3 text-[12px]">
                         Chi tiết lớp
                       </Button>
                     </Link>

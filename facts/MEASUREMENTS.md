@@ -29,8 +29,16 @@ Tất cả route trả nội dung thật, `overflowX = 0` (không tràn ngang �
 | /notifications | 19 | 0 | 48 |
 | /profile | 33 | 1 | 48 |
 
-## 3. FINDING THẬT — tap target < 44px (WCAG 2.5.8 / Material 3 ≥48dp)
+## 3. FINDING THẬT — tap target < 44px (WCAG 2.5.8 / Material 3 ≥48dp) — **ĐÃ SỬA 14/10**
 
+> **TRẠNG THÁI: ĐÃ SỬA.** Bảng dưới là **số đo trước khi sửa**, giữ nguyên làm bằng chứng.
+> Đo lại sau khi sửa bằng `verify/tap-targets.mjs` (script nằm trong repo, tái lập được):
+> **0/920 vùng chạm < 48×48px** (trước: **377/920**, tức **41,0%**).
+>
+> Sửa gì: sidebar `min-h-12`; popover lọc `h-10`→`h-12`; ô tìm kiếm `min-h-12` (trước bị 46px do
+> khung `h-12` có viền ăn vào); `min-h-[44px]`/`[36px]`/`[40px]`/`[32px]` **đè lên** `min-h-12` của
+> `<Button>` — đã gỡ cả 5 chỗ. Gốc rễ là các override này âm thầm hạ ngưỡng bảo đảm.
+>
 > **Lưu ý ngưỡng:** bảng dưới đếm theo ngưỡng **44px** tại thời điểm đo. Ngưỡng chính thức
 > áp dụng cho bài nộp là **48×48 dp** (Chuẩn chung C4), nên số phần tử vi phạm thực tế
 > **cao hơn** con số trong bảng này. Cột số đo từng phần tử vẫn đúng và tái sử dụng được.
