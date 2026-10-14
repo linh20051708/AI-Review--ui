@@ -483,3 +483,24 @@ Cảnh báo (3), Gợi ý (2), Tất cả (7)**. Số gợi ý (2) KHÔNG khớp
 Từ nay mọi tài liệu có số lượng cảnh báo gắn đúng ngữ cảnh của nó. Cổng chống
 tái phát: `test/ai_finding_scope_test.dart` so đúng số khai báo với số lọc được —
 trước sửa: 4 gợi ý khai báo vs 2 lọc được, ĐỎ thật.
+
+## 3n. Nhánh `main` cục bộ chạy song song `develop` suốt phiên (14/10, phát hiặt đợt 12)
+
+**Phát hiện (không phải lỗi sản phẩm, nhưng phải nói rõ):** từ đầu phiên HEAD nằm
+trên nhánh `main` (đổi tên từ `lab2-single`), nên **mỗi** `git commit` đều làm
+`main` tiến một bước; `git branch -f develop HEAD` chỉ kéo `develop` đi theo. Hệ
+quả: `main` cục bộ dôi ra 44 commit so với `team/main`.
+
+**Điều quan trọng — KHÔNG có mất mát:**
+- `team/main` từ đầu đến cuối vẫn ở `8258f69`, không nhận bất kỳ commit làm việc nào.
+- Hai nhánh **phân kỳ hoàn toàn** (không có tổ tiên chung) nên không có chuyện
+  ghi đè lẫn nhau. Cây của thầy (`app/`, tài liệu gốc) vẫn nguyên trên remote.
+- Tôi chỉ từng push `develop`; không một lần push `main`.
+
+**Sửa (nhánh cục bộ):** `git checkout develop` rồi `git branch -f main team/main`.
+Cả hai nhánh cục giờ khớp remote của chúng. `main` chỉ còn là con trỏ, không
+dùng để làm việc.
+
+**Bài học:** nếu user nói "kệ main đi", việc đầu tiên của phiên phải là rời khỏi
+nhánh `main` (`git checkout develop`) chứ không phải cứ commit trên `main` rồi
+kéo `develop` theo sau. Nhánh làm việc và nhánh "kệ đi" phải tách ra từ đầu.
