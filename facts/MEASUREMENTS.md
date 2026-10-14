@@ -316,3 +316,27 @@ phiên bản')` sai tên nút thật ("So sánh hai phiên bản"); (b) `find.te
 khớp NHIỀU vì tên file còn ở "Lịch sử phiên bản" -> `scrollUntilVisible` ném
 "Too many elements"; đổi sang `find.byIcon(picture_as_pdf_outlined)`. Lại một lần
 test đỏ giả do finder lỏng — phải dùng định vị duy nhất.
+
+## 3h. Dòng "AI đã review" găm cứng số bịa (14/10, đợt 7)
+
+Tiếp đợt 6: soi "giao diện trình bày sai dữ liệu".
+
+Trong `us04` (`_tracks`), dòng "AI đã review" từng găm cứng chuỗi
+`'3 lỗi · 6 cảnh báo · 5 gợi ý'` cho **MỌI tài liệu** — mà chuỗi này KHÔNG
+khớp tài liệu nào trong dữ liệu mẫu (gần nhất là review-001: 2/3/4).
+Cùng lúc CHÍNH màn đó, `_aiSummary` lại đọc `r.aiErrors/Warnings/Suggestions`
+đúng → **màn tự mâu thuẫn** (một chỗ đúng, một chỗ bịa). Lỗi im lặng cùng họ
+với §3g.
+
+**Sửa:** `_tracks` tính chuỗi từ `r.aiErrors/Warnings/Suggestions` (đồng nhất
+với `_aiSummary`). Giờ mở tài liệu nào hiện đúng số của tài liệu đó.
+
+**Cổng chống tái phát:** `test/ai_metric_consistency_test.dart`
+TC_US04_BV_03 — mở "Activity Diagram" (0/1/2), assert KHÔNG có chuỗi găm cứng
+"3 lỗi · 6 cảnh báo · 5 gợi ý", và CÓ chuỗi "0 lỗi · 1 cảnh báo · 2 gợi ý".
+Đã chứng minh ĐỎ trước sửa (chuỗi găm cứng hiện), XANH sau.
+
+**Quét thêm (đợt 7):** US12 sức khoẻ nhóm đã TÍNH ĐÚNG — `progress =
+doneCount/totalCount`, `pct` suy từ đó, 3 nhóm (4/4, 1/4, 2/4) đều khớp, không
+có số găm cứng. US05 đọc `r.aiErrors/Warnings/Suggestions` trực tiếp (đúng).
+US06/US07 không hiện số AI chi tiết nên không có sai số ở chỗ đó.

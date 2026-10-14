@@ -198,7 +198,12 @@ class _ReviewWorkspaceScreenState extends State<ReviewWorkspaceScreen> {
       children: [
         Text('Tiến độ review', style: AppText.blockTitle),
         const SizedBox(height: AppSpace.m),
-        _track('AI đã review', 1, Tone.olive, '3 lỗi · 6 cảnh báo · 5 gợi ý'),
+        _track(
+          'AI đã review',
+          1,
+          Tone.olive,
+          '${r.aiErrors} lỗi · ${r.aiWarnings} cảnh báo · ${r.aiSuggestions} gợi ý',
+        ),
         _track('Giảng viên review', 0.5, Tone.brand, 'Đang chờ quyết định'),
         _track('Feedback đã gửi', 0.5, Tone.amber, '1 feedback cũ'),
       ],
