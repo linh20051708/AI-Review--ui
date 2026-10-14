@@ -189,8 +189,12 @@ class ReviewRepository extends ChangeNotifier {
       notifyListeners();
       return false;
     }
-    _apply(w);
-    return true;
+    // SỬA GỐC (đợt 9): từng `_apply(w); return true;` — trả "thành công" kể cả
+    // khi KHÔNG áp được gì. Ba lần lỗi cùng một gốc này (§3d, §3i, §3j):
+    // màn hiện "Trạng thái đã cập nhật" / "Đã nộp" còn dữ liệu đứng im, vì
+    // id không tồn tại hoặc payload không phải tên `DocStatus`, còn `write()`
+    // vẫn báo true. Giờ `write()` CHỈ trả true khi thật sự đổi được trạng thái.
+    return _apply(w);
   }
 
   /// Áp dụng một quyết định đã "gửi": đổi `status` của tài liệu.
@@ -202,22 +206,26 @@ class ReviewRepository extends ChangeNotifier {
   ///
   /// `payload` không map được sang `DocStatus` thì BỎ QUA (không ghi bừa trạng
   /// thái) — dữ liệu lạ không được làm hỏng bản ghi.
-  void _apply(PendingWrite w) {
+  ///
+  /// Trả về `true` KHI VÀ CHỈ KHI trạng thái thật sự đổi. Đổi id/payload gõ
+  /// tay thì `false` để màn biết mà KHÔNG báo thành công giả dối.
+  bool _apply(PendingWrite w) {
     final next = DocStatus.values.where((s) => s.name == w.payload).firstOrNull;
     final list = requests();
     final at = list.indexWhere((r) => r.id == w.id);
     if (at < 0) {
       debugPrint('[202] bo qua: khong co tai lieu ${w.id}');
-      return;
+      return false;
     }
     if (next == null) {
       debugPrint('[202] bo qua: payload "${w.payload}" khong phai trang thai');
-      return;
+      return false;
     }
-    if (list[at].status == next) return;
+    if (list[at].status == next) return false;
     list[at] = list[at].copyWith(status: next);
     debugPrint('[202] da gui: ${w.label} (${w.id}) -> ${next.name}');
     notifyListeners();
+    return true;
   }
 
   /// Chỉ dùng cho test: xoá cache và hàng đợi về trạng thái ban đầu.

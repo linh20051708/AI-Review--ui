@@ -373,3 +373,48 @@ từ `byId` trước khi ghi → đọc **object cũ**, vì `_apply` THAY THẾ 
 đọc/click không ổn định (đúng bản chất §3c). Trình duyệt chỉ dùng được làm cổng hồi
 quy (journeys 8/8, tap-target 9/9, 0 lỗi console); **dụng cụ có thẩm quyền cho
 trạng thái sau nộp là widget test** — đã chứng minh ĐỎ→XANH.
+
+## 3j. `write()` trả true khi KHÔNG áp được gì — gốc chung của 3 lần lỗi (14/10, đợt 9)
+
+Đợt 9 quét TOÀN BỘ chỗ gọi `repo.write(...)` và tìm ra **hai** chỗ gõ tay
+id/payload, cộng một lỗi thiết kế API khiến cả lớp lỗi tồn tại được:
+
+### 1. Lỗi gốc: `write()` báo thành công giả
+```dart
+// TRƯỚC
+_apply(w);
+return true;   // ← trả true kể cả khi _apply KHÔNG áp được gì
+```
+`_apply()` ghi rõ trong docblock là **bỏ qua** khi id không có hoặc payload không
+phải tên `DocStatus`, nhưng `write()` vẫn trả `true`. Nên màn hiện "Trạng thái đã
+cập nhật" / "Đã nộp" còn dữ liệu đứng im. **Đây là nguyên nhân chung** của §3d,
+§3i, và hai chỗ dưới: giaо diện không hề nói dối — nó tin cái `true` do kho
+trả về.
+
+### 2. US07: payload là LỜI NHẮN
+`repo.write(id: reviewId, label: 'Yêu cầu chỉnh sửa', payload: _note.text.trim())`
+— payload là chữ người dùng gõ, không map được `DocStatus` nào. `_undo()` gửi
+`payload: 'undo'` — cũng vậy. Cả hai lặng lẽ "thành công".
+→ Payload đổi thành `DocStatus.needsRevision.name` / `DocStatus.waiting.name`;
+lời nhắn đi theo `label` để còn thấy.
+
+### 3. US10: id là `'submit'`, payload là tên tệp
+`repo.write(id: 'submit', ..., payload: 'sequence-diagram-v2.pdf')` — id KHÔNG
+tồn tại, payload là TÊN TỆP. Màn nói "Đã nộp. Giảng viên sẽ nhận được thông báo."
+→ Gõ id tài liệu thật + `DocStatus.submitted.name`; khi `write()` trả false mà
+không phải offline thì nói "Chưa nộp được…", không báo thành công.
+
+**Sửa gốc:** `_apply` giờ trả `bool` (đổi được mới true), `write()` trả đúng giá
+trị đó. Nhờ vậy **màn không thể báo thành công khi không có gì xảy ra**, dù sau
+này có ai gõ nhầm id/payload lần nữa — lỗi sẽ hiện ra thành lời, không còn im lặng.
+
+**Bằng chứng cổng ĐỎ được:** `test/submit_gate_test.dart` TC_US10_BV_01 gọi
+`write(id:'submit', payload:'sequence-diagram-v2.pdf')` và `fail()` nếu trả
+`true` — ĐỎ trước sửa, XANH sau. `test/revision_write_test.dart` TC_US07_HP_04:
+ĐỎ trước sửa (`Expected: needsRevision, Actual: waiting`), XANH sau.
+
+**Quan trọng — sửa gốc làm vỡ một test, và đó là test LỖI chứ không phải hồi quy:**
+`domain_repository_test.dart` có test dùng id/payload bịa (`'a'`/`'p'`, `'review-001'`
+với payload `'x'`) rồi mong đợi `isTrue`. Những test đó từng xanh nhờ chính con lỗi
+đang sửa (API báo true vô điều kiện). Đã đổi sang id + tên trạng thái thật. Nên
+111/111 xanh. **Không có test nào hồi quy do hành vi ứng dụng đổi sai.**

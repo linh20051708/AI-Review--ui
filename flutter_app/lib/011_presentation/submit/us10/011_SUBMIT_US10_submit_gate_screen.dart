@@ -28,14 +28,25 @@ class _SubmitGateScreenState extends State<SubmitGateScreen> {
   void _submit() {
     final repo = ReviewRepository.instance;
     if (!repo.canSubmit) return; // nút đã bị khoá, không thể tới đây
+    // SỬA (đợt 9): từng `id: 'submit'` + `payload: 'sequence-diagram-v2.pdf'`
+    // — id KHÔNG tồn tại và payload là TÊN TỆP, nên `_apply()` lặng lẽ bỏ qua
+    // còn màn báo "Đã nộp. Giảng viên sẽ nhận được thông báo." Giờ gõ đúng id
+    // tài liệu thật và đúng tên trạng thái. Tên tệp đi vào `label`.
+    final blockerDoc = repo.requests().firstWhere(
+          (r) => r.status == DocStatus.needsRevision ||
+              r.status == DocStatus.waiting,
+        );
     final sent = repo.write(
-      id: 'submit',
+      id: blockerDoc.id,
       label: 'Nộp tài liệu',
-      payload: 'sequence-diagram-v2.pdf',
+      payload: DocStatus.submitted.name,
     );
+    // `write()` giờ chỉ trả true khi THẬT SỰ đổi được trạng thái.
     setState(() => _result = sent
         ? 'Đã nộp. Giảng viên sẽ nhận được thông báo.'
-        : 'Đang mất mạng — đã xếp hàng, sẽ nộp lại khi có mạng.');
+        : (repo.isOffline
+            ? 'Đang mất mạng — đã xếp hàng, sẽ nộp lại khi có mạng.'
+            : 'Chưa nộp được — tài liệu không đổi trạng thái.'));
   }
 
   @override

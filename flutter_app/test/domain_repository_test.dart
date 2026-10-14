@@ -120,16 +120,28 @@ void main() {
     test('TC_US11_EX_01 — ghi khi offline thì vào hàng đợi, không mất', () {
       final repo = ReviewRepository.instance;
       repo.setNet(NetState.offline);
-      repo.write(id: 'a', label: 'l1', payload: 'p1');
-      repo.write(id: 'b', label: 'l2', payload: 'p2');
+      // Đợt 9: dùng id + trạng thái thật thay cho `'a'`/`'p1'`.
+      repo.write(id: 'review-001', label: 'l1', payload: DocStatus.approved.name);
+      repo.write(id: 'review-002', label: 'l2', payload: DocStatus.approved.name);
       expect(repo.pendingCount, 2);
-      expect(repo.queue.map((w) => w.id).toList(), ['a', 'b']);
+      expect(repo.queue.map((w) => w.id).toList(), ['review-001', 'review-002']);
     });
 
     test('ghi khi online thì gửi ngay, không vào hàng đợi', () {
       final repo = ReviewRepository.instance;
-      expect(repo.write(id: 'a', label: 'l', payload: 'p'), isTrue);
+      // Đợt 9 sửa: từng dùng id/payload bịa (`'a'`/`'p'`). `write()` giờ chỉ
+      // trả true khi THẬT SỰ đổi trạng thái, nên test phải dùng id + tên
+      // trạng thái thật — đúng như màn thật làm.
+      final sent = repo.write(
+        id: 'review-001',
+        label: 'phê duyệt',
+        payload: DocStatus.approved.name,
+      );
+      expect(sent, isTrue, reason: 'id + payload hợp lệ thì phải ghi được');
       expect(repo.pendingCount, 0);
+      expect(
+          repo.byId('review-001')!.status, DocStatus.approved,
+          reason: 'gửi ngay thì trạng thái phải đổi thật');
     });
 
     test('TC_US04_AP_02 — đọc lại dùng cache, không nạp lại nguồn', () {

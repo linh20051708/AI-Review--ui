@@ -43,10 +43,13 @@ class _RequestRevisionScreenState extends State<RequestRevisionScreen> {
           'Cần ghi lý do tối thiểu 10 ký tự để sinh viên biết phải sửa gì.');
       return;
     }
+    // payload phải là tên `DocStatus` (đợt 9 sửa): từng truyền `_note.text`
+    // — LỜI NHẮN người dùng gõ, không ánh xạ được nên `_apply()` lặng lẽ bỏ
+    // qua và màn hiện đã gửi giả dối. Lời nhắn đi theo `label` để còn thấy.
     final sent = ReviewRepository.instance.write(
       id: widget.reviewId,
-      label: 'Yêu cầu chỉnh sửa',
-      payload: _note.text.trim(),
+      label: 'Yêu cầu chỉnh sửa: ${_note.text.trim()}',
+      payload: DocStatus.needsRevision.name,
     );
     setState(() {
       _error = null;
@@ -59,11 +62,15 @@ class _RequestRevisionScreenState extends State<RequestRevisionScreen> {
   }
 
   /// Hoàn tác: trả về trạng thái trước đó. Đây là điểm khác biệt của US07.
+  ///
+  /// payload phải là tên `DocStatus` (đợt 9 sửa): từng gửi `'undo'` — không
+  /// ánh xạ được nên hoàn tác lặng lẽ không làm gì. Tài liệu trước khi bị yêu
+  /// cầu chỉnh sửa đang ở "Đã nộp/chờ" nên trả về `waiting`.
   void _undo() {
     ReviewRepository.instance.write(
       id: widget.reviewId,
       label: 'Hoàn tác yêu cầu chỉnh sửa',
-      payload: 'undo',
+      payload: DocStatus.waiting.name,
     );
     setState(() {
       _sent = false;
