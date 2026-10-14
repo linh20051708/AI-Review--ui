@@ -124,6 +124,11 @@ async function tap(page, needle, wait = 2000) {
     for (let i = 0; i < 8; i++) {
       await page.mouse.wheel(0, Math.round(vp.height * 0.6));
       await settle(page, 700);
+      // BẮT BUỘC bật lại semantics TRƯỚC KHI đọc: Flutter web tắt semantics sau
+      // mỗi lần có tương tác/scroll, nên `readNodes` lúc này trả rỗng và ta tưởng
+      // "cuộn hết vẫn không thấy". Ca thật (14/10): nút "Xem tất cả 5 phát hiện"
+      // nằm cuối màn workspace; thiếu dòng này thì script báo FAIL oan cho app.
+      await enableSemantics(page);
       const after = await readNodes(page);
       const found = after
         .filter((n) => n.text.includes(needle) && n.pe !== 'none')
@@ -212,13 +217,18 @@ try {
   log(ai !== null && aiShot.hash !== ws.hash, 'Mở kết quả AI');
 
   // --- Quay lại rồi sang tab Hồ sơ ---
-  // Màn AI là route riêng -> Back về workspace; Back lần nữa mới về shell có thanh tab.
-  // Bấm Back bằng toạ độ nút AppBar (48x48 @28,28) thay vì `tap`: `tap` có thể
-  // cuộn trang để tìm nhãn, làm thanh tab dưới bị đẩy khỏi tầm đọc semantics.
-  await tap(page, 'Back', 1500);
-  await page.mouse.click(28, 28);
-  await settle(page, 1500);
-  const prof = await tap(page, 'Hồ sơ', 2200);
+  //
+  // CHỈ CẦN **MỘT** Back (đo 14/10 — sửa sau khi tôi ghi nhớ sai và đo lại 6 lần).
+  // Tôi từng ghi nhầm ở dòng này: "màn AI là route riêng -> Back về workspace;
+  // Back lần nữa mới về shell". ĐO LẠI thì SAI:
+  //   từ shell (tab Review) bấm "Xem tất cả" -> pushNamed AI -> `pop()` MỘT lần
+  //   đã về đúng shell có thanh tab. Không cần lần Back thứ hai.
+  // Thực đo: AI=de2e0d310e → Back 1 lần → shell (hash 97a07197c3, có tab).
+  // Bấm Back lần 2 (toạ độ 28,28) thì trúng chính AppBar Back của shell và đẩy
+  // app về màn đăng nhập (hash ee31cbc82f) -> báo FAIL oan "không thấy Hồ sơ".
+  await tap(page, 'Back', 2500);
+  await enableSemantics(page);
+  const prof = await tap(page, 'Hồ sơ', 2500);
   const profShot = await capture('TC_US14_HP_01_ho-so-giang-vien');
   log(prof !== null && profShot.hash !== aiShot.hash, 'Mở tab Hồ sơ');
 

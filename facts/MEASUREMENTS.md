@@ -589,3 +589,40 @@ test phải chọn dữ liệu sao cho hai bên có thể khác nhau — nếu k
 
 **Bận test lần thứ 5:** nút "Xem tất cả N phát hiện" nằm cuối màn 577 dòng,
 ListView dọc dựng lazily → phải cuộn 14 lần mới thấy. Giống §3k (cuộn NGANG).
+
+## 3q. Script đo trình duyệt tự báo FAIL oan cho app 6 lần (14/10, đợt 14)
+
+**App không hề hỏng.** Lỗi nằm trong **`verify/flutter-journeys.mjs**` — công cụ đo
+của tôi. Tôi bỏ 5 vòng để đuổi theo một lỗi không tồn tại. Đây là bài học quý hơn
+mấy lỗi sản phẩm trước, nên ghi rõ từng bước.
+
+**Các lần đo sai lần lượt:**
+
+1. **Nhãn nhẩm.** Script gõ `'Yêu cầu review'` cho tab, nhưng nhãn thật trong
+   `shared/app_shell.dart` là `'Review'`. Đoạn `read nodes` chỉ hiển thị
+   `Review Review` (nhãn bị lặp vì tab gồm icon+label). **Không đo mà gõ theo
+   trí nhớ.**
+2. **Nút cuối màn.** `Xem tất cả 5 phát hiện` nằm cuối màn workspace 577 dòng;
+   script có sẵn vòng cuộn 8 lần nhưng **KHÔNG gọi `enableSemantics` bên trong
+   vòng** → sau mỗi lần wheel, Flutter đã tắt semantics nên `readNodes` trả rỗng,
+   ta tưởng "cuộn hết vẫn không thấy". Thêm 1 dòng `enableSemantics(page)` là ra.
+3. **Đếm sai số lần Back.** Tôi ghi nhớ (và ghi cả vào comment) rằng "màn AI là
+   route riêng → Back về workspace → Back lần nữa mới về shell". ĐO LẠI thì SAI:
+   `pop()` **một** lần đã về đúng shell có thanh tab. Back lần 2 trúng chính nút
+   Back của shell và đẩy app về màn đăng nhập.
+4. **Timeout quá ngắn.** 1500ms giữa hai Back không đủ để Flutter dựng lại
+   semantics sau điều hướng.
+
+**Cách đo đúng ra kết quả:** in node thô (`text@x,y,w×h,pe`) ra log thay vì đoán.
+Lần đó thấy ngay "sau Back lần 1 đang ở 'Yêu cầu review'" — mọi phỏng đoán khác
+đều sai.
+
+**Kết quả cuối:** sửa xong script (nhãn đúng + `enableSemantics` trong vòng cuộn +
+chỉ 1 Back + 2500ms), app chạy **8/8 bước**, ổn định 2 lần. Tap-target **10/10 màn
+/ 95 mục / 0 dưới 48dp / 0 lỗi console**.
+
+**Quy tắc rút ra (áp dụng cho mọi phép đo sau này):**
+1. Nhãn phải ĐỌC từ semantics tree, không gõ theo trí nhớ.
+2. Sau mỗi thao tác cuộn/điều hướng phải `enableSemantics` **trước khi** đọc.
+3. Số bước điều hướng phải ĐO bằng hash ảnh, không suy từ quan sát.
+4. Khi một công cụ báo lỗi liên tiếp >2 lần, nghi ngờ CÔNG CỤ trước.
