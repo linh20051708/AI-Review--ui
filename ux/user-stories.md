@@ -120,6 +120,7 @@ Scenario: Mất mạng có nhiều đường phục hồi
 
 - User story ở đây **suy ra từ code thật và persona đã viết**, không phải từ phỏng vấn với người dùng
   thật. Nhãn: `Assumed`. Đây là hạn chế đã biết của Lab 2 (không có người dùng thật để phỏng vấn).
-- 14 story phủ 14/17 use case. Ba use case chưa có story (`1-UC-16`, `1-UC-17`, và phần actor
-  `1-SH-03`) — khoảng trống đã ghi, không giả vờ đã xong.
+- 14 story phủ **15/17** use case (`1-US-03` phủ CẢ `1-UC-03` và `1-UC-04`). Hai use case chưa có
+  story: `1-UC-16` và `1-UC-17`, cùng thuộc actor `1-SH-03` (quản trị học vụ) — actor này cũng
+  chưa có persona. Khoảng trống đã ghi, không giả vờ đã xong.
 - Nghiệm thu ở đây chạy được bằng `docs/test-cases.md`; không có story nào chỉ nằm trên giấy.

@@ -45,8 +45,10 @@ Một use case không có user story nào trỏ tới là **use case mồ côi**
 | `1-UC-16` | Quản lý học kỳ / lớp / môn | `1-SH-03` | S09, S10, S17, S19, S20 | — | `managementStore.ts` |
 | `1-UC-17` | Quản lý rule set | `1-SH-03` | S18 | — | `pages/rule-sets/RuleSetListPage.tsx` |
 
-**Tổng: 17 use case.** Trong đó 12 use case có test case, 5 use case chưa (`1-UC-15`…`1-UC-17` và
-phần quản trị) — ghi rõ trong `docs/test-cases.md` §4.
+**Tổng: 17 use case.** Trong đó **15 có cả user story lẫn test case**; **2 chưa có**
+(`1-UC-16`, `1-UC-17` — đều thuộc actor `1-SH-03` quản trị học vụ, chưa có persona).
+Kiểm lại 14/10 bằng script trên chính bảng này; khoảng trống ghi ở `docs/test-cases.md` §4.
+*(Con số "12 có test case / 5 chưa" ghi trước đây là **sai** — đã sửa.)*
 
 ---
 

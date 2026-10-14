@@ -26,6 +26,13 @@
  *     `Review`, `Thông báo`, `Hồ sơ`) — app dùng shell một route `#/dashboard`,
  *     đổi tab chứ không đổi URL. Bản đầu dùng `Back` -> bị đăng xuất giữa chừng.
  *
+ *  6. **Phải đo CẢ nút trong hộp thoại.** Hộp thoại là trạng thái tạm, chỉ hiện
+ *     sau khi bấm, nên lượt quét đầu bỏ sót: 12 nút ngoài màn đã sửa đúng 48dp
+ *     mà 2 nút trong `AlertDialog.actions` vẫn **40dp** (`Huỷ` 46,6×40 và
+ *     `Phê duyệt` 284×40). Nguyên nhân: `AlertDialog.actions` dùng `OverflowBar`
+ *     với ràng buộc tight 40dp, vô hiệu hoá `minimumSize` của theme. Đã sửa
+ *     bằng widget `DialogAction` (bọc `SizedBox(height: tapMin)`).
+ *
  *  4. **App KHÔNG lưu session.** Nạp lại trang (`page.goto`) là về màn đăng nhập.
  *     Bản đầu của script `goto` giữa các màn -> 4/8 màn báo "không mở được",
  *     trông như lỗi UI nhưng thật ra là lỗi công cụ. Phải điều hướng bằng nút
@@ -265,6 +272,48 @@ async function tab(page, label) {
   return null;
 }
 
+/// Đo nút trong HỘP THOẠI (trạng thái tạm, phải mở mới đo được).
+///
+/// Chỉ lấy node có `role=button` hoặc `flt-tappable` và rộng < 400px: node
+/// rộng bằng màn hình là wrapper gom cả hộp thoại, không phải vùng chạm.
+async function dialogTargets(page) {
+  return page.evaluate(() => {
+    const out = [];
+    document.querySelectorAll('flt-semantics').forEach((e) => {
+      const role = e.getAttribute('role');
+      const tap = e.hasAttribute('flt-tappable');
+      if (role !== 'button' && !tap) return;
+      const r = e.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      if (r.width > 400) return;
+      if (r.top < 0 || r.bottom > window.innerHeight) return;
+      const t = ((e.innerText || '').trim().replace(/\s+/g, ' ') ||
+        e.getAttribute('aria-label') || '?').slice(0, 40);
+      out.push({ text: t, w: Math.round(r.width * 10) / 10, h: Math.round(r.height * 10) / 10 });
+    });
+    return out;
+  });
+}
+
+/// Mở hộp thoại rồi đo, xong bấm `Huỷ` để đóng.
+async function sweepDialog(page, label, openNeedle, cancelLabel = 'Huỷ') {
+  const opened = await tap(page, openNeedle, 2200);
+  if (!opened) {
+    console.log(`SKIP ${label} — không mở được hộp thoại bằng "${openNeedle}"`);
+    return { label, open: false, small: [{}] };
+  }
+  const all = (await dialogTargets(page)).filter((x) => x.hits === undefined);
+  const small = all.filter((x) => x.h < MIN - 0.5);
+  console.log(
+    `${small.length ? 'FAIL' : 'OK  '} ${label} (hộp thoại) — ${all.length} mục, ` +
+    `${small.length} < ${MIN}dp`,
+  );
+  for (const s of small.slice(0, 8)) console.log(`      ${s.h}dp  "${s.text}"`);
+  // đóng hộp thoại để không ảnh hưởng bước sau
+  await tap(page, cancelLabel, 1800);
+  return { label, total: all.length, small };
+}
+
 rows.push(await sweepScreen(page, 'US01 đăng nhập'));
 
 await clickExact(page, 'Đăng nhập bằng SSO trường');
@@ -280,6 +329,8 @@ if (await tab(page, 'Review')) {
   const card = await tap(page, 'Group 0', 2500);
   if (card) {
     rows.push(await sweepScreen(page, 'US04 không gian review'));
+    // HỘP THOẠI: trạng thái tạm, lượt quét đầu bỏ sót nên bị 40dp.
+    rows.push(await sweepDialog(page, 'US06 xác nhận phê duyệt', 'Phê duyệt'));
     if (await tap(page, 'Xem tất cả', 2500)) {
       rows.push(await sweepScreen(page, 'US05 kết quả AI'));
     }
