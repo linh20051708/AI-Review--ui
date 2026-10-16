@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom"
 import AuthLayout from "@/layouts/AuthLayout"
 import MobileAppLayout from "@/layouts/MobileAppLayout"
+import StudentAppLayout from "@/layouts/StudentAppLayout"
 import LoginPage from "@/pages/auth/LoginPage"
 import ClassDetailPage from "@/pages/classes/ClassDetailPage"
 import ClassListPage from "@/pages/classes/ClassListPage"
@@ -24,6 +25,14 @@ import RuleSetListPage from "@/pages/semesters/RuleSetListPage"
 import CourseListPage from "@/pages/semesters/CourseListPage"
 import CourseOfferingDetailPage from "@/pages/semesters/CourseOfferingDetailPage"
 import StudentListPage from "@/pages/students/StudentListPage"
+import StudentDashboardPage from "@/pages/student/StudentDashboardPage"
+import StudentProjectDetailPage from "@/pages/student/StudentProjectDetailPage"
+import StudentDocumentsPage from "@/pages/student/StudentDocumentsPage"
+import StudentDocumentDetailPage from "@/pages/student/StudentDocumentDetailPage"
+import StudentUploadPage from "@/pages/student/StudentUploadPage"
+import StudentVersionsPage from "@/pages/student/StudentVersionsPage"
+import StudentNotificationsPage from "@/pages/student/StudentNotificationsPage"
+import StudentProfilePage from "@/pages/student/StudentProfilePage"
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +67,22 @@ export const router = createBrowserRouter([
       { path: "notifications", element: <NotificationsPage /> },
       { path: "profile", element: <ProfilePage /> },
       { path: "*", element: <Navigate to="/dashboard" replace /> },
+    ],
+  },
+  {
+    path: "/student",
+    element: <StudentAppLayout />,
+    children: [
+      { index: true, element: <Navigate to="/student/dashboard" replace /> },
+      { path: "dashboard", element: <StudentDashboardPage /> },
+      { path: "projects/:projectId?", element: <StudentProjectDetailPage /> },
+      { path: "documents", element: <StudentDocumentsPage /> },
+      { path: "documents/:documentId", element: <StudentDocumentDetailPage /> },
+      { path: "documents/:documentId/upload", element: <StudentUploadPage /> },
+      { path: "documents/:documentId/versions", element: <StudentVersionsPage /> },
+      { path: "notifications", element: <StudentNotificationsPage /> },
+      { path: "profile", element: <StudentProfilePage /> },
+      { path: "*", element: <Navigate to="/student/dashboard" replace /> },
     ],
   },
 ])

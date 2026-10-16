@@ -101,4 +101,10 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* Student body copy stays readable while retaining compact navigation labels. */
+  .student-app .mobile-content { overflow-wrap: anywhere; }
+  .student-app .mobile-header a { flex-shrink: 0; }
+  .student-app .mobile-header a:first-child { flex-shrink: 1; }
+  .student-app .mobile-content :is(button, a) { min-height: 48px; }
 }
