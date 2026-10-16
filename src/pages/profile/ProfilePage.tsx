@@ -4,24 +4,30 @@ import {
   ChevronRight,
   GraduationCap,
   LogOut,
+  RotateCcw,
   School,
   Users2,
 } from "lucide-react"
+import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { signOut } from "@/app/auth"
 import Avatar from "@/components/ui/Avatar"
 import Badge from "@/components/ui/Badge"
 import Button from "@/components/ui/Button"
 import Card from "@/components/ui/Card"
+import ConfirmModal from "@/components/ui/ConfirmModal"
 import MetaGrid from "@/components/ui/MetaGrid"
 import PageHeading from "@/components/ui/PageHeading"
 import SectionHeader from "@/components/ui/SectionHeader"
+import { toast } from "@/components/ui/Toast"
 import { currentUser } from "@/data/mockData"
 import { useManagement } from "@/data/managementStore"
+import { resetDemoData } from "@/data/reset"
 
 export default function ProfilePage() {
   const navigate = useNavigate()
   const { classes, semesters, courses, students, groups } = useManagement()
+  const [confirmReset, setConfirmReset] = useState(false)
 
   const handleSignOut = () => {
     signOut()
@@ -121,6 +127,31 @@ export default function ProfilePage() {
       >
         Đăng xuất
       </Button>
+
+      <button
+        type="button"
+        onClick={() => setConfirmReset(true)}
+        className="inline-flex min-h-12 items-center justify-center gap-1.5 text-[12px] font-semibold text-muted hover:text-danger"
+      >
+        <RotateCcw size={14} /> Reset dữ liệu demo
+      </button>
+
+      <ConfirmModal
+        open={confirmReset}
+        danger
+        title="Reset dữ liệu demo"
+        description="Mọi version, feedback, quyết định và thông báo sẽ trở về trạng thái ban đầu."
+        confirmLabel="Reset dữ liệu"
+        onConfirm={() => {
+          resetDemoData()
+          toast("Đã reset dữ liệu demo")
+        }}
+        onClose={() => setConfirmReset(false)}
+      >
+        <p className="text-[12px] leading-[1.45] text-muted">
+          Dùng trước buổi thuyết trình để demo từ trạng thái sạch. Dữ liệu học vụ cũng trở về mẫu ban đầu.
+        </p>
+      </ConfirmModal>
     </>
   )
 }

@@ -1,214 +1,339 @@
-import { AlertCircle, ArrowUpRight, CheckCircle2, Loader2, RefreshCw, Sparkles } from "lucide-react"
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import AIFindingCard from "@/components/review/AIFindingCard"
+import { useId, useState } from "react"
+import { ChevronDown } from "lucide-react"
 import Button from "@/components/ui/Button"
+import Badge from "@/components/ui/Badge"
+import Card from "@/components/ui/Card"
 import EmptyState from "@/components/ui/EmptyState"
 import Notice from "@/components/ui/Notice"
-import { toast } from "@/components/ui/Toast"
-import type { AIFinding, ReviewRequest } from "@/types"
-
+import { useManagement } from "@/data/managementStore"
+import { runEvaluation, useReviewStore } from "@/data/reviewStore"
+import { resolveReviewRule } from "@/lib/rubric"
+import type { AIEvaluation, AIFinding, ReviewRequest } from "@/types"
 export type AIState = "not_started" | "loading" | "completed" | "error"
 
-interface Props {
+export default function AIReviewSection({
+  review,
+  onAddFinding,
+  added = [],
+  detailed,
+  onViewDocument,
+}: {
   review: ReviewRequest
-  findings: AIFinding[]
+  findings?: AIFinding[]
   added?: string[]
   onAddFinding?: (f: AIFinding) => void
   detailed?: boolean
   initialState?: AIState
-}
-
-export default function AIReviewSection({
-  review,
-  findings,
-  added = [],
-  onAddFinding,
-  detailed = false,
-  initialState,
-}: Props) {
-  // Determine starting state from review data, or override if provided
-  const [state, setState] = useState<AIState>(() => {
-    if (initialState) return initialState
-    if (review.aiStatus === "aiReviewing") return "loading"
-    if (review.aiStatus === "aiReviewed") return "completed"
-    return "not_started"
-  })
-
-  const runAIReview = () => {
-    setState("loading")
-    setTimeout(() => {
-      setState("completed")
-      toast("AI Review hoàn tất: 2 lỗi, 3 cảnh báo, 4 gợi ý")
-    }, 1800)
+  onViewDocument?: () => void
+}) {
+  const cfg = useManagement()
+  const store = useReviewStore()
+  const [error, setError] = useState("")
+  const runs = store.evaluations.filter((e) => e.reviewId === review.id)
+  const current = runs
+    .filter((e) => e.documentVersion === review.version)
+    .at(-1)
+  const rule = current?.ruleSnapshot ?? resolveReviewRule(review, cfg)
+  const state = current?.evaluationStatus ?? "not_started"
+  const completedReview = !["waiting", "inReview"].includes(
+    review.supervisorStatus,
+  )
+  const start = (fail = false) => {
+    setError("")
+    void runEvaluation(review.id, fail).catch((e) => setError(e.message))
   }
-
-  const triggerErrorSimulation = () => {
-    setState("loading")
-    setTimeout(() => {
-      setState("error")
-      toast("Không thể hoàn tất AI Review. Vui lòng thử lại.")
-    }, 1500)
-  }
-
-  const counts = [
-    { value: review.ai.errors || 2, label: "Lỗi", bg: "bg-rust-soft text-rust border-rust/20" },
-    { value: review.ai.warnings || 3, label: "Cảnh báo", bg: "bg-amber-soft text-amber border-amber/20" },
-    { value: review.ai.suggestions || 4, label: "Gợi ý", bg: "bg-olive-soft text-olive border-olive/20" },
-  ]
-
-  // NOT_STARTED STATE
-  if (state === "not_started") {
-    return (
-      <div className="flex flex-col gap-3">
-        <EmptyState
-          icon={<Sparkles size={24} className="text-brand" />}
-          title="AI Review chưa được chạy"
-          description="Khởi chạy AI để tự động đối chiếu quy chuẩn, kiểm tra sơ đồ và phát hiện lỗi trước khi giảng viên đánh giá."
-          action={
-            <Button
-              icon={<Sparkles size={18} strokeWidth={1.75} />}
-              onClick={runAIReview}
-              className="w-auto px-5"
-            >
-              Chạy AI Review
-            </Button>
-          }
-        />
-        <Notice>
-          AI Review chỉ mang tính hỗ trợ. Quyết định cuối cùng thuộc về giảng viên.
-        </Notice>
-      </div>
-    )
-  }
-
-  // LOADING STATE
-  if (state === "loading") {
-    return (
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col items-center justify-center gap-3 rounded-[12px] border border-brand/30 bg-brand-soft/40 p-6 text-center">
-          <div className="flex size-12 items-center justify-center rounded-full bg-brand text-white shadow-sm">
-            <Loader2 size={24} className="animate-spin" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <p className="text-[15px] font-bold text-ink">AI đang phân tích tài liệu...</p>
-            <p className="text-[13px] text-muted">
-              Đang đối chiếu quy chuẩn đồ án, kiểm tra cú pháp và cấu trúc tài liệu...
-            </p>
-          </div>
-
-          {/* Skeleton progress cards */}
-          <div className="mt-2 flex w-full flex-col gap-2">
-            <div className="h-4 w-3/4 animate-pulse rounded bg-line/80 mx-auto" />
-            <div className="h-3 w-1/2 animate-pulse rounded bg-line/60 mx-auto" />
-          </div>
-
-          <Button disabled loading className="mt-2 w-auto px-6 opacity-80">
-            Đang phân tích...
-          </Button>
-        </div>
-
-        <Notice>
-          Giảng viên vẫn có thể xem trước tài liệu và ghi nhận feedback độc lập trong khi AI đang xử lý.
-        </Notice>
-      </div>
-    )
-  }
-
-  // ERROR STATE
-  if (state === "error") {
-    return (
-      <div className="flex flex-col gap-3">
-        <EmptyState
-          icon={<AlertCircle size={24} className="text-danger" />}
-          title="Không thể hoàn tất AI Review"
-          description="Đã xảy ra lỗi trong quá trình phân tích tài liệu hoặc kết nối dịch vụ bị gián đoạn."
-          action={
-            <Button
-              variant="secondary"
-              icon={<RefreshCw size={16} strokeWidth={1.75} />}
-              onClick={runAIReview}
-              className="w-auto px-5"
-            >
-              Thử lại
-            </Button>
-          }
-        />
-        <Notice>
-          AI Review chỉ mang tính hỗ trợ. Bạn có thể tự thẩm định tài liệu mà không cần đợi AI.
-        </Notice>
-      </div>
-    )
-  }
-
-  // COMPLETED STATE
+  const criteria = rule?.criteria ?? []
+  const additionalFindings = (current?.findings ?? []).filter(
+    f => !current?.criterionResults.some(c => c.name === f.category),
+  )
+  const percent =
+    current?.overallScore != null && current.maxScore
+      ? (current.overallScore / current.maxScore) * 100
+      : null
   return (
-    <div className="flex flex-col gap-3">
-      {/* Header status badge + re-run action */}
-      <div className="flex items-center justify-between gap-2 rounded-[8px] bg-brand-soft px-3 py-2 border border-brand/20">
-        <div className="flex items-center gap-2">
-          <CheckCircle2 size={18} className="text-brand shrink-0" />
-          <span className="text-[13px] font-semibold text-brand">AI Review hoàn tất</span>
-        </div>
-        <button
-          type="button"
-          onClick={runAIReview}
-          className="inline-flex min-h-12 items-center gap-1.5 px-2 text-[12px] font-semibold text-brand hover:underline active:scale-95 transition"
+    <div className="flex flex-col gap-3 text-[14px]">
+      <Notice>
+        Kết quả AI mô phỏng. Không đọc hoặc phân tích nội dung PDF/DOCX thật.
+        Mọi evidence cần Supervisor xác minh; điểm không tự phê duyệt hoặc từ
+        chối.
+      </Notice>
+      <Card>
+        <strong>
+          {rule ? rule.name + " · v" + rule.version : "Chưa gán bộ quy tắc"}
+        </strong>
+        <p>{rule?.description}</p>
+        <Badge
+          tone={
+            state === "error"
+              ? "rust"
+              : state === "completed"
+                ? "brand"
+                : "neutral"
+          }
         >
-          <RefreshCw size={14} />
-          <span>Chạy lại AI Review</span>
-        </button>
-      </div>
-
-      {/* Summary count pills */}
-      <div className="grid grid-cols-3 gap-2">
-        {counts.map((c) => (
-          <div
-            key={c.label}
-            className={`flex flex-col items-center justify-center gap-0.5 rounded-[10px] border p-2.5 ${c.bg}`}
-          >
-            <span className="text-[22px] font-bold leading-none">{c.value}</span>
-            <span className="text-[12px] font-medium">{c.label}</span>
+          {state === "not_started"
+            ? "Not Started · Chưa chạy"
+            : state === "loading"
+              ? "Loading · Đang mô phỏng"
+              : state === "error"
+                ? "Error · Có lỗi"
+                : "Completed · Hoàn tất mô phỏng"}
+        </Badge>
+        {rule && (
+          <p>
+            AI {rule.aiEnabled ? "bật" : "tắt"} · Supervisor{" "}
+            {rule.supervisorApproval
+              ? "bắt buộc"
+              : "tùy chọn, vẫn quyết định thủ công"}{" "}
+            · Đạt từ {rule.passThreshold}% · Cải thiện từ{" "}
+            {rule.improveThreshold}%
+          </p>
+        )}
+        {review.ruleSnapshot && (
+          <p>
+            Đang dùng snapshot của bản nộp; thay đổi cấu hình chỉ áp dụng bản
+            nộp mới.
+          </p>
+        )}
+      </Card>
+      <details className="rounded-xl border border-line bg-white p-3">
+        <summary className="min-h-12 cursor-pointer font-semibold">
+          Checklist cấu hình ({criteria.filter((c) => c.enabled).length} bật /{" "}
+          {criteria.length})
+        </summary>
+        {criteria.map((c) => (
+          <div key={c.id} className="border-t border-line py-3">
+            <strong>
+              {c.id} · {c.name}
+            </strong>
+            <p>
+              {c.maxScore} điểm · {c.enabled ? "Bật" : "Tắt"} ·{" "}
+              {c.critical
+                ? "Critical"
+                : c.required
+                  ? "Bắt buộc"
+                  : "Thông thường"}{" "}
+              · AI {c.aiEnabled ? "bật" : "tắt"}
+            </p>
+            <p>{c.description}</p>
+            <p>Hướng dẫn: {c.instruction || "Chưa cấu hình"}</p>
+            <p>Evidence: {c.evidenceRequirement || "Supervisor xác minh"}</p>
           </div>
         ))}
-      </div>
-
-      <Notice>
-        AI Review chỉ mang tính hỗ trợ. Quyết định cuối cùng thuộc về giảng viên.
-      </Notice>
-
-      {/* Findings list */}
-      <div className="flex flex-col gap-2 pt-1">
-        <div className="flex items-center justify-between">
-          <span className="text-[13px] font-semibold uppercase tracking-wider text-muted">
-            Phát hiện của AI ({findings.length})
-          </span>
-          {!detailed && (
-            <Link
-              to={`/reviews/${review.id}/ai-result`}
-              className="inline-flex min-h-12 items-center gap-1 text-[13px] font-semibold text-brand hover:underline"
-            >
-              Xem báo cáo đầy đủ <ArrowUpRight size={14} />
-            </Link>
-          )}
-        </div>
-
-        {findings.length === 0 ? (
+        {!criteria.length && (
           <EmptyState
-            title="AI không phát hiện vấn đề nào"
-            description="Tài liệu tuân thủ tốt các tiêu chí kiểm tra sơ bộ."
+            title="Chưa có checklist"
+            description="Supervisor cần cấu hình tiêu chí trong Bộ quy tắc."
           />
-        ) : (
-          findings.map((f) => (
-            <AIFindingCard
-              key={f.id}
-              finding={f}
-              added={added.includes(f.id)}
-              onAdd={onAddFinding ? () => onAddFinding(f) : undefined}
-            />
-          ))
         )}
-      </div>
+        {!criteria.length && (
+          <Button variant="secondary" to="/rule-sets">
+            Cấu hình Bộ quy tắc
+          </Button>
+        )}
+      </details>
+      {!completedReview &&
+        rule?.aiEnabled &&
+        rule.status === "active" &&
+        criteria.some((c) => c.enabled) && (
+          <div className="flex flex-col gap-2">
+            <Button
+              disabled={state === "loading"}
+              loading={state === "loading"}
+              onClick={() => start()}
+            >
+              {state === "error"
+                ? "Thử lại AI Evaluation"
+                : state === "completed"
+                  ? "Chạy lại AI Evaluation"
+                  : "Bắt đầu AI Evaluation"}
+            </Button>
+            <Button
+              variant="secondary"
+              disabled={state === "loading"}
+              onClick={() => start(true)}
+            >
+              Mô phỏng lỗi AI
+            </Button>
+          </div>
+        )}
+      {state === "loading" && (
+        <p role="status" className="animate-pulse rounded-lg bg-brand-soft p-4">
+          Đang tạo kết quả mô phỏng theo rubric…
+        </p>
+      )}
+      {(error || current?.error) && (
+        <p role="alert" className="text-danger">
+          {error || current?.error}
+        </p>
+      )}
+      {completedReview && !current && (
+        <Notice>
+          Review lịch sử chưa có kết quả rubric. Không suy diễn kết quả
+          Completed từ số đếm AI demo cũ.
+        </Notice>
+      )}
+      {current?.evaluationStatus === "completed" && (
+        <>
+          <Card>
+            <strong>
+              Tổng điểm đề xuất: {current.overallScore ?? "Chưa đủ điểm"} /{" "}
+              {current.maxScore}
+            </strong>
+            <p>
+              {percent === null
+                ? "Có tiêu chí chấm thủ công / tắt đề xuất điểm. Chưa xếp loại."
+                : (percent >= (rule?.passThreshold ?? 80)
+                    ? "Đạt"
+                    : percent >= (rule?.improveThreshold ?? 70)
+                      ? "Cần cải thiện"
+                      : "Cần làm lại") +
+                  " · " +
+                  percent.toFixed(1) +
+                  "% (mô phỏng)"}
+            </p>
+            <p>Cần xác minh evidence trước quyết định cuối cùng.</p>
+          </Card>
+          <CriterionAccordionList
+            key={current.id}
+            evaluation={current}
+            onAddFinding={onAddFinding}
+            added={added}
+          />
+          {additionalFindings.length > 0 && <h3 className="font-semibold">
+            Findings & Evidence ({additionalFindings.length})
+          </h3>}
+          {!current.findings.length && (
+            <Notice>
+              Không có findings được cấu hình để sinh. Điều này không chứng minh
+              tài liệu đạt yêu cầu.
+            </Notice>
+          )}
+          {additionalFindings.map((f) => (
+            <Card key={f.id}>
+              <strong>{f.category}</strong>
+              <p>{f.message}</p>
+              {onAddFinding && (
+                <Button
+                  variant="secondary"
+                  disabled={added.includes(f.id)}
+                  onClick={() => onAddFinding(f)}
+                >
+                  {added.includes(f.id) ? "Đã thêm" : "Thêm vào feedback nháp"}
+                </Button>
+              )}
+            </Card>
+          ))}
+        </>
+      )}
+      {onViewDocument ? (
+        <Button variant="secondary" onClick={onViewDocument}>
+          Đối chiếu tài liệu / evidence
+        </Button>
+      ) : (
+        <Button variant="secondary" to={"/reviews/" + review.id}>
+          Mở Workspace để đối chiếu tài liệu
+        </Button>
+      )}
+      {!detailed && (
+        <Button variant="secondary" to={"/reviews/" + review.id + "/ai-result"}>
+          Xem kết quả và lịch sử AI
+        </Button>
+      )}
+      {detailed && (
+        <section className="flex flex-col gap-3">
+          <h3 className="font-semibold">
+            Lịch sử AI theo version ({runs.length})
+          </h3>
+          {runs.map((e) => (
+            <details key={e.id} className="rounded-xl border border-line p-3">
+              <summary className="min-h-12 cursor-pointer">
+                {e.documentVersion} · {e.ruleSnapshot.name} v{e.ruleSetVersion}{" "}
+                · {e.evaluationStatus}
+              </summary>
+              <p>
+                {e.createdAt} · ID {e.documentVersionId}
+              </p>
+              <p>
+                {e.overallScore ?? "—"} / {e.maxScore} (mô phỏng)
+              </p>
+              {e.criterionResults.map((c) => (
+                <p key={c.criterionId}>
+                  {c.criterionId} · {c.name}: {c.score ?? "—"}/{c.maxScore} ·{" "}
+                  {c.evidence}
+                </p>
+              ))}
+              {e.findings.map((f) => (
+                <p key={f.id}>{f.message}</p>
+              ))}
+            </details>
+          ))}
+        </section>
+      )}
     </div>
+  )
+}
+
+/** Expansion is presentation-only and resets for each evaluation run. */
+function CriterionAccordionList({ evaluation, onAddFinding, added }: {
+  evaluation: AIEvaluation
+  onAddFinding?: (finding: AIFinding) => void
+  added: string[]
+}) {
+  const id = useId()
+  const [expanded, setExpanded] = useState<string[]>([])
+  const criteria = evaluation.criterionResults
+  const allOpen = criteria.length > 0 && criteria.every(c => expanded.includes(c.criterionId))
+  if (!criteria.length) return null
+  return (
+    <section className="flex min-w-0 flex-col gap-3" aria-label="Kết quả checklist AI">
+      <Button variant="secondary" onClick={() => setExpanded(allOpen ? [] : criteria.map(c => c.criterionId))}>
+        {allOpen ? "Thu gọn tất cả" : "Mở tất cả"}
+      </Button>
+      {criteria.map((c, index) => {
+        const open = expanded.includes(c.criterionId)
+        const triggerId = `${id}-trigger-${index}`
+        const panelId = `${id}-panel-${index}`
+        const findings = evaluation.findings.filter(f => f.category === c.name)
+        return (
+          <Card key={c.criterionId} className="gap-0">
+            <h3>
+              <button
+                id={triggerId}
+                type="button"
+                aria-expanded={open}
+                aria-controls={panelId}
+                onClick={() => setExpanded(ids => open ? ids.filter(value => value !== c.criterionId) : [...ids, c.criterionId])}
+                className="flex min-h-12 w-full min-w-0 items-start gap-2 rounded-md py-2 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+              >
+                <span className="flex min-w-0 flex-1 flex-col gap-2 [overflow-wrap:anywhere]">
+                  <span className="font-semibold">{c.criterionId} · {c.name}</span>
+                  <span>Điểm AI đề xuất: {c.score ?? "Chấm thủ công"} / {c.maxScore}</span>
+                  <span><Badge tone="amber">Cần xác minh</Badge></span>
+                </span>
+                <ChevronDown aria-hidden="true" size={20} className={`mt-1 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+              </button>
+            </h3>
+            <div id={panelId} aria-labelledby={triggerId} hidden={!open} className="min-w-0 border-t border-line pt-3 [overflow-wrap:anywhere]">
+              <div className="flex flex-col gap-3">
+                {findings.length > 0 && <strong>Nhận xét AI</strong>}
+                {findings.map(f => (
+                  <div key={f.id} className="flex flex-col gap-2">
+                    <p>{f.message}</p>
+                    {onAddFinding && <Button variant="secondary" disabled={added.includes(f.id)} onClick={() => onAddFinding(f)}>
+                      {added.includes(f.id) ? "Đã thêm" : "Thêm vào feedback nháp"}
+                    </Button>}
+                  </div>
+                ))}
+                <strong>Evidence</strong>
+                <p>{c.evidence}</p>
+                {c.suggestions.length > 0 && <strong>Suggestions</strong>}
+                {c.suggestions.map((suggestion, i) => <p key={i}>{suggestion}</p>)}
+              </div>
+            </div>
+          </Card>
+        )
+      })}
+    </section>
   )
 }

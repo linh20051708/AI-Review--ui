@@ -1,4 +1,12 @@
-import { ArrowRight, BookOpen, Calendar, ChevronRight, Layers, Plus, Settings } from "lucide-react"
+import {
+  ArrowRight,
+  BookOpen,
+  Calendar,
+  ChevronRight,
+  Layers,
+  Plus,
+  Settings,
+} from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import Badge from "@/components/ui/Badge"
@@ -8,13 +16,21 @@ import { Field, TextInput } from "@/components/ui/Form"
 import Modal from "@/components/ui/Modal"
 import PageHeading from "@/components/ui/PageHeading"
 import { toast } from "@/components/ui/Toast"
-import { slugify, updateManagement, useManagement } from "@/data/managementStore"
+import {
+  slugify,
+  updateManagement,
+  useManagement,
+} from "@/data/managementStore"
 import type { CourseOffering, TeachingMethod } from "@/types"
 
 export default function CourseListPage() {
   const { courses, classes, semesters, offerings, ruleSets } = useManagement()
   const [openAddCourse, setOpenAddCourse] = useState(false)
-  const [courseForm, setCourseForm] = useState({ code: "", name: "", description: "" })
+  const [courseForm, setCourseForm] = useState({
+    code: "",
+    name: "",
+    description: "",
+  })
 
   const [openAddOffering, setOpenAddOffering] = useState<string | null>(null) // courseId
   const [offeringForm, setOfferingForm] = useState<{
@@ -29,8 +45,11 @@ export default function CourseListPage() {
 
   const handleOpenOfferingModal = (courseId: string) => {
     // Default to the first semester that doesn't have an offering for this course yet, or just the first semester
-    const existingSemIds = offerings.filter((o) => o.courseId === courseId).map((o) => o.semesterId)
-    const availableSem = semesters.find((s) => !existingSemIds.includes(s.id)) ?? semesters[0]
+    const existingSemIds = offerings
+      .filter((o) => o.courseId === courseId)
+      .map((o) => o.semesterId)
+    const availableSem =
+      semesters.find((s) => !existingSemIds.includes(s.id)) ?? semesters[0]
     setOfferingForm({
       semesterId: availableSem?.id ?? "",
       teachingMethod: "Project-based Learning",
@@ -43,10 +62,20 @@ export default function CourseListPage() {
     const sem = semesters.find((s) => s.id === offeringForm.semesterId)
     const crs = courses.find((c) => c.id === courseId)
     if (!sem || !crs) return
+    if (
+      !ruleSets.some(
+        (r) => r.id === offeringForm.ruleSetId && r.status !== "draft",
+      )
+    ) {
+      toast("Chọn bộ quy tắc Active trước khi tạo đợt môn học.")
+      return
+    }
 
     // Find previous offering of this course to inherit labs if available
     const prevOffering = offerings.find((o) => o.courseId === courseId)
-    const clonedLabs = prevOffering ? JSON.parse(JSON.stringify(prevOffering.labs)) : []
+    const clonedLabs = prevOffering
+      ? JSON.parse(JSON.stringify(prevOffering.labs))
+      : []
 
     const newOffering: CourseOffering = {
       id: `off-${slugify(sem.name)}-${crs.code.toLowerCase()}-${Date.now().toString().slice(-4)}`,
@@ -54,7 +83,9 @@ export default function CourseListPage() {
       semesterId: sem.id,
       teachingMethod: offeringForm.teachingMethod,
       ruleSetId: offeringForm.ruleSetId,
-      defaultDeadline: sem.endDate ? `${sem.endDate}T23:59` : "2026-12-31T23:59",
+      defaultDeadline: sem.endDate
+        ? `${sem.endDate}T23:59`
+        : "2026-12-31T23:59",
       labs: clonedLabs,
     }
 
@@ -75,14 +106,19 @@ export default function CourseListPage() {
       />
 
       <div className="flex gap-2">
-        <Button icon={<Plus size={18} strokeWidth={1.75} />} onClick={() => setOpenAddCourse(true)}>
+        <Button
+          icon={<Plus size={18} strokeWidth={1.75} />}
+          onClick={() => setOpenAddCourse(true)}
+        >
           Thêm môn học mới
         </Button>
       </div>
 
       <div className="flex flex-col gap-4">
         {courses.map((c) => {
-          const courseOfferingsList = offerings.filter((o) => o.courseId === c.id)
+          const courseOfferingsList = offerings.filter(
+            (o) => o.courseId === c.id,
+          )
 
           return (
             <Card key={c.id}>
@@ -93,10 +129,16 @@ export default function CourseListPage() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[17px] font-bold text-ink">{c.code}</span>
+                      <span className="text-[17px] font-bold text-ink">
+                        {c.code}
+                      </span>
                       <span className="text-[15px] text-muted">— {c.name}</span>
                     </div>
-                    {c.description && <p className="text-[12px] text-muted mt-0.5">{c.description}</p>}
+                    {c.description && (
+                      <p className="text-[12px] text-muted mt-0.5">
+                        {c.description}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -118,7 +160,8 @@ export default function CourseListPage() {
 
                 {courseOfferingsList.length === 0 ? (
                   <div className="rounded-[8px] bg-subtle p-3 text-center text-[12px] text-muted">
-                    Chưa mở đợt giảng dạy nào cho môn học này. Bấm &quot;Mở đợt học kỳ mới&quot; để thiết lập.
+                    Chưa mở đợt giảng dạy nào cho môn học này. Bấm &quot;Mở đợt
+                    học kỳ mới&quot; để thiết lập.
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -126,7 +169,10 @@ export default function CourseListPage() {
                       const sem = semesters.find((s) => s.id === off.semesterId)
                       const rule = ruleSets.find((r) => r.id === off.ruleSetId)
                       const offeringClasses = classes.filter(
-                        (cl) => cl.offeringId === off.id || (cl.semesterId === off.semesterId && cl.courseId === off.courseId)
+                        (cl) =>
+                          cl.offeringId === off.id ||
+                          (cl.semesterId === off.semesterId &&
+                            cl.courseId === off.courseId),
                       )
 
                       return (
@@ -143,13 +189,28 @@ export default function CourseListPage() {
                               <Badge tone="brand">{off.labs.length} Labs</Badge>
                             </div>
                             <div className="mt-1.5 flex flex-wrap gap-1 text-[11px] text-muted">
-                              <span>Phương pháp: <strong className="text-ink font-medium">{off.teachingMethod}</strong></span>
+                              <span>
+                                Phương pháp:{" "}
+                                <strong className="text-ink font-medium">
+                                  {off.teachingMethod}
+                                </strong>
+                              </span>
                               <span>•</span>
-                              <span>Rule: <strong className="text-ink font-medium">{rule?.name ?? off.ruleSetId}</strong></span>
+                              <span>
+                                Rule:{" "}
+                                <strong className="text-ink font-medium">
+                                  {rule?.name ?? off.ruleSetId}
+                                </strong>
+                              </span>
                             </div>
                             <div className="mt-1 text-[11px] text-muted">
-                              Lớp học: {offeringClasses.length > 0 ? (
-                                <span className="text-ink font-medium">{offeringClasses.map((cl) => cl.code).join(", ")}</span>
+                              Lớp học:{" "}
+                              {offeringClasses.length > 0 ? (
+                                <span className="text-ink font-medium">
+                                  {offeringClasses
+                                    .map((cl) => cl.code)
+                                    .join(", ")}
+                                </span>
                               ) : (
                                 "Chưa có lớp"
                               )}
@@ -157,7 +218,9 @@ export default function CourseListPage() {
                           </div>
 
                           <div className="pt-2 border-t border-line/60 flex items-center justify-between">
-                            <span className="text-[11px] text-muted">ID: {off.id}</span>
+                            <span className="text-[11px] text-muted">
+                              ID: {off.id}
+                            </span>
                             <Link to={`/course-offerings/${off.id}`}>
                               <Button
                                 variant="secondary"
@@ -218,21 +281,27 @@ export default function CourseListPage() {
         <Field label="Mã môn" required hint="Ví dụ: SWP391, PRN212">
           <TextInput
             value={courseForm.code}
-            onChange={(e) => setCourseForm({ ...courseForm, code: e.target.value })}
+            onChange={(e) =>
+              setCourseForm({ ...courseForm, code: e.target.value })
+            }
             placeholder="SWD392"
           />
         </Field>
         <Field label="Tên môn" required hint="Tên đầy đủ của môn học">
           <TextInput
             value={courseForm.name}
-            onChange={(e) => setCourseForm({ ...courseForm, name: e.target.value })}
+            onChange={(e) =>
+              setCourseForm({ ...courseForm, name: e.target.value })
+            }
             placeholder="Software Architecture and Design"
           />
         </Field>
         <Field label="Mô tả">
           <TextInput
             value={courseForm.description}
-            onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
+            onChange={(e) =>
+              setCourseForm({ ...courseForm, description: e.target.value })
+            }
             placeholder="Mô tả tóm tắt nội dung môn học..."
           />
         </Field>
@@ -247,7 +316,10 @@ export default function CourseListPage() {
           description="Thiết lập cấu hình giảng dạy riêng biệt cho học kỳ được chọn."
           footer={
             <>
-              <Button variant="secondary" onClick={() => setOpenAddOffering(null)}>
+              <Button
+                variant="secondary"
+                onClick={() => setOpenAddOffering(null)}
+              >
                 Hủy
               </Button>
               <Button onClick={() => handleCreateOffering(openAddOffering)}>
@@ -260,7 +332,9 @@ export default function CourseListPage() {
             <select
               className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand min-h-12"
               value={offeringForm.semesterId}
-              onChange={(e) => setOfferingForm({ ...offeringForm, semesterId: e.target.value })}
+              onChange={(e) =>
+                setOfferingForm({ ...offeringForm, semesterId: e.target.value })
+              }
             >
               {semesters.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -275,10 +349,15 @@ export default function CourseListPage() {
               className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand min-h-12"
               value={offeringForm.teachingMethod}
               onChange={(e) =>
-                setOfferingForm({ ...offeringForm, teachingMethod: e.target.value as TeachingMethod })
+                setOfferingForm({
+                  ...offeringForm,
+                  teachingMethod: e.target.value as TeachingMethod,
+                })
               }
             >
-              <option value="Project-based Learning">Project-based Learning</option>
+              <option value="Project-based Learning">
+                Project-based Learning
+              </option>
               <option value="Trực tiếp">Trực tiếp</option>
               <option value="Trực tuyến">Trực tuyến</option>
               <option value="Hybrid">Hybrid</option>
@@ -291,10 +370,12 @@ export default function CourseListPage() {
             <select
               className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand min-h-12"
               value={offeringForm.ruleSetId}
-              onChange={(e) => setOfferingForm({ ...offeringForm, ruleSetId: e.target.value })}
+              onChange={(e) =>
+                setOfferingForm({ ...offeringForm, ruleSetId: e.target.value })
+              }
             >
               {ruleSets.map((r) => (
-                <option key={r.id} value={r.id}>
+                <option key={r.id} value={r.id} disabled={r.status === "draft"}>
                   {r.name}
                 </option>
               ))}

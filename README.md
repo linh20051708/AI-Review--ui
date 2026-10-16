@@ -1,3 +1,94 @@
+> **Bản hiện hành — đối chiếu source ngày 16/10/2026.** Nguồn nghiệp vụ và route: `src/` tại merge HEAD `8258f69` + local `46a509d`. Phần A là tài liệu hiện hành đã chuẩn hóa. Phần B là bản lưu GitHub lịch sử, chỉ dùng truy vết và hướng dẫn Lab 2; không xác nhận trạng thái sản phẩm, nghiên cứu hay kết quả kiểm thử hiện tại.
+
+## Phạm vi hiện tại và điểm cần kiểm tra
+
+Source React hiện ở `src/`, scripts trong `package.json` có `dev`, `build`, `preview`, `format`. Sản phẩm hiện tại có Supervisor + Student, Academic Management, Rule Set, Persona Checklist P01–P10, AI Evaluation, Findings, Feedback, Approve / Request Revision / Reject, Document Versions và Review History. AI hiện mô phỏng, không tự phê duyệt.
+
+Ba flow hiện tại được đối chiếu source trong `ux/user-flow.md`: F1 Academic Management & Project Creation; F2 AI-Assisted Supervisor Review; F3 Document Submission, Revision & Approval. Ba luồng GitHub là tài liệu prototype Supervisor lịch sử, chưa thay thế F1–F3.
+
+URL repository lấy từ GitHub đã đưa vào mục Link nộp; quyền truy cập chưa kiểm tra. Các link Figma/Stitch chưa cung cấp vẫn giữ placeholder. Cả bộ `docs/` local và tài liệu Lab 2 ở root từ GitHub đều được giữ. Không tự đồng nhất hai AI Design Log / Design Decisions / Flutter Handoff.
+
+Các tuyên bố GitHub “mọi thứ khác đã xong”, “100/100”, số đo, 48 SVG và trạng thái Figma/Stitch là thông tin lịch sử chưa chạy xác minh lại cho source mới. Không dùng chúng làm chứng nhận bản hiện tại đã đạt. Hướng dẫn push trong phần GitHub chỉ là tài liệu gốc; lần giải quyết conflict này không commit/push.
+
+---
+
+# Phần A — Tài liệu hiện hành
+
+# PROJECT REVIEW AI — PRM323 Lab 2 Submission
+
+**Sản phẩm:** Hệ thống quản lý Project và Review tài liệu sinh viên có hỗ trợ AI.
+**Phạm vi:** Mobile-first UI/UX prototype · Supervisor + Student · không yêu cầu Flutter code/backend thật.
+
+## 1. Link nộp
+- **GitHub repository:** https://github.com/linh20051708/AI-Review--ui (chưa kiểm tra quyền truy cập)
+- **Figma Design (viewer access):** `[DÁN FIGMA LINK]`
+- **Figma Prototype / Make (nếu có):** `[DÁN LINK]`
+- **Google Stitch initial output:** `[DÁN LINK/ẢNH GỐC]`
+- **Slide presentation (nếu được yêu cầu):** `[DÁN LINK]`
+
+## 2. Product Scope
+**Supervisor:** Semester/Course/Offering/Class/Group/Project/Lab; Review Queue; AI findings; feedback; approve/revise/reject; history.
+**Student:** Dashboard/My Project/Documents; upload/version; request review; feedback; notifications.
+
+AI Evaluation hiện mô phỏng, chưa đọc file gốc; findings/điểm cần xác minh và không tự phê duyệt. Rule Set và Persona Checklist P01–P10 theo `src/lib/rubric.ts`. Supervisor là Primary Persona, Student là Secondary Persona. Nộp lại tạo DocumentVersion mới, giữ version trước và cùng logical `reviewId`; Review History/feedback gắn version.
+
+## 3. Three User Flows
+- **F1:** Supervisor academic setup → select group → create/view project.
+- **F2:** Review Queue → Workspace → AI Findings → Supervisor Decision.
+- **F3:** Student v1 → Supervisor revision → Student v2 → Supervisor approval → History.
+
+**Xem:** [`ux/user-flow.md`](ux/user-flow.md).
+
+## 4. Yêu cầu Figma — 6 pages theo thứ tự (chưa xác nhận hoàn thành)
+1. `01 User Flow` — Sitemap + F1/F2/F3.
+2. `02 Wireframe` — Low-fi mobile frames.
+3. `03 Final UI` — ít nhất 8 màn hình độc lập.
+4. `04 Design System` — tokens/variables/styles.
+5. `05 Components` — đủ 9 nhóm component + states/Auto Layout.
+6. `06 Prototype` — 3 flows, Back, overlay, loading→result, error/recovery.
+
+## 5. Artifact index
+| Artifact | File/Thư mục | Phục vụ slide |
+|---|---|---|
+| Persona & Problem | [`ux/persona.md`](ux/persona.md) | 02 |
+| IA, 3 Flows, Flow-Screen Mapping | [`ux/user-flow.md`](ux/user-flow.md) | 03–04 |
+| Design constraints & token guidance | [`DESIGN.md`](DESIGN.md) | 05, 09–10 |
+| Stitch prompt, AI iterations, critique | [`docs/ai-design-log.md`](docs/ai-design-log.md) | 05–06 |
+| Accept/Modify/Reject & accessibility | [`docs/design-decisions.md`](docs/design-decisions.md) | 07, 10 |
+| Flutter screen specs + mappings | [`docs/flutter-handoff.md`](docs/flutter-handoff.md) | 12 |
+| Ảnh minh chứng thật | `evidence/` | 05–11 |
+
+## 6. Chạy source code React hiện tại
+```bash
+npm install
+npm run dev
+```
+Mở URL do Vite hiển thị. Lệnh có thể thay đổi theo `package.json` mới nhất của repo; cần đối chiếu thực tế.
+
+## 7. PRM323 Lab 2 Submission Checklist
+- [ ] Figma và GitHub mở được trên cửa sổ ẩn danh.
+- [ ] 8+ Final UI screens, 3 flow có alternate và error/recovery.
+- [ ] AI log có prompt nguyên văn, 3 iterations khác mục tiêu, ảnh before/after, ≥5 UX critique.
+- [ ] Design system gồm color/type/spacing/radius/elevation; 9 nhóm component.
+- [ ] Contrast 4.5:1/3:1, target 48dp, body 14sp, 360/412 responsive có bằng chứng.
+- [ ] Flutter handoff mỗi screen 6 mục + 2 mapping tables.
+- [ ] Demo Back, modal overlay, loading→result, không dead-end.
+
+## 8. Evidence & integrity
+Các trường `[DÁN...]`, `[ĐIỀN...]`, `[XÁC MINH...]` là thông tin **chưa được cung cấp**, không phải minh chứng đã thực hiện. Không trình bày persona giả định như nghiên cứu đã được xác nhận; không dùng ảnh mock giả làm lịch sử Stitch/AI.
+
+## 9. Nhóm thực hiện
+| Thành viên | MSSV | Vai trò |
+|---|---|---|
+| `[TÊN]` | `[MSSV]` | `[PHÂN CÔNG]` |
+
+---
+
+<details>
+<summary>Phần B — Bản lưu GitHub 8258f69 (lịch sử, không phải đặc tả hiện hành)</summary>
+
+> **Chỉ là bản lưu lịch sử.** Mọi khẳng định hoàn thành/PASS, số đo, route `app/`, persona và flow trong phần này thuộc tài liệu GitHub gốc, chưa được xác nhận lại cho bản hiện tại. Hướng dẫn Figma, UX/UI, Design System, AI Design Log, Handoff và Lab 2 được bảo toàn để tham khảo. Khi có khác biệt, dùng phần A và source `src/`.
+
 # PRM323 — Lab 2: Thiết kế UI/UX với hỗ trợ của AI
 
 **Đề tài:** Hệ thống quản lý học vụ và review tài liệu cho giảng viên
@@ -140,3 +231,5 @@ python3 lab2-gate.py
 ```
 
 Kết quả hiện tại: **100/100 — ĐẠT**. Chi tiết ở `LAB2-GATE.md`.
+
+</details>

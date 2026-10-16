@@ -35,6 +35,9 @@ export const currentUser = {
   semester: "Fall 2026",
 }
 
+/** The demo student used by the Student UI (Nguyễn Minh Anh · SE1701 · Group 01). */
+export const demoStudentId = "s1"
+
 export const statusMeta: Record<Status, { label: string; tone: Tone }> = {
   draft: { label: "Bản nháp", tone: "neutral" },
   submitted: { label: "Đã nộp", tone: "olive" },
@@ -361,7 +364,7 @@ export const documents: ProjectDocument[] = [
 
 export const lockReason = (dependsOn: string) => `Chưa thể gửi yêu cầu review vì ${dependsOn} chưa được phê duyệt.`
 
-type ReqInput = Omit<ReviewRequest, "fileName" | "fileType" | "pageCount" | "semesterId" | "courseId" | "classId" | "groupId" | "classCode" | "groupName" | "projectName" | "requestedTs"> &
+export type ReqInput = Omit<ReviewRequest, "fileName" | "fileType" | "pageCount" | "semesterId" | "courseId" | "classId" | "groupId" | "classCode" | "groupName" | "projectName" | "requestedTs"> &
   Partial<Pick<ReviewRequest, "fileType" | "pageCount" | "classCode" | "groupName" | "projectName">>
 
 /** Fills the full academic context (semester → course → class → group → project) from the project. */
@@ -373,6 +376,7 @@ const req = (r: ReqInput): ReviewRequest => {
   const slug = r.documentTitle.toLowerCase().replace(/\s+/g, "-")
   return {
     ...r,
+    documentId: r.documentId ?? (c.labOverride ?? courseOfferings.find((o) => o.id === c.offeringId)?.labs ?? []).flatMap((l) => l.items).find((i) => i.title === r.documentTitle)?.id,
     semesterId: c.semesterId,
     courseId: c.courseId,
     classId: c.id,
@@ -386,6 +390,9 @@ const req = (r: ReqInput): ReviewRequest => {
     fileName: `${slug}-${r.version}.${fileType === "PDF" ? "pdf" : "docx"}`,
   }
 }
+
+/** Public builder used by the Student UI to create the first review request of a new document. */
+export const buildReviewRequest = req
 
 export const reviewRequests: ReviewRequest[] = [
   req({ id: "review-001", projectId: "smart-attendance-system", classCode: "SE1701", groupName: "Group 04", projectName: "Smart Attendance System", documentTitle: "Use Case Diagram", version: "v2", submitter: "Nguyễn Minh Anh", submittedAt: "03/10/2026 · 08:15", requestedAt: "03/10/2026 · 08:20", documentStatus: "resubmitted", aiStatus: "aiReviewed", ai: { errors: 2, warnings: 3, suggestions: 4 }, supervisorStatus: "waiting", revisionRound: 1, note: "Nộp lại sau feedback v1 · 1 feedback cũ cần kiểm tra", pageCount: 12 }),

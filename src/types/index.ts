@@ -6,33 +6,13 @@ export type Tone = "brand" | "olive" | "amber" | "rust" | "danger" | "neutral"
  * The single Vietnamese status vocabulary. Entities expose three separate
  * tracks (document / AI review / supervisor review) that each use a subset.
  */
-export type Status =
-  | "draft"
-  | "submitted"
-  | "reviewRequested"
-  | "aiReviewing"
-  | "aiReviewed"
-  | "waiting"
-  | "inReview"
-  | "needsRevision"
-  | "resubmitted"
-  | "approved"
-  | "notAccepted"
-  | "submissionLocked"
-  | "notStarted"
+export type Status = "draft" | "submitted" | "reviewRequested" | "aiReviewing" | "aiReviewed" | "waiting" | "inReview" | "needsRevision" | "resubmitted" | "approved" | "notAccepted" | "submissionLocked" | "notStarted"
 
 export type DocumentStatus = Extract<Status, "draft" | "submitted" | "resubmitted" | "notStarted">
 export type AIStatus = Extract<Status, "aiReviewing" | "aiReviewed"> | "notRun"
 export type SupervisorStatus = Extract<Status, "waiting" | "inReview" | "needsRevision" | "approved" | "notAccepted">
 
-export type GroupHealth =
-  | "onTrack"
-  | "attention"
-  | "needsRevision"
-  | "dueSoon"
-  | "notSubmitted"
-  | "overdue"
-  | "waitingLong"
+export type GroupHealth = "onTrack" | "attention" | "needsRevision" | "dueSoon" | "notSubmitted" | "overdue" | "waitingLong"
 
 export type LifecycleState = "active" | "archived"
 
@@ -48,6 +28,59 @@ export interface RuleSet {
   maxFileSizeMB: number
   reviewSlaDays: number
   maxResubmissions?: number
+  version?: number
+  status?: "draft" | "active"
+  aiEnabled?: boolean
+  resubmissionEnabled?: boolean
+  documentType?: string
+  criteria?: RubricCriterion[]
+  passThreshold?: number
+  improveThreshold?: number
+  templateMissing?: boolean
+  scoringMode?: "binary" | "weighted"
+}
+
+export interface RubricCriterion {
+  id: string
+  name: string
+  description: string
+  maxScore: number
+  enabled: boolean
+  required: boolean
+  critical: boolean
+  evidenceRequired: boolean
+  aiEnabled: boolean
+  instruction: string
+  evidenceRequirement: string
+  suggestScore: boolean
+  suggestFindings: boolean
+  suggestSuggestions: boolean
+}
+
+export interface AIEvaluation {
+  id: string
+  reviewId: string
+  documentId: string
+  documentVersionId: string
+  documentVersion: string
+  ruleSetId: string
+  ruleSetVersion: number
+  ruleSnapshot: RuleSet
+  evaluationStatus: "loading" | "completed" | "error"
+  criterionResults: {
+    criterionId: string
+    name: string
+    maxScore: number
+    score: number | null
+    evidence: string
+    needsVerification: boolean
+    suggestions: string[]
+  }[]
+  overallScore: number | null
+  maxScore: number
+  findings: AIFinding[]
+  createdAt: string
+  error?: string
 }
 
 export interface Semester {
@@ -74,6 +107,7 @@ export type ReviewRequirement = "required" | "optional" | "disabled"
 export type AllowedFiles = "PDF" | "DOCX" | "Both"
 
 export interface LabItem {
+  ruleSetId?: string
   id: string
   code: string
   title: string
@@ -166,8 +200,16 @@ export interface JoinRequest {
   requestedAt: number
 }
 
-export const teachingMethods = ["Trực tiếp", "Trực tuyến", "Hybrid", "Project-based Learning", "Flipped Classroom", "Blended Learning", "Other"] as const
-export type TeachingMethod = (typeof teachingMethods)[number]
+export const teachingMethods = [
+  "Trực tiếp",
+  "Trực tuyến",
+  "Hybrid",
+  "Project-based Learning",
+  "Flipped Classroom",
+  "Blended Learning",
+  "Other",
+] as const
+export type TeachingMethod = typeof teachingMethods[number]
 
 export interface StudentMember {
   initials: string
@@ -175,7 +217,12 @@ export interface StudentMember {
   role: string
 }
 
-export const deliverableTypes: DeliverableType[] = ["Document", "Diagram", "Report", "Other"]
+export const deliverableTypes: DeliverableType[] = [
+  "Document",
+  "Diagram",
+  "Report",
+  "Other",
+]
 
 export interface StudentGroup {
   id: string
@@ -243,7 +290,11 @@ export interface ProjectDocument {
 export type FileType = "PDF" | "DOCX"
 
 export interface ReviewRequest {
+  ruleSnapshot?: RuleSet
   id: string
+  /** Stable Lab Item id within the project's effective structure. */
+  documentId?: string
+  fileSize?: number
   projectId: string
   semesterId: string
   courseId: string
@@ -308,6 +359,9 @@ export interface DocumentVersion {
   reviewId: string
   version: string
   fileName: string
+  fileType?: FileType
+  fileSize?: number
+  pageCount?: number
   submittedAt: string
   submitter: string
   documentStatus: Extract<DocumentStatus, "submitted" | "resubmitted">
@@ -319,6 +373,8 @@ export interface DocumentVersion {
 }
 
 export interface AuditEvent {
+  documentVersion?: string
+  selectedFeedbackIds?: string[]
   id: string
   reviewId: string
   time: string

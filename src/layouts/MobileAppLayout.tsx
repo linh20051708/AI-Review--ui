@@ -4,7 +4,7 @@ import BottomNavigation from "@/components/layout/BottomNavigation"
 import MobileHeader from "@/components/layout/MobileHeader"
 import SideNavigation from "@/components/layout/SideNavigation"
 import Toaster from "@/components/ui/Toast"
-import { isAuthenticated } from "@/app/auth"
+import { currentRole, isAuthenticated } from "@/app/auth"
 
 export default function MobileAppLayout() {
   const location = useLocation()
@@ -19,6 +19,9 @@ export default function MobileAppLayout() {
 
   if (!isAuthenticated()) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />
+  }
+  if (currentRole() !== "supervisor") {
+    return <Navigate to="/student/dashboard" replace />
   }
 
   return (

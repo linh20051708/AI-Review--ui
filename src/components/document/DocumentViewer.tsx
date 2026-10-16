@@ -15,6 +15,15 @@ export default function DocumentViewer({ review, className = "" }: { review: Rev
   const [page, setPage] = useState(1)
   const [hasError, setHasError] = useState(false)
   const total = review.pageCount
+  const downloadMetadata = () => {
+    const url = URL.createObjectURL(new Blob([JSON.stringify({ prototype: true, document: review.documentTitle, version: review.version, fileName: review.fileName, fileType: review.fileType, fileSize: review.fileSize, submittedAt: review.submittedAt }, null, 2)], { type: "application/json" }))
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `${review.fileName}.metadata.json`
+    link.click()
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+    toast("Đã xuất metadata demo. Prototype không lưu nội dung file gốc.")
+  }
 
   useEffect(() => {
     if (hasError) return
@@ -43,7 +52,7 @@ export default function DocumentViewer({ review, className = "" }: { review: Rev
   return (
     <section aria-label="Bản xem trước tài liệu" className={`flex min-h-0 flex-col overflow-hidden rounded-[12px] border border-line bg-white ${className}`}>
       <div className="flex flex-wrap items-center gap-2 border-b border-line px-3 py-2">
-        <div className="flex min-w-0 flex-1 items-center gap-2">
+        <div className="flex min-w-0 flex-1 basis-full items-center gap-2 sm:basis-48">
           <FileText size={18} strokeWidth={1.75} className="shrink-0 text-muted" />
           <span className="truncate text-[13px] font-medium text-ink">{review.fileName}</span>
           <Badge>{review.fileType === "PDF" ? "PDF" : "Word"}</Badge>
@@ -61,9 +70,9 @@ export default function DocumentViewer({ review, className = "" }: { review: Rev
             <ChevronRight size={18} strokeWidth={2} />
           </button>
           <span className="mx-0.5 hidden h-6 w-px bg-line sm:block" />
-          <button type="button" className={btn} aria-label="Tải xuống" onClick={() => toast(`Đang tải xuống ${review.fileName}`)}>
+          <button type="button" className={btn} aria-label="Tải metadata demo" onClick={downloadMetadata}>
             <Download size={18} strokeWidth={1.75} />
-            <span className="hidden 2xl:inline">Tải xuống</span>
+            <span className="hidden 2xl:inline">Tải metadata</span>
           </button>
           <button
             type="button"
@@ -92,8 +101,8 @@ export default function DocumentViewer({ review, className = "" }: { review: Rev
             <Button variant="secondary" className="w-auto px-4" onClick={() => setHasError(false)}>
               Thử lại
             </Button>
-            <Button className="w-auto px-4" onClick={() => toast(`Đang tải xuống ${review.fileName}`)}>
-              Tải xuống
+            <Button className="w-auto px-4" onClick={downloadMetadata}>
+              Tải metadata demo
             </Button>
           </div>
         </div>

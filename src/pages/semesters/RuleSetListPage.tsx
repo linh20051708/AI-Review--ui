@@ -1,152 +1,604 @@
-import { Copy, Pencil } from "lucide-react"
-import { useState, type ReactNode } from "react"
+import { useState } from "react"
 import Badge from "@/components/ui/Badge"
 import Button from "@/components/ui/Button"
 import Card from "@/components/ui/Card"
-import { ChoiceChips, Field, TextInput } from "@/components/ui/Form"
+import { Field, TextArea, TextInput } from "@/components/ui/Form"
 import Modal from "@/components/ui/Modal"
 import Notice from "@/components/ui/Notice"
 import PageHeading from "@/components/ui/PageHeading"
 import { toast } from "@/components/ui/Toast"
-import { updateManagement, useManagement } from "@/data/managementStore"
-import { offeringLabel } from "@/lib/config"
-import type { RuleSet } from "@/types"
+import {
+  saveRuleSet,
+  updateManagement,
+  useManagement,
+} from "@/data/managementStore"
+import { nextId, offeringLabel } from "@/lib/config"
+import { newCriterion, normalizeRule, validateRule } from "@/lib/rubric"
+import type { RubricCriterion, RuleSet } from "@/types"
 
-const yes = (v: boolean) => (v ? "Bắt buộc" : "Không bắt buộc")
-
-function Group({ title, children }: { title: string; children: ReactNode }) {
+const selectClass =
+  "min-h-12 w-full rounded-lg border border-line bg-white p-3 text-[14px]"
+function Toggle({
+  label,
+  value,
+  onChange,
+}: {
+  label: string
+  value: boolean
+  onChange: (v: boolean) => void
+}) {
   return (
-    <div className="flex flex-col gap-2 border-t border-line pt-3">
-      <p className="text-[10px] font-semibold tracking-wide text-brand">{title}</p>
-      {children}
-    </div>
+    <label className="flex min-h-12 items-center justify-between gap-3 text-[14px]">
+      <span>{label}</span>
+      <input
+        type="checkbox"
+        className="size-5 shrink-0 accent-[#146b55]"
+        checked={value}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+    </label>
   )
 }
-function Row({ label, value }: { label: string; value: ReactNode }) {
-  return (
-    <div className="flex items-center justify-between gap-3 text-[12px]">
-      <span className="text-muted">{label}</span>
-      <span className="text-right font-semibold text-ink">{value}</span>
-    </div>
-  )
-}
-
 export default function RuleSetListPage() {
-  const { ruleSets, semesters, courses, offerings, classes } = useManagement()
+  const cfg = useManagement()
   const [editing, setEditing] = useState<RuleSet | null>(null)
-
-  const duplicate = (r: RuleSet) => {
-    const copy = { ...r, id: `${r.id}-copy-${Date.now()}`, name: `${r.name} (bản sao)` }
-    updateManagement((s) => ({ ruleSets: [...s.ruleSets, copy] }))
-    setEditing(copy)
-  }
-
+  const [viewing, setViewing] = useState<RuleSet | null>(null)
+  const [assigning, setAssigning] = useState<RuleSet | null>(null)
+  const create = () =>
+    setEditing(
+      normalizeRule({
+        id: nextId("rule"),
+        name: "",
+        description: "",
+        status: "draft",
+        aiReview: "manual",
+        aiRequiredBeforeSupervisor: false,
+        supervisorApproval: true,
+        prerequisiteApproval: true,
+        allowedFormats: ["PDF", "DOCX"],
+        maxFileSizeMB: 20,
+        reviewSlaDays: 3,
+      }),
+    )
   return (
     <>
-      <PageHeading eyebrow="QUẢN LÝ" title="Bộ quy tắc" description="Cấu hình review dùng lại được: AI Review, phê duyệt, định dạng file và thời hạn." />
-      <Notice>Bộ quy tắc được gán cho môn học trong học kỳ, lớp có thể dùng bộ quy tắc riêng. Tài liệu và dependency được cấu hình trong cấu trúc Lab. Chỉnh sửa bộ quy tắc sẽ áp dụng cho các yêu cầu review mới, không thay đổi lịch sử đã có.</Notice>
-      {ruleSets.map((r) => {
-        const usedBy = [
-          ...offerings.filter((o) => o.ruleSetId === r.id).map((o) => ({ id: o.id, label: offeringLabel(o, courses, semesters), tone: "brand" as const })),
-          ...classes.filter((c) => c.ruleSetOverride === r.id).map((c) => ({ id: c.id, label: `Lớp ${c.code} (tùy chỉnh)`, tone: "olive" as const })),
-        ]
+      <PageHeading
+        eyebrow="QUẢN LÝ"
+        title="Bộ quy tắc"
+        description="Cấu hình workflow, rubric và hướng dẫn AI mô phỏng."
+      />
+      <Button onClick={create}>Thêm bộ quy tắc</Button>
+      <Notice>
+        Ưu tiên: Lab Item → Class override → Course Offering. Bản nộp mới chụp
+        cấu hình khi gửi; dữ liệu demo cũ chụp khi chạy AI lần đầu. Kết quả đã
+        lưu không đổi khi chỉnh rubric. AI không tự Approve hoặc Reject.
+      </Notice>
+      {cfg.ruleSets.map((raw) => {
+        const r = normalizeRule(raw)
         return (
           <Card key={r.id}>
-            <div id={r.id} className="flex scroll-mt-4 items-start justify-between gap-2">
-              <div className="min-w-0 leading-[1.4]">
-                <p className="text-[16px] font-semibold text-ink">{r.name}</p>
-                <p className="text-[12px] text-muted">{r.description}</p>
-              </div>
+            <div className="flex flex-wrap justify-between gap-2">
+              <h2 className="text-[16px] font-semibold">{r.name}</h2>
+              <Badge tone={r.status === "active" ? "brand" : "neutral"}>
+                {r.status === "active" ? "Active" : "Draft"} · v{r.version}
+              </Badge>
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              {usedBy.length ? usedBy.map((u) => <Badge key={u.id} tone={u.tone}>{u.label}</Badge>) : <Badge>Chưa áp dụng</Badge>}
-            </div>
-            <Group title="REVIEW">
-              <Row label="AI Review" value={r.aiReview === "auto" ? "Tự động" : "Thủ công"} />
-              <Row label="AI Review trước giảng viên" value={yes(r.aiRequiredBeforeSupervisor)} />
-              <Row label="Supervisor approval" value={yes(r.supervisorApproval)} />
-              <Row label="Prerequisite approval" value={yes(r.prerequisiteApproval)} />
-            </Group>
-            <Group title="FILE & THỜI HẠN">
-              <Row label="Định dạng cho phép" value={r.allowedFormats.join(", ")} />
-              <Row label="Dung lượng tối đa" value={`${r.maxFileSizeMB} MB`} />
-              <Row label="Hạn review của giảng viên" value={`${r.reviewSlaDays} ngày`} />
-              <Row label="Số lần nộp lại tối đa" value={r.maxResubmissions ?? "Không giới hạn"} />
-            </Group>
+            <p className="break-all text-[14px] text-muted">ID: {r.id}</p>
+            <p className="text-[14px]">{r.description}</p>
+            <p className="text-[14px]">
+              {r.criteria?.filter((c) => c.enabled).length ?? 0} tiêu chí bật ·{" "}
+              {r.criteria
+                ?.filter((c) => c.enabled)
+                .reduce((n, c) => n + c.maxScore, 0) ?? 0}{" "}
+              điểm · {r.documentType}
+            </p>
             <div className="grid grid-cols-2 gap-2">
-              <Button variant="secondary" icon={<Pencil size={16} strokeWidth={1.75} />} onClick={() => setEditing(r)}>Chỉnh sửa</Button>
-              <Button variant="secondary" icon={<Copy size={16} strokeWidth={1.75} />} onClick={() => duplicate(r)}>Nhân bản</Button>
+              <Button variant="secondary" onClick={() => setViewing(r)}>
+                Chi tiết / Checklist
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => setEditing(structuredClone(r))}
+              >
+                Chỉnh sửa
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() =>
+                  setEditing({
+                    ...structuredClone(r),
+                    id: nextId("rule"),
+                    name: r.name + " (bản sao)",
+                    version: 1,
+                    status: "draft",
+                  })
+                }
+              >
+                Nhân bản
+              </Button>
+              <Button
+                variant="secondary"
+                disabled={r.status !== "active"}
+                onClick={() => setAssigning(r)}
+              >
+                Áp dụng
+              </Button>
             </div>
           </Card>
         )
       })}
-      {editing && <RuleSetEditor key={editing.id} ruleSet={editing} onClose={() => setEditing(null)} />}
+      {editing && (
+        <RuleSetEditor rule={editing} onClose={() => setEditing(null)} />
+      )}
+      {assigning && (
+        <Assignment rule={assigning} onClose={() => setAssigning(null)} />
+      )}
+      {viewing && (
+        <Modal
+          open
+          title={viewing.name}
+          onClose={() => setViewing(null)}
+          footer={<Button onClick={() => setViewing(null)}>Đóng</Button>}
+        >
+          <p>{viewing.description}</p>
+          <p>
+            AI: {viewing.aiEnabled ? "Bật" : "Tắt"} · AI trước Supervisor:{" "}
+            {viewing.aiRequiredBeforeSupervisor ? "Bắt buộc" : "Tùy chọn"} ·
+            Supervisor: {viewing.supervisorApproval ? "Bắt buộc" : "Tùy chọn"}
+          </p>
+          <p>
+            Prerequisite: {viewing.prerequisiteApproval ? "Bắt buộc" : "Không"}{" "}
+            · Nộp lại: {viewing.resubmissionEnabled ? "Có" : "Không"} · Tối đa:{" "}
+            {viewing.maxResubmissions ?? "∞"}
+          </p>
+          <p>
+            File: {viewing.allowedFormats.join(" / ")} · {viewing.maxFileSizeMB}{" "}
+            MB · SLA {viewing.reviewSlaDays} ngày
+          </p>
+          <p>
+            Đạt ≥{viewing.passThreshold}% · Cần cải thiện ≥
+            {viewing.improveThreshold}% · còn lại Cần làm lại. Điểm mô phỏng
+            không phải quyết định chính thức.
+          </p>
+          {!viewing.criteria?.length && (
+            <Notice>
+              Chưa cấu hình checklist. Thêm tiêu chí để chạy AI Evaluation.
+            </Notice>
+          )}
+          {viewing.criteria?.map((c) => (
+            <Card key={c.id}>
+              <strong>
+                {c.id} · {c.name}
+              </strong>
+              <p>
+                {c.maxScore} điểm · {c.enabled ? "Bật" : "Tắt"} ·{" "}
+                {c.critical
+                  ? "Critical"
+                  : c.required
+                    ? "Bắt buộc"
+                    : "Thông thường"}
+              </p>
+              <p>{c.description}</p>
+              <p>
+                AI: {c.aiEnabled ? "Bật" : "Tắt"} · {c.instruction}
+              </p>
+              <p>Evidence: {c.evidenceRequirement || "Supervisor xác minh"}</p>
+            </Card>
+          ))}
+        </Modal>
+      )}
     </>
   )
 }
-
-function Toggle({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <label className="flex items-center justify-between gap-3 py-1.5 text-[13px] text-ink">
-      {label}
-      <input type="checkbox" checked={value} onChange={(e) => onChange(e.target.checked)} className="size-4 accent-[#146b55]" />
-    </label>
-  )
-}
-
-function RuleSetEditor({ ruleSet, onClose }: { ruleSet: RuleSet; onClose: () => void }) {
-  const [r, setR] = useState(ruleSet)
-  const set = <K extends keyof RuleSet>(k: K, v: RuleSet[K]) => setR((x) => ({ ...x, [k]: v }))
+function RuleSetEditor({
+  rule,
+  onClose,
+}: {
+  rule: RuleSet
+  onClose: () => void
+}) {
+  const [r, setR] = useState(rule)
+  const [error, setError] = useState("")
+  const set = <K extends keyof RuleSet>(key: K, value: RuleSet[K]) =>
+    setR((s) => ({ ...s, [key]: value }))
+  const change = (index: number, patch: Partial<RubricCriterion>) =>
+    set(
+      "criteria",
+      r.criteria!.map((c, i) => (i === index ? { ...c, ...patch } : c)),
+    )
+  const invalid = validateRule(r)
   return (
     <Modal
       open
+      title="Cấu hình bộ quy tắc"
       onClose={onClose}
-      title="Chỉnh sửa bộ quy tắc"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>Hủy</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Hủy
+          </Button>
           <Button
-            disabled={!r.name.trim() || !r.allowedFormats.length}
-            className="disabled:opacity-50"
+            disabled={Boolean(invalid)}
             onClick={() => {
-              updateManagement((s) => ({ ruleSets: s.ruleSets.map((x) => (x.id === r.id ? r : x)) }))
-              toast("Đã lưu bộ quy tắc")
-              onClose()
+              try {
+                saveRuleSet(r)
+                toast("Đã lưu bộ quy tắc và phiên bản cấu hình mới")
+                onClose()
+              } catch (e) {
+                setError((e as Error).message)
+              }
             }}
           >
-            Lưu
+            Lưu bộ quy tắc
           </Button>
         </>
       }
     >
-      <Field label="Tên bộ quy tắc" required><TextInput value={r.name} onChange={(e) => set("name", e.target.value)} /></Field>
-      <section className="flex flex-col gap-2">
-        <p className="text-[10px] font-semibold tracking-wide text-brand">REVIEW</p>
-        <Field label="AI Review"><ChoiceChips options={["Tự động", "Thủ công"]} value={r.aiReview === "auto" ? "Tự động" : "Thủ công"} onChange={(v) => set("aiReview", v === "Tự động" ? "auto" : "manual")} /></Field>
-        <div className="divide-y divide-line rounded-[8px] border border-line px-3">
-          <Toggle label="AI Review bắt buộc trước giảng viên" value={r.aiRequiredBeforeSupervisor} onChange={(v) => set("aiRequiredBeforeSupervisor", v)} />
-          <Toggle label="Supervisor approval bắt buộc" value={r.supervisorApproval} onChange={(v) => set("supervisorApproval", v)} />
-          <Toggle label="Prerequisite approval bắt buộc" value={r.prerequisiteApproval} onChange={(v) => set("prerequisiteApproval", v)} />
-        </div>
-      </section>
-      <section className="flex flex-col gap-2">
-        <p className="text-[10px] font-semibold tracking-wide text-brand">FILE & THỜI HẠN</p>
-        <div className="flex gap-2">
-          {["PDF", "DOCX"].map((f) => {
-            const on = r.allowedFormats.includes(f)
-            return (
-              <button key={f} type="button" aria-pressed={on} onClick={() => set("allowedFormats", on ? r.allowedFormats.filter((x) => x !== f) : [...r.allowedFormats, f])} className={`rounded-[8px] border px-3 py-2 text-[13px] font-medium ${on ? "border-brand bg-brand-soft text-brand" : "border-line text-ink"}`}>
-                {f}
-              </button>
+      <p className="break-all text-[14px]">
+        ID: {r.id} · Phiên bản: {r.version} (tự tăng khi lưu chỉnh sửa)
+      </p>
+      <Field label="Tên bộ quy tắc">
+        <TextInput
+          value={r.name}
+          onChange={(e) => set("name", e.target.value)}
+        />
+      </Field>
+      <Field label="Mô tả">
+        <TextArea
+          value={r.description}
+          onChange={(e) => set("description", e.target.value)}
+        />
+      </Field>
+      <Field label="Trạng thái">
+        <select
+          className={selectClass}
+          value={r.status}
+          onChange={(e) => set("status", e.target.value as RuleSet["status"])}
+        >
+          <option value="draft">Draft</option>
+          <option value="active">Active</option>
+        </select>
+      </Field>
+      <Field label="Document Type / phạm vi rubric">
+        <TextInput
+          value={r.documentType}
+          onChange={(e) => set("documentType", e.target.value)}
+        />
+      </Field>
+      <Notice>
+        Phạm vi là mô tả. Chọn Course Offering hoặc Lab Item cụ thể bằng nút Áp
+        dụng.
+      </Notice>
+      <h3 className="font-semibold">Review workflow</h3>
+      {([
+        ["aiEnabled", "Bật AI Review"],
+        ["aiRequiredBeforeSupervisor", "AI bắt buộc trước Supervisor"],
+        ["supervisorApproval", "Supervisor Approval Required"],
+        ["prerequisiteApproval", "Prerequisite Approval"],
+        ["resubmissionEnabled", "Cho phép nộp lại"],
+      ] as const).map(([key, label]) => (
+        <Toggle
+          key={key}
+          label={label}
+          value={Boolean(r[key])}
+          onChange={(v) => set(key, v)}
+        />
+      ))}
+      <Field label="Khởi chạy AI">
+        <select
+          className={selectClass}
+          value={r.aiReview}
+          onChange={(e) => set("aiReview", e.target.value as "auto" | "manual")}
+        >
+          <option value="manual">Supervisor bắt đầu</option>
+          <option value="auto">Tự chạy khi nộp mới</option>
+        </select>
+      </Field>
+      <Field label="Nộp lại tối đa (trống = không giới hạn)">
+        <TextInput
+          type="number"
+          min={0}
+          value={r.maxResubmissions ?? ""}
+          onChange={(e) =>
+            set(
+              "maxResubmissions",
+              e.target.value === "" ? undefined : Number(e.target.value),
             )
-          })}
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          <Field label="Tối đa (MB)"><TextInput type="number" min={1} value={r.maxFileSizeMB} onChange={(e) => set("maxFileSizeMB", Number(e.target.value))} /></Field>
-          <Field label="Hạn review (ngày)"><TextInput type="number" min={1} value={r.reviewSlaDays} onChange={(e) => set("reviewSlaDays", Number(e.target.value))} /></Field>
-          <Field label="Nộp lại tối đa"><TextInput type="number" min={0} placeholder="∞" value={r.maxResubmissions ?? ""} onChange={(e) => set("maxResubmissions", e.target.value ? Number(e.target.value) : undefined)} /></Field>
-        </div>
-      </section>
+          }
+        />
+      </Field>
+      {["PDF", "DOCX"].map((f) => (
+        <Toggle
+          key={f}
+          label={f}
+          value={r.allowedFormats.includes(f)}
+          onChange={(v) =>
+            set(
+              "allowedFormats",
+              v
+                ? [...r.allowedFormats, f]
+                : r.allowedFormats.filter((x) => x !== f),
+            )
+          }
+        />
+      ))}
+      <Field label="Dung lượng tối đa MB">
+        <TextInput
+          type="number"
+          value={r.maxFileSizeMB}
+          onChange={(e) => set("maxFileSizeMB", Number(e.target.value))}
+        />
+      </Field>
+      <Field label="Hạn review (ngày)">
+        <TextInput
+          type="number"
+          value={r.reviewSlaDays}
+          onChange={(e) => set("reviewSlaDays", Number(e.target.value))}
+        />
+      </Field>
+      <Field label="Chế độ chấm">
+        <select
+          className={selectClass}
+          value={r.scoringMode ?? "weighted"}
+          onChange={(e) =>
+            set("scoringMode", e.target.value as "binary" | "weighted")
+          }
+        >
+          <option value="weighted">Điểm theo trọng số maxScore</option>
+          <option value="binary">Đạt: điểm tối đa / Chưa đạt: 0</option>
+        </select>
+      </Field>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Đạt từ (%)">
+          <TextInput
+            type="number"
+            value={r.passThreshold}
+            onChange={(e) => set("passThreshold", Number(e.target.value))}
+          />
+        </Field>
+        <Field label="Cải thiện từ (%)">
+          <TextInput
+            type="number"
+            value={r.improveThreshold}
+            onChange={(e) => set("improveThreshold", Number(e.target.value))}
+          />
+        </Field>
+      </div>
+      <h3 className="font-semibold">Checklist / Rubric</h3>
+      <p>
+        Tổng điểm tiêu chí bật:{" "}
+        {(r.criteria ?? [])
+          .filter((c) => c.enabled)
+          .reduce((n, c) => n + c.maxScore, 0)}
+        . Tắt tiêu chí thay đổi mẫu số; ngưỡng tính theo %.
+      </p>
+      {(r.criteria ?? []).map((c, i) => (
+        <details key={i} className="rounded-xl border border-line p-3">
+          <summary className="min-h-12 cursor-pointer text-[14px] font-semibold">
+            {c.id} · {c.name || "Tiêu chí mới"}
+          </summary>
+          <div className="flex flex-col gap-3 pt-3">
+            <Field label="Criterion ID">
+              <TextInput
+                value={c.id}
+                onChange={(e) => change(i, { id: e.target.value })}
+              />
+            </Field>
+            <Field label="Tên tiêu chí">
+              <TextArea
+                value={c.name}
+                onChange={(e) => change(i, { name: e.target.value })}
+              />
+            </Field>
+            <Field label="Mô tả tiêu chí">
+              <TextArea
+                value={c.description}
+                onChange={(e) => change(i, { description: e.target.value })}
+              />
+            </Field>
+            <Field label="Điểm tối đa">
+              <TextInput
+                type="number"
+                value={c.maxScore}
+                onChange={(e) =>
+                  change(i, { maxScore: Number(e.target.value) })
+                }
+              />
+            </Field>
+            {([
+              ["enabled", "Bật tiêu chí"],
+              ["required", "Bắt buộc"],
+              ["critical", "Critical"],
+              ["evidenceRequired", "Evidence Required"],
+              ["aiEnabled", "AI cho tiêu chí"],
+              ["suggestScore", "AI đề xuất điểm"],
+              ["suggestFindings", "AI đề xuất findings"],
+              ["suggestSuggestions", "AI đề xuất suggestions"],
+            ] as const).map(([key, label]) => (
+              <Toggle
+                key={key}
+                label={label}
+                value={c[key]}
+                onChange={(v) => change(i, { [key]: v })}
+              />
+            ))}
+            <Field label="Evaluation Instruction">
+              <TextArea
+                value={c.instruction}
+                onChange={(e) => change(i, { instruction: e.target.value })}
+              />
+            </Field>
+            <Field label="Evidence Requirement">
+              <TextArea
+                value={c.evidenceRequirement}
+                onChange={(e) =>
+                  change(i, { evidenceRequirement: e.target.value })
+                }
+              />
+            </Field>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                set(
+                  "criteria",
+                  r.criteria!.filter((_, index) => index !== i),
+                )
+              }
+            >
+              Xóa tiêu chí
+            </Button>
+          </div>
+        </details>
+      ))}
+      <Button
+        variant="secondary"
+        onClick={() =>
+          set("criteria", [
+            ...(r.criteria ?? []),
+            newCriterion(nextId("criterion")),
+          ])
+        }
+      >
+        Thêm tiêu chí
+      </Button>
+      {(invalid || error) && (
+        <p role="alert" className="text-[14px] text-danger">
+          {invalid || error}
+        </p>
+      )}
+    </Modal>
+  )
+}
+function Assignment({ rule, onClose }: { rule: RuleSet; onClose: () => void }) {
+  const cfg = useManagement()
+  const [offeringId, setOffering] = useState("")
+  const [classId, setClass] = useState("")
+  const [itemId, setItem] = useState("")
+  const offering = cfg.offerings.find((o) => o.id === offeringId)
+  const cls = cfg.classes.find((c) => c.id === classId)
+  const items = (cls?.labOverride ?? offering?.labs ?? []).flatMap(
+    (l) => l.items,
+  )
+  return (
+    <Modal
+      open
+      title={"Áp dụng: " + rule.name}
+      onClose={onClose}
+      footer={
+        <>
+          <Button variant="secondary" onClick={onClose}>
+            Hủy
+          </Button>
+          <Button
+            disabled={!offering}
+            onClick={() => {
+              updateManagement((s) =>
+                classId
+                  ? {
+                      classes: s.classes.map((c) =>
+                        c.id !== classId
+                          ? c
+                          : itemId
+                            ? {
+                                ...c,
+                                labOverride: structuredClone(
+                                  c.labOverride ?? offering!.labs,
+                                ).map((l) => ({
+                                  ...l,
+                                  items: l.items.map((i) =>
+                                    i.id === itemId
+                                      ? { ...i, ruleSetId: rule.id }
+                                      : i,
+                                  ),
+                                })),
+                              }
+                            : { ...c, ruleSetOverride: rule.id },
+                      ),
+                    }
+                  : {
+                      offerings: s.offerings.map((o) =>
+                        o.id !== offeringId
+                          ? o
+                          : itemId
+                            ? {
+                                ...o,
+                                labs: o.labs.map((l) => ({
+                                  ...l,
+                                  items: l.items.map((i) =>
+                                    i.id === itemId
+                                      ? { ...i, ruleSetId: rule.id }
+                                      : i,
+                                  ),
+                                })),
+                              }
+                            : { ...o, ruleSetId: rule.id },
+                      ),
+                    },
+              )
+              toast("Đã áp dụng bộ quy tắc cho bản nộp mới")
+              onClose()
+            }}
+          >
+            Xác nhận áp dụng
+          </Button>
+        </>
+      }
+    >
+      <Field label="Course Offering">
+        <select
+          className={selectClass}
+          value={offeringId}
+          onChange={(e) => {
+            setOffering(e.target.value)
+            setClass("")
+            setItem("")
+          }}
+        >
+          <option value="">Chọn môn trong học kỳ</option>
+          {cfg.offerings.map((o) => (
+            <option key={o.id} value={o.id}>
+              {offeringLabel(o, cfg.courses, cfg.semesters)}
+            </option>
+          ))}
+        </select>
+      </Field>
+      <Field label="Phạm vi lớp">
+        <select
+          className={selectClass}
+          value={classId}
+          onChange={(e) => {
+            setClass(e.target.value)
+            setItem("")
+          }}
+        >
+          <option value="">Course Offering (giữ override lớp)</option>
+          {cfg.classes
+            .filter((c) => c.offeringId === offeringId)
+            .map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.code} — override lớp
+              </option>
+            ))}
+        </select>
+      </Field>
+      <Field label="Lab Item">
+        <select
+          className={selectClass}
+          value={itemId}
+          onChange={(e) => setItem(e.target.value)}
+        >
+          <option value="">Mặc định cho phạm vi đã chọn</option>
+          {items.map((i) => (
+            <option key={i.id} value={i.id}>
+              {i.code} · {i.title}
+            </option>
+          ))}
+        </select>
+      </Field>
+      <Notice>
+        Lab Item ưu tiên cao nhất. Lớp có bản sao Lab riêng không đổi khi gán ở
+        Offering. Snapshot và kết quả bản nộp trước giữ nguyên.
+      </Notice>
     </Modal>
   )
 }
