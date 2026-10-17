@@ -105,8 +105,9 @@ export default function ProjectDetailPage() {
       </Card>
       {archived && <Notice>Project đã được lưu trữ. Toàn bộ tài liệu, version và lịch sử review vẫn được giữ nguyên ở chế độ chỉ đọc.</Notice>}
 
-      <SegmentedTabs tabs={TABS} active={tab} onChange={setTab} />
+      <SegmentedTabs id="project-detail" tabs={TABS} active={tab} onChange={setTab} />
 
+      <div id="project-detail-tabpanel" role="tabpanel" aria-labelledby={`project-detail-tab-${tab}`}>
       {tab === "Tổng quan" && (
         <>
           {project.nextStep && (
@@ -172,6 +173,7 @@ export default function ProjectDetailPage() {
           Chỉnh sửa thông tin project
         </Button>
       )}
+      </div>
 
       <ProjectFormModal open={editing} project={project} onClose={() => setEditing(false)} />
       <ConfirmModal

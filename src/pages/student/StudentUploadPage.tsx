@@ -292,6 +292,7 @@ export default function StudentUploadPage() {
       {locked && (
         <Card>
           <EmptyState
+            headingLevel={2}
             icon={<ShieldCheck size={24} className="text-brand" />}
             title="Tài liệu đang bị khóa"
             description={`Bạn cần hoàn thành tài liệu trước đó để tiếp tục: ${doc.dependsOn ?? "tài liệu phụ thuộc chưa được phê duyệt."}`}
@@ -306,6 +307,7 @@ export default function StudentUploadPage() {
       {!locked && approved && (
         <Card>
           <EmptyState
+            headingLevel={2}
             icon={<ShieldCheck size={24} className="text-brand" />}
             title="Tài liệu đã được phê duyệt"
             description="Không thể nộp lại lên một version đã đạt. Liên hệ giảng viên nếu cần thay đổi."
@@ -320,6 +322,7 @@ export default function StudentUploadPage() {
       {!locked && rejected && (
         <Card>
           <EmptyState
+            headingLevel={2}
             icon={<ShieldCheck size={24} className="text-brand" />}
             title="Tài liệu không đạt"
             description="Quy trình này không cho phép nộp lại tự động sau khi bị đánh dấu không đạt. Hãy liên hệ giảng viên."

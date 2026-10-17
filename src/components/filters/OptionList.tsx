@@ -49,9 +49,9 @@ export default function OptionList({ options, selected, onToggle, single, search
   return (
     <div className="flex flex-col gap-1">
       {searchable && (
-        <label className="mb-1 flex h-9 items-center gap-2 rounded-[8px] border border-line bg-white px-2.5 focus-within:border-brand">
+        <label className="mb-1 flex min-h-12 items-center gap-2 rounded-[8px] border border-line bg-white px-2.5 focus-within:border-brand">
           <Search size={15} strokeWidth={1.75} className="text-muted" />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={searchPlaceholder} className="min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-muted" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="min-h-12 min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-muted" />
         </label>
       )}
       <ul role="listbox" aria-multiselectable={!single} className="flex flex-col">

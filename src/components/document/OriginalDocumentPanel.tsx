@@ -20,9 +20,9 @@ export default function OriginalDocumentPanel({
   }, [file])
   return (
     <Card>
-      <h3 className="text-[14px] font-semibold">
+      <h2 className="text-[14px] font-semibold">
         Đối chiếu file gốc · {review.fileName}
-      </h3>
+      </h2>
       <Notice>
         Prototype chỉ lưu metadata của bản nộp. Chọn bản gốc tương ứng trên máy
         để kiểm tra evidence; file không gửi tới AI hoặc máy chủ. Preview minh

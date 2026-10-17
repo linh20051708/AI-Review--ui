@@ -200,9 +200,9 @@ export default function AIReviewSection({
             onAddFinding={onAddFinding}
             added={added}
           />
-          {additionalFindings.length > 0 && <h3 className="font-semibold">
+          {additionalFindings.length > 0 && <h2 className="font-semibold">
             Findings & Evidence ({additionalFindings.length})
-          </h3>}
+          </h2>}
           {!current.findings.length && (
             <Notice>
               Không có findings được cấu hình để sinh. Điều này không chứng minh
@@ -242,9 +242,9 @@ export default function AIReviewSection({
       )}
       {detailed && (
         <section className="flex flex-col gap-3">
-          <h3 className="font-semibold">
+          <h2 className="font-semibold">
             Lịch sử AI theo version ({runs.length})
-          </h3>
+          </h2>
           {runs.map((e) => (
             <details key={e.id} className="rounded-xl border border-line p-3">
               <summary className="min-h-12 cursor-pointer">
@@ -297,7 +297,7 @@ function CriterionAccordionList({ evaluation, onAddFinding, added }: {
         const findings = evaluation.findings.filter(f => f.category === c.name)
         return (
           <Card key={c.criterionId} className="gap-0">
-            <h3>
+            <h2>
               <button
                 id={triggerId}
                 type="button"
@@ -313,7 +313,7 @@ function CriterionAccordionList({ evaluation, onAddFinding, added }: {
                 </span>
                 <ChevronDown aria-hidden="true" size={20} className={`mt-1 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
               </button>
-            </h3>
+            </h2>
             <div id={panelId} aria-labelledby={triggerId} hidden={!open} className="min-w-0 border-t border-line pt-3 [overflow-wrap:anywhere]">
               <div className="flex flex-col gap-3">
                 {findings.length > 0 && <strong>Nhận xét AI</strong>}

@@ -89,6 +89,7 @@ export default function StudentListPage() {
 
         <div className="w-full sm:w-72">
           <TextInput
+            aria-label="Tìm sinh viên theo tên, MSSV, email"
             placeholder="Tìm theo tên, MSSV, email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -113,7 +114,7 @@ export default function StudentListPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
           <Field label="Học kỳ">
             <select
-              className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand min-h-12"
+              className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand focus-visible:ring-2 focus-visible:ring-brand min-h-12"
               value={selectedSemester}
               onChange={(e) => {
                 setSelectedSemester(e.target.value)
@@ -131,7 +132,7 @@ export default function StudentListPage() {
 
           <Field label="Môn học">
             <select
-              className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand min-h-12"
+              className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand focus-visible:ring-2 focus-visible:ring-brand min-h-12"
               value={selectedCourse}
               onChange={(e) => {
                 setSelectedCourse(e.target.value)
@@ -149,7 +150,7 @@ export default function StudentListPage() {
 
           <Field label="Lớp học">
             <select
-              className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand min-h-12"
+              className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand focus-visible:ring-2 focus-visible:ring-brand min-h-12"
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
             >

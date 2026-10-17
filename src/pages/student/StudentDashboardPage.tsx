@@ -66,7 +66,7 @@ export default function StudentDashboardPage() {
         <div className="flex items-center gap-3">
           <Avatar initials={student.initials} size={48} />
           <div className="min-w-0 flex-1 leading-[1.45]">
-            <p className="text-[17px] font-semibold">Chào {student.name}</p>
+            <h1 className="text-[17px] font-semibold">Chào {student.name}</h1>
             <p className="text-[14px] text-white/80">
               {student.studentCode} · {semester?.name ?? "—"}
             </p>

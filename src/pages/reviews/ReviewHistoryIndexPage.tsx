@@ -51,7 +51,7 @@ export default function ReviewHistoryIndexPage() {
                 <p className="truncate text-[12px] text-muted">{courses.find((c) => c.id === r.courseId)?.code} · {r.classCode} · {r.groupName} · {r.projectName}</p>
                 <p className="text-[15px] font-semibold text-ink">{r.documentTitle} {r.version}</p>
               </div>
-              <Link to={`/reviews/${r.id}/history`} className="shrink-0 text-[12px] font-semibold text-brand">Chi tiết</Link>
+              <Link to={`/reviews/${r.id}/history`} className="-my-2 shrink-0 px-2 py-2 text-[12px] font-semibold text-brand">Chi tiết</Link>
             </div>
             <ol>{events.slice(-3).map((e, i, arr) => <TimelineItem key={e.id} event={e} last={i === arr.length - 1} />)}</ol>
           </Card>

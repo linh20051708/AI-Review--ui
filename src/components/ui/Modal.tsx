@@ -1,5 +1,5 @@
 import { X } from "lucide-react"
-import { useEffect, type ReactNode } from "react"
+import { useEffect, useRef, type ReactNode } from "react"
 
 interface Props {
   open: boolean
@@ -10,14 +10,50 @@ interface Props {
   footer?: ReactNode
 }
 
+const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
 /** Bottom sheet on mobile, centered dialog on desktop. */
 export default function Modal({ open, title, description, onClose, children, footer }: Props) {
+  const panelRef = useRef<HTMLDivElement>(null)
+  const restoreRef = useRef<HTMLElement | null>(null)
+
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose()
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
   }, [open, onClose])
+
+  // Focus containment (WCAG 2.4.3) and focus restoration (WCAG 2.1.1).
+  useEffect(() => {
+    if (!open) return
+    restoreRef.current = document.activeElement as HTMLElement | null
+    const first = panelRef.current?.querySelector<HTMLElement>(FOCUSABLE)
+    ;(first ?? panelRef.current)?.focus({ preventScroll: true })
+    return () => restoreRef.current?.focus({ preventScroll: true })
+  }, [open])
+
+  // Keep Tab cycling inside the dialog.
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Tab" || !panelRef.current) return
+      const nodes = Array.from(panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((n) => n.offsetParent !== null)
+      if (nodes.length === 0) return
+      const first = nodes[0]
+      const last = nodes[nodes.length - 1]
+      const active = document.activeElement
+      if (e.shiftKey && (active === first || !panelRef.current.contains(active))) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+    document.addEventListener("keydown", onKey)
+    return () => document.removeEventListener("keydown", onKey)
+  }, [open])
 
   if (!open) return null
   return (
@@ -26,9 +62,11 @@ export default function Modal({ open, title, description, onClose, children, foo
       onClick={onClose}
     >
       <div
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label={title}
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
         className="safe-bottom flex max-h-[92dvh] w-full max-w-[520px] flex-col rounded-t-[16px] bg-white sm:rounded-[14px]"
       >

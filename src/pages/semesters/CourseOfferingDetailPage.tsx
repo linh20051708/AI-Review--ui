@@ -259,7 +259,7 @@ export default function CourseOfferingDetailPage() {
                     <div>
                       <Link
                         to={`/classes/${cls.id}`}
-                        className="text-[15px] font-semibold text-brand hover:underline"
+                        className="-my-2 inline-block px-1 py-2 text-[15px] font-semibold text-brand hover:underline"
                       >
                         {cls.code}
                       </Link>

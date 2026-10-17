@@ -49,9 +49,11 @@ export default function ProjectDocumentsPage() {
         </div>
         <ProgressBar value={project.progress} />
       </Card>
-      <SegmentedTabs tabs={tabs} active={tabs[active]} onChange={(t) => setActive(tabs.indexOf(t))} />
-      <Notice>Tài liệu (ví dụ Use Case Diagram) chứa các version v1, v2, v3… do sinh viên nộp. Yêu cầu chỉnh sửa sẽ khiến sinh viên tạo version mới; version cũ luôn được giữ lại.</Notice>
-      <section className="flex flex-col gap-3">{visible.length ? visible.map((d) => <DocumentCard key={d.id} doc={d} />) : <EmptyState title="Không có tài liệu" />}</section>
+      <SegmentedTabs id="project-docs" tabs={tabs} active={tabs[active]} onChange={(t) => setActive(tabs.indexOf(t))} />
+      <div id="project-docs-tabpanel" role="tabpanel" aria-labelledby={`project-docs-tab-${tabs[active]}`}>
+        <Notice>Tài liệu (ví dụ Use Case Diagram) chứa các version v1, v2, v3… do sinh viên nộp. Yêu cầu chỉnh sửa sẽ khiến sinh viên tạo version mới; version cũ luôn được giữ lại.</Notice>
+        <section className="flex flex-col gap-3">{visible.length ? visible.map((d) => <DocumentCard key={d.id} doc={d} />) : <EmptyState title="Không có tài liệu" />}</section>
+      </div>
     </>
   )
 }

@@ -475,9 +475,13 @@ export const attentionItems: AttentionItem[] = [
   { label: "Sắp đến hạn", tone: "amber", title: "Group 05 · Dormitory Management Platform", detail: "Deadline SRS 08/10 · còn 4 ngày", projectId: "dormitory-management-platform" },
 ]
 
-export const notifications: Notification[] = [
-  { id: "n1", title: "Group 03 vừa gửi yêu cầu review State Diagram v2", meta: "SE1701 · 20 phút trước", unread: true, link: "/reviews/review-006" },
-  { id: "n2", title: "Group 04 gửi yêu cầu review Use Case Diagram v2", meta: "SE1701 · 2 giờ trước", unread: true, link: "/reviews/review-001" },
-  { id: "n3", title: "AI Review hoàn tất cho Sequence Diagram v2 · Group 01", meta: "SE1701 · 3 giờ trước", unread: false, link: "/reviews/review-008" },
-  { id: "n4", title: "Sequence Diagram v2 của Group 08 đã chờ review 4 ngày", meta: "SE1701 · Nhắc việc", unread: false, link: "/reviews/review-004" },
+export type NotificationKind = "file-up" | "badge-check" | "clock" | "bell"
+
+export const notifications: (Notification & { kind: NotificationKind; section: string })[] = [
+  { id: "n1", title: "Group 04 vừa gửi yêu cầu review cho Use Case Diagram v2", meta: "SE1701 · Smart Attendance System · 2 giờ trước", unread: true, link: "/reviews/review-001", kind: "file-up", section: "Hôm nay · 04/10/2026" },
+  { id: "n2", title: "AI Review đã hoàn tất cho Sequence Diagram", meta: "SE1701 · Group 01 · Smart Campus Management · v2 · 2 giờ trước", unread: true, link: "/reviews/review-008", kind: "badge-check", section: "Hôm nay · 04/10/2026" },
+  { id: "n3", title: "Group 02 vừa nộp lại SRS v3", meta: "SE1702 · Hospital Management System · Nộp lại lần 2 · 3 giờ trước", unread: true, link: "/reviews/review-004", kind: "file-up", section: "Hôm nay · 04/10/2026" },
+  { id: "n4", title: "Project của Group 07 sắp đến deadline", meta: "SWP391-02 · Event Management System · 08/10/2026 · Còn 4 ngày", unread: false, link: "/reviews/review-006", kind: "clock", section: "Hôm nay · 04/10/2026" },
+  { id: "n5", title: "State Diagram của Group 03 đã được cập nhật lên v2", meta: "SE1702 · Hospital Management System · 16:40", unread: false, link: "/reviews/review-006", kind: "file-up", section: "Hôm qua · 03/10/2026" },
+  { id: "n6", title: "Bạn đã phê duyệt Activity Diagram của Group 02", meta: "SWP391-01 · AI Learning Assistant · v2 · 11:20", unread: false, link: "/reviews/review-008", kind: "badge-check", section: "Hôm qua · 03/10/2026" },
 ]

@@ -109,7 +109,7 @@ export default function GroupDetailPage() {
                     <p className="text-[14px] font-semibold text-ink">{m.name}</p>
                     <p className="text-[12px] text-muted">{m.studentCode}{i === 0 ? " · Trưởng nhóm" : ""}</p>
                   </div>
-                  <button type="button" onClick={() => setRemoving(m)} className="inline-flex items-center gap-1 text-[12px] font-semibold text-muted hover:text-danger">
+                  <button type="button" onClick={() => setRemoving(m)} className="-my-2 inline-flex items-center gap-1 px-2 py-2 text-[12px] font-semibold text-muted hover:text-danger">
                     <UserMinus size={14} strokeWidth={1.75} />Xóa khỏi nhóm
                   </button>
                 </li>

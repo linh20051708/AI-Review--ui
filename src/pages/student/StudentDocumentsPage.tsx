@@ -34,7 +34,8 @@ export default function StudentDocumentsPage() {
         title="Tài liệu của tôi"
         description={`${docs.length} tài liệu thuộc project ${ctx.project?.name ?? ""}`}
       />
-      <SegmentedTabs tabs={tabs} active={tabs[active]} onChange={(t) => setActive(tabs.indexOf(t))} />
+      <SegmentedTabs id="student-docs" tabs={tabs} active={tabs[active]} onChange={(t) => setActive(tabs.indexOf(t))} />
+      <div id="student-docs-tabpanel" role="tabpanel" aria-labelledby={`student-docs-tab-${tabs[active]}`}>
       <section className="flex flex-col gap-3">
         {visible.length ? (
           ctx.labs.map((lab) => <Fragment key={lab.id}>
@@ -68,6 +69,7 @@ export default function StudentDocumentsPage() {
           <EmptyState title="Không có tài liệu phù hợp" description="Thử chọn bộ lọc khác." />
         )}
       </section>
+      </div>
     </>
   )
 }

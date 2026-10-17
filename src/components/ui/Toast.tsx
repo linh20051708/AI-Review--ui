@@ -1,32 +1,64 @@
-import { CircleCheck } from "lucide-react"
+import { AlertCircle, CircleCheck } from "lucide-react"
 import { useSyncExternalStore } from "react"
 
-let message: string | null = null
+type Kind = "success" | "error"
+interface ToastState {
+  text: string
+  kind: Kind
+}
+interface Listener {
+  (): void
+}
+
+let state: ToastState | null = null
 let timer: ReturnType<typeof setTimeout> | undefined
-const listeners = new Set<() => void>()
-const subscribe = (l: () => void) => {
+const listeners = new Set<Listener>()
+const subscribe = (l: Listener) => {
   listeners.add(l)
   return () => listeners.delete(l)
 }
-
-export function toast(text: string) {
-  message = text
+const emit = (next: ToastState | null) => {
+  state = next
   listeners.forEach((l) => l())
+}
+
+export function toast(text: string, kind: Kind = "success") {
+  emit({ text, kind })
   clearTimeout(timer)
-  timer = setTimeout(() => {
-    message = null
-    listeners.forEach((l) => l())
-  }, 3200)
+  timer = setTimeout(() => emit(null), 3200)
 }
 
 export default function Toaster() {
-  const text = useSyncExternalStore(subscribe, () => message)
-  if (!text) return null
+  const current = useSyncExternalStore<ToastState | null>(subscribe, () => state)
+  if (!current) return null
+  const isError = current.kind === "error"
   return (
-    <div role="status" className="pointer-events-none fixed inset-x-0 bottom-24 z-[60] flex justify-center px-5 lg:bottom-8">
-      <div className="flex max-w-[440px] items-center gap-2.5 rounded-[10px] bg-ink px-4 py-3 text-[13px] leading-[1.45] text-white shadow-[0_6px_20px_rgba(36,51,45,0.18)]">
-        <CircleCheck size={18} strokeWidth={1.75} className="shrink-0 text-brand-soft" />
-        {text}
+    <div className="pointer-events-none fixed inset-x-0 bottom-24 z-[60] flex justify-center px-5 lg:bottom-8">
+      <div
+        role="status"
+        className={`pointer-events-auto flex max-w-[440px] items-center gap-2.5 rounded-[10px] px-4 py-3 text-[13px] leading-[1.45] text-white shadow-[0_6px_20px_rgba(36,51,45,0.18)] ${
+          isError ? "bg-danger" : "bg-ink"
+        }`}
+      >
+        {isError ? (
+          <AlertCircle size={18} strokeWidth={1.75} className="shrink-0" aria-hidden="true" />
+        ) : (
+          <CircleCheck size={18} strokeWidth={1.75} className="shrink-0 text-brand-soft" aria-hidden="true" />
+        )}
+        <span>{current.text}</span>
+        <button
+          type="button"
+          onClick={() => {
+            clearTimeout(timer)
+            emit(null)
+          }}
+          aria-label="Dong thong bao"
+          className="ml-1 shrink-0 rounded-[6px] p-1 text-white/80 transition hover:bg-white/15 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+          </svg>
+        </button>
       </div>
     </div>
   )

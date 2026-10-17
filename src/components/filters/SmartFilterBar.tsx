@@ -102,9 +102,9 @@ export default function SmartFilterBar(props: SmartFilterProps) {
   )
 
   const search = (
-    <label className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-[8px] border border-line bg-white px-3 focus-within:border-brand lg:min-w-[220px] lg:max-w-[300px]">
-      <Search size={17} strokeWidth={1.75} className="shrink-0 text-muted" />
-      <input type="search" value={state.q} onChange={(e) => onChange({ ...state, q: e.target.value })} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-muted" />
+    <label className="flex min-h-12 min-w-0 flex-1 items-center gap-2 rounded-[8px] border border-line bg-white px-3 focus-within:border-brand lg:min-w-[220px] lg:max-w-[300px]">
+      <Search size={17} strokeWidth={1.75} className="shrink-0 text-muted" aria-hidden="true" />
+      <input type="search" value={state.q} onChange={(e) => onChange({ ...state, q: e.target.value })} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="min-h-12 min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-muted" />
     </label>
   )
 
@@ -126,7 +126,7 @@ export default function SmartFilterBar(props: SmartFilterProps) {
           <button
             type="button"
             onClick={() => setDrawer("more")}
-            className={`inline-flex h-10 items-center gap-1.5 rounded-[8px] border px-3 text-[13px] font-medium ${otherCount ? "border-brand bg-brand-soft text-brand" : "border-line bg-white text-ink"}`}
+            className={`inline-flex min-h-12 items-center gap-1.5 rounded-[8px] border px-3 text-[13px] font-medium ${otherCount ? "border-brand bg-brand-soft text-brand" : "border-line bg-white text-ink"}`}
           >
             <SlidersHorizontal size={15} strokeWidth={1.75} />
             Bộ lọc khác{otherCount ? ` · ${otherCount}` : ""}
@@ -145,7 +145,7 @@ export default function SmartFilterBar(props: SmartFilterProps) {
           <button
             type="button"
             onClick={() => setDrawer("all")}
-            className={`inline-flex h-10 items-center gap-1.5 rounded-[8px] border px-3 text-[13px] font-medium ${mobileCount ? "border-brand bg-brand-soft text-brand" : "border-line bg-white text-ink"}`}
+            className={`inline-flex min-h-12 items-center gap-1.5 rounded-[8px] border px-3 text-[13px] font-medium ${mobileCount ? "border-brand bg-brand-soft text-brand" : "border-line bg-white text-ink"}`}
           >
             <SlidersHorizontal size={15} strokeWidth={1.75} />
             Bộ lọc{mobileCount ? ` · ${mobileCount}` : ""}
@@ -164,7 +164,7 @@ export default function SmartFilterBar(props: SmartFilterProps) {
               <X size={13} strokeWidth={2} />
             </button>
           ))}
-          <button type="button" onClick={() => onChange({ facets: {}, q: state.q })} className="shrink-0 px-1 text-[12px] font-semibold text-muted hover:text-ink">
+          <button type="button" onClick={() => onChange({ facets: {}, q: state.q })} className="-my-1 shrink-0 px-1 py-3 text-[12px] font-semibold text-muted hover:text-ink">
             Xóa bộ lọc
           </button>
         </div>

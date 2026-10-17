@@ -90,7 +90,7 @@ export default function ReviewWorkspacePage() {
   const addFeedback = (d: FeedbackDraft) => {
     const block = supervisorBlock(review)
     if (block) {
-      toast(block)
+      toast(block, "error")
       return
     }
     ensureStarted()
@@ -107,7 +107,7 @@ export default function ReviewWorkspacePage() {
   const addFinding = (f: AIFinding) => {
     const block = supervisorBlock(review)
     if (block) {
-      toast(block)
+      toast(block, "error")
       return
     }
     ensureStarted()
@@ -327,16 +327,37 @@ export default function ReviewWorkspacePage() {
             />
           </div>
           <div
+            id="review-workspace-tablist"
             role="tablist"
             className="flex gap-1 rounded-[8px] bg-subtle p-1 lg:mx-4 lg:mt-3"
           >
             {tabs.map((t) => (
               <button
                 key={t.id}
+                id={`review-workspace-tab-${t.id}`}
                 role="tab"
                 type="button"
                 aria-selected={panel === t.id}
+                aria-controls="review-workspace-tabpanel"
+                tabIndex={panel === t.id ? 0 : -1}
                 onClick={() => openPanel(t.id)}
+                onKeyDown={(e) => {
+                  const i = tabs.findIndex((x) => x.id === panel)
+                  if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+                    e.preventDefault()
+                    const next = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length]
+                    openPanel(next.id)
+                    document.getElementById(`review-workspace-tab-${next.id}`)?.focus()
+                  } else if (e.key === "Home") {
+                    e.preventDefault()
+                    openPanel(tabs[0].id)
+                    document.getElementById(`review-workspace-tab-${tabs[0].id}`)?.focus()
+                  } else if (e.key === "End") {
+                    e.preventDefault()
+                    openPanel(tabs[tabs.length - 1].id)
+                    document.getElementById(`review-workspace-tab-${tabs[tabs.length - 1].id}`)?.focus()
+                  }
+                }}
                 className={`flex-1 whitespace-nowrap rounded-[6px] px-2 py-2 text-[13px] font-medium transition ${
                   panel === t.id
                     ? "bg-white text-brand shadow-[0_1px_2px_rgba(36,51,45,0.08)]"
@@ -348,7 +369,7 @@ export default function ReviewWorkspacePage() {
             ))}
           </div>
 
-          <div className="flex flex-col gap-3 pt-4 pb-6 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:px-4 lg:pb-4">
+          <div id="review-workspace-tabpanel" role="tabpanel" aria-labelledby={`review-workspace-tab-${panel}`} className="flex flex-col gap-3 pt-4 pb-6 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:px-4 lg:pb-4">
             {panel === "ai" && (
               <AIReviewSection
                 key={review.id + review.version}
