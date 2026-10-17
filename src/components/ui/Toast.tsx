@@ -36,7 +36,7 @@ export default function Toaster() {
     <div className="pointer-events-none fixed inset-x-0 bottom-24 z-[60] flex justify-center px-5 lg:bottom-8">
       <div
         role="status"
-        className={`pointer-events-auto flex max-w-[440px] items-center gap-2.5 rounded-[10px] px-4 py-3 text-[13px] leading-[1.45] text-white shadow-[0_6px_20px_rgba(36,51,45,0.18)] ${
+        className={`pointer-events-auto flex max-w-[440px] items-center gap-2.5 rounded-[8px] px-4 py-3 text-[14px] leading-[1.45] text-white ${
           isError ? "bg-danger" : "bg-ink"
         }`}
       >

@@ -49,7 +49,7 @@ export default function SegmentedTabs({ id, tabs, active, onChange }: Props) {
             aria-selected={tab === active}
             tabIndex={tab === active ? 0 : -1}
             onClick={() => onChange(tab)}
-            className={`whitespace-nowrap rounded-[6px] px-3 py-2 text-[13px] font-medium transition ${tab === active ? "bg-white text-brand shadow-[0_1px_2px_rgba(36,51,45,0.08)]" : "text-muted"}`}
+            className={`whitespace-nowrap rounded-[6px] px-3 py-2 text-[13px] font-medium transition ${tab === active ? "bg-white text-brand" : "text-muted"}`}
           >
             {tab}
           </button>

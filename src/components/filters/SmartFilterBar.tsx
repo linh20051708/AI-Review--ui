@@ -102,7 +102,7 @@ export default function SmartFilterBar(props: SmartFilterProps) {
   )
 
   const search = (
-    <label className="flex min-h-12 min-w-0 flex-1 items-center gap-2 rounded-[8px] border border-line bg-white px-3 focus-within:border-brand lg:min-w-[220px] lg:max-w-[300px]">
+    <label className="flex min-h-12 min-w-0 flex-1 items-center gap-2 rounded-[6px] border border-line bg-subtle px-2.5 focus-within:border-brand lg:min-w-[220px] lg:max-w-[300px]">
       <Search size={17} strokeWidth={1.75} className="shrink-0 text-muted" aria-hidden="true" />
       <input type="search" value={state.q} onChange={(e) => onChange({ ...state, q: e.target.value })} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="min-h-12 min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-muted" />
     </label>

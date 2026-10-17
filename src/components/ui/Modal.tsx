@@ -68,11 +68,11 @@ export default function Modal({ open, title, description, onClose, children, foo
         aria-label={title}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        className="safe-bottom flex max-h-[92dvh] w-full max-w-[520px] flex-col rounded-t-[16px] bg-white sm:rounded-[14px]"
+        className="safe-bottom flex max-h-[92dvh] w-full max-w-[520px] flex-col rounded-t-[12px] bg-white sm:rounded-[12px]"
       >
         <div className="flex items-start gap-3 border-b border-line px-5 pt-4 pb-3 sm:pt-5 sm:pb-4">
           <div className="min-w-0 flex-1 leading-[1.45]">
-            <h2 className="text-[18px] font-semibold text-ink">{title}</h2>
+            <h2 className="text-[17px] font-semibold text-ink">{title}</h2>
             {description && <div className="mt-1 text-[14px] text-muted">{description}</div>}
           </div>
           {/* Minimum 48x48 dp touch target for close button */}

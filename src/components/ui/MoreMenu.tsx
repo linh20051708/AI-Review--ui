@@ -92,7 +92,7 @@ export default function MoreMenu({
           role="menu"
           aria-label={label}
           onKeyDown={onMenuKeyDown}
-          className={`absolute z-30 min-w-[210px] rounded-[10px] border border-line bg-white p-1.5 shadow-[0_8px_24px_rgba(36,51,45,0.12)] ${
+          className={`absolute z-30 min-w-[210px] rounded-[10px] border border-line bg-white p-1.5 ${
             align === "right" ? "right-0" : "left-0"
           } ${up ? "bottom-full mb-2" : "top-full mt-2"}`}
         >

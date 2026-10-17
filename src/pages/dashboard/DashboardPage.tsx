@@ -221,7 +221,7 @@ export default function DashboardPage() {
         flex min-h-14 min-w-[112px] shrink-0
         items-center justify-between gap-2
         rounded-[10px] border border-line bg-white
-        px-3 py-2 shadow-xs
+        px-3 py-2
         transition hover:border-brand/40 hover:bg-brand-soft/20
         active:scale-[0.98]
         sm:min-w-0

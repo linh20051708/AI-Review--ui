@@ -360,7 +360,7 @@ export default function ReviewWorkspacePage() {
                 }}
                 className={`flex-1 whitespace-nowrap rounded-[6px] px-2 py-2 text-[13px] font-medium transition ${
                   panel === t.id
-                    ? "bg-white text-brand shadow-[0_1px_2px_rgba(36,51,45,0.08)]"
+                    ? "bg-white text-brand"
                     : "text-muted"
                 }`}
               >

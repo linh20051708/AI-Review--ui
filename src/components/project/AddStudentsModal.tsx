@@ -128,7 +128,7 @@ export default function AddStudentsModal({
                 document.getElementById(`add-students-tab-${tabs[tabs.length - 1].id}`)?.focus()
               }
             }}
-            className={`rounded-[6px] px-1 py-2 text-[12px] font-medium transition sm:text-[13px] ${tab === t.id ? "bg-white text-brand shadow-[0_1px_2px_rgba(36,51,45,0.08)]" : "text-muted"}`}
+            className={`rounded-[6px] px-1 py-2 text-[12px] font-medium transition sm:text-[13px] ${tab === t.id ? "bg-white text-brand" : "text-muted"}`}
           >
             {t.label}
           </button>
