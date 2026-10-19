@@ -151,7 +151,7 @@ function QRTab({ classRoom }: { classRoom: ClassRoom }) {
           <Button variant="secondary" icon={<Link2 size={16} strokeWidth={1.75} />} onClick={() => copy(link, "Đã sao chép liên kết tham gia")} className="whitespace-nowrap px-2 text-[13px]">Sao chép liên kết</Button>
         </div>
       </div>
-      <p className="text-[12px] leading-[1.45] text-muted">Sinh viên quét mã QR hoặc nhập mã lớp để gửi yêu cầu tham gia.</p>
+      <p className="text-[12px] leading-[1.45] text-muted">Sinh viên nhập mã hợp lệ để tham gia lớp ngay.</p>
       <div className="flex items-center justify-between gap-3 rounded-[8px] border border-line p-3 text-[12px]">
         <div className="leading-[1.45]">
           <p className="text-muted">QR hết hạn</p>
@@ -161,21 +161,7 @@ function QRTab({ classRoom }: { classRoom: ClassRoom }) {
           <RefreshCw size={14} strokeWidth={1.75} />Tạo lại mã QR
         </button>
       </div>
-      <label className="flex items-start gap-3 rounded-[8px] border border-line p-3">
-        <input type="checkbox" checked={classRoom.requireApproval} onChange={(e) => update({ requireApproval: e.target.checked })} className="mt-0.5 size-4 accent-[#146b55]" />
-        <span className="leading-[1.45]">
-          <span className="block text-[13px] font-semibold text-ink">Yêu cầu giảng viên duyệt sinh viên mới</span>
-          <span className="block text-[12px] text-muted">
-            {classRoom.requireApproval ? "Yêu cầu tham gia sẽ chờ bạn chấp nhận hoặc từ chối trong tab Sinh viên." : "Sinh viên đủ điều kiện sẽ tham gia ngay sau khi gửi yêu cầu."}
-          </span>
-        </span>
-      </label>
-      <ol className="flex flex-col gap-1 rounded-[8px] bg-subtle p-3 text-[12px] leading-[1.5] text-muted">
-        <li>1. Sinh viên quét QR và đăng nhập</li>
-        <li>2. Xem đúng lớp {classRoom.code}, gửi yêu cầu tham gia</li>
-        <li>3. Hệ thống kiểm tra điều kiện{classRoom.requireApproval ? " → chờ giảng viên duyệt" : ""}</li>
-        <li>4. Tham gia lớp</li>
-      </ol>
+
     </div>
   )
 }

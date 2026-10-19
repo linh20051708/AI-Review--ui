@@ -1,3 +1,4 @@
+import { useSession } from "@/app/auth"
 import { useMemo } from "react"
 
 import { demoStudentId } from "@/data/mockData"
@@ -60,17 +61,20 @@ export interface StudentContext {
 
 export function useStudentContext(): StudentContext {
   const mgmt = useManagement()
+  const session = useSession()
 
   const { requests } = useReviewStore()
 
   const { students, groups, classes, semesters, courses, offerings, projects } =
     mgmt
 
-  const student = students.find((s) => s.id === demoStudentId)
+  const student = students.find((s) => s.id === (session?.studentId ?? demoStudentId))
 
-  const group = groups.find((g) => g.id === student?.groupId)
+  const enrolledClasses = classes.filter(c => c.id === student?.classId || student?.enrolledClassIds?.includes(c.id))
+  const selectedClassId = enrolledClasses.find(c => c.id === session?.classId)?.id ?? enrolledClasses.find(c => c.id === student?.classId)?.id ?? enrolledClasses[0]?.id
+  const group = groups.find((g) => g.classId === selectedClassId && !!student && g.memberIds.includes(student.id))
 
-  const cls = classes.find((c) => c.id === (group?.classId ?? student?.classId))
+  const cls = classes.find((c) => c.id === (group?.classId ?? selectedClassId))
 
   const offering = offerings.find((o) => o.id === cls?.offeringId)
 
@@ -82,7 +86,7 @@ export function useStudentContext(): StudentContext {
     (c) => c.id === (offering?.courseId ?? cls?.courseId),
   )
 
-  const project = projects.find((p) => p.id === group?.projectId)
+  const project = projects.find((p) => p.id === group?.projectId && p.state === "active")
 
   const labs = useMemo(
     () => resolveLabStructure(cls, offering),
@@ -90,7 +94,7 @@ export function useStudentContext(): StudentContext {
   )
 
   const docs = useMemo(
-    () => documentsFor(project, requests, { classes, offerings, groups }),
+    () => project ? documentsFor(project, requests, { classes, offerings, groups }) : [],
 
     [project, requests, classes, offerings, groups, mgmt.ruleSets],
   )

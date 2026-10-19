@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react"
+import { obsoleteJoinApproval } from "@/data/selfServicePolicy"
 import type { Notification } from "@/types"
 
 /**
@@ -59,11 +60,16 @@ const subscribe = (l: () => void) => {
 let seq = 0
 const uid = (prefix: string) => `${prefix}-${Date.now()}-${seq++}`
 
+const visibleCache = new WeakMap<StudentNotification[], StudentNotification[]>()
+const visibleNotifications = () => {
+  if (!visibleCache.has(state.notifications)) visibleCache.set(state.notifications, state.notifications.filter(n => !obsoleteJoinApproval(n)))
+  return visibleCache.get(state.notifications)!
+}
 export function useNotifications() {
-  return useSyncExternalStore(subscribe, () => state.notifications)
+  return useSyncExternalStore(subscribe, visibleNotifications)
 }
 
-export const getStudentUnread = () => state.notifications.filter((n) => n.unread).length
+export const getStudentUnread = () => visibleNotifications().filter((n) => n.unread).length
 
 export const notificationActions = {
   push(input: Omit<StudentNotification, "id" | "unread">) {

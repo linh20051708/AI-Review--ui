@@ -1,3 +1,4 @@
+import "@/styles/phase-two.css"
 import {
   ArrowRight,
   BookOpen,
@@ -98,11 +99,11 @@ export default function CourseListPage() {
   }
 
   return (
-    <>
+    <div className="phase-two flex min-w-0 flex-col gap-4">
       <PageHeading
         eyebrow="QUẢN LÝ HỌC VỤ"
-        title="Môn học & Đợt giảng dạy"
-        description="Môn học (Master Data) và các Đợt giảng dạy (Course Offerings) theo từng học kỳ kèm cấu trúc Lab."
+        title="Môn học"
+        
       />
 
       <div className="flex gap-2">
@@ -110,7 +111,7 @@ export default function CourseListPage() {
           icon={<Plus size={18} strokeWidth={1.75} />}
           onClick={() => setOpenAddCourse(true)}
         >
-          Thêm môn học mới
+          Thêm môn học
         </Button>
       </div>
 
@@ -128,17 +129,13 @@ export default function CourseListPage() {
                     <BookOpen size={20} strokeWidth={1.75} />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className="text-[17px] font-bold text-ink">
                         {c.code}
                       </span>
                       <span className="text-[15px] text-muted">— {c.name}</span>
                     </div>
-                    {c.description && (
-                      <p className="text-[12px] text-muted mt-0.5">
-                        {c.description}
-                      </p>
-                    )}
+
                   </div>
                 </div>
 
@@ -148,12 +145,16 @@ export default function CourseListPage() {
                   icon={<Plus size={15} />}
                   onClick={() => handleOpenOfferingModal(c.id)}
                 >
-                  Mở đợt học kỳ mới
+                  Mở đợt học
                 </Button>
               </div>
 
               {/* Offerings list */}
-              <div className="pt-2 flex flex-col gap-2">
+              <details><summary>Đợt giảng dạy ({courseOfferingsList.length})</summary>                    {c.description && (
+                      <p className="text-[12px] text-muted mt-0.5">
+                        {c.description}
+                      </p>
+                    )}<div className="pt-2 flex flex-col gap-2">
                 <span className="text-[12px] font-semibold uppercase tracking-wider text-muted">
                   Các đợt giảng dạy ({courseOfferingsList.length})
                 </span>
@@ -178,7 +179,7 @@ export default function CourseListPage() {
                       return (
                         <div
                           key={off.id}
-                          className="flex flex-col justify-between gap-2 rounded-[10px] border border-line bg-subtle/50 p-3 hover:border-brand/40 transition"
+                          className="flex flex-col justify-between gap-2 border-b border-line py-3 last:border-b-0"
                         >
                           <div>
                             <div className="flex items-center justify-between">
@@ -188,55 +189,20 @@ export default function CourseListPage() {
                               </span>
                               <Badge tone="brand">{off.labs.length} Labs</Badge>
                             </div>
-                            <div className="mt-1.5 flex flex-wrap gap-1 text-[11px] text-muted">
-                              <span>
-                                Phương pháp:{" "}
-                                <strong className="text-ink font-medium">
-                                  {off.teachingMethod}
-                                </strong>
-                              </span>
-                              <span>•</span>
-                              <span>
-                                Rule:{" "}
-                                <strong className="text-ink font-medium">
-                                  {rule?.name ?? off.ruleSetId}
-                                </strong>
-                              </span>
-                            </div>
-                            <div className="mt-1 text-[11px] text-muted">
-                              Lớp học:{" "}
-                              {offeringClasses.length > 0 ? (
-                                <span className="text-ink font-medium">
-                                  {offeringClasses
-                                    .map((cl) => cl.code)
-                                    .join(", ")}
-                                </span>
-                              ) : (
-                                "Chưa có lớp"
-                              )}
-                            </div>
+                            <p className="text-[14px] text-muted">{offeringClasses.length} lớp · {off.labs.length} Lab</p>
+
                           </div>
 
                           <div className="pt-2 border-t border-line/60 flex items-center justify-between">
-                            <span className="text-[11px] text-muted">
-                              ID: {off.id}
-                            </span>
-                            <Link to={`/course-offerings/${off.id}`}>
-                              <Button
-                                variant="secondary"
-                                className="w-auto min-h-[32px] py-1 px-2.5 text-[12px]"
-                                icon={<Settings size={13} />}
-                              >
-                                Cấu hình Lab & Lớp
-                              </Button>
-                            </Link>
+
+                            <Button to={`/course-offerings/${off.id}`} variant="secondary">Cấu hình đợt học</Button>
                           </div>
                         </div>
                       )
                     })}
                   </div>
                 )}
-              </div>
+              </div></details>
             </Card>
           )
         })}
@@ -246,7 +212,7 @@ export default function CourseListPage() {
       <Modal
         open={openAddCourse}
         onClose={() => setOpenAddCourse(false)}
-        title="Thêm môn học mới (Master Data)"
+        title="Thêm môn học"
         description="Môn học gốc được sử dụng xuyên suốt qua các học kỳ."
         footer={
           <>
@@ -383,6 +349,6 @@ export default function CourseListPage() {
           </Field>
         </Modal>
       )}
-    </>
+    </div>
   )
 }

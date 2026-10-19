@@ -1,6 +1,7 @@
+import "@/styles/student-refinement.css"
 import { ShieldCheck, Upload } from "lucide-react"
 
-import { useState, type ChangeEvent } from "react"
+import { useEffect, useState, type ChangeEvent } from "react"
 
 import { useNavigate, useParams } from "react-router-dom"
 
@@ -16,7 +17,6 @@ import EmptyState from "@/components/ui/EmptyState"
 
 import { Field, TextArea } from "@/components/ui/Form"
 
-import MetaGrid from "@/components/ui/MetaGrid"
 
 import Notice from "@/components/ui/Notice"
 
@@ -24,11 +24,12 @@ import PageHeading from "@/components/ui/PageHeading"
 
 import { toast } from "@/components/ui/Toast"
 
-import { demoStudentId } from "@/data/mockData"
 
 import { useManagement } from "@/data/managementStore"
 
 import { reviewActions } from "@/data/reviewStore"
+
+import StudentPrecheck from "@/components/review/StudentPrecheck"
 
 import { resolveRuleSet } from "@/lib/config"
 
@@ -53,13 +54,17 @@ export default function StudentUploadPage() {
 
   const ctx = useStudentContext()
 
-  const { ruleSets, students } = useManagement()
+  const { ruleSets } = useManagement()
 
   const doc = ctx.docById(documentId)
 
-  const student = students.find((s) => s.id === demoStudentId)
+  const student = ctx.student
 
   const [file, setFile] = useState<File | null>(null)
+
+  const [selection, setSelection] = useState(0)
+
+  const [checked, setChecked] = useState<{ file: File; ruleKey: string } | null>(null)
 
   const [note, setNote] = useState("")
 
@@ -68,6 +73,13 @@ export default function StudentUploadPage() {
   const [pending, setPending] = useState(false)
 
   const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    setFile(null)
+    setChecked(null)
+    setPending(false)
+    setError("")
+  }, [documentId])
 
   if (!doc) return <EmptyState title="Không tìm thấy tài liệu" />
 
@@ -80,6 +92,11 @@ export default function StudentUploadPage() {
   const rule = item?.ruleSetId
     ? { value: ruleSets.find((r) => r.id === item.ruleSetId) }
     : inheritedRule
+
+  const precheckRule = rule.value && item?.aiReview !== "disabled" ? rule.value : undefined
+  const precheckEnabled = Boolean(precheckRule?.aiEnabled !== false && precheckRule?.status === "active")
+  const ruleKey = JSON.stringify(precheckRule)
+  const precheckReady = checked?.file === file && checked?.ruleKey === ruleKey
 
   const maxSizeMB = rule.value?.maxFileSizeMB ?? 20
 
@@ -119,6 +136,9 @@ export default function StudentUploadPage() {
     const f = e.target.files?.[0] ?? null
 
     setError("")
+    setChecked(null)
+    setSelection(n => n + 1)
+    setPending(false)
 
     setFile(null)
 
@@ -152,6 +172,7 @@ export default function StudentUploadPage() {
     if (
       !file ||
       !student ||
+      (precheckEnabled && !precheckReady) ||
       submitting ||
       locked ||
       approved ||
@@ -270,16 +291,12 @@ export default function StudentUploadPage() {
   }
 
   return (
-    <>
+    <div className="student-refine phase-two flex min-w-0 flex-col gap-4">
       <BackLink label={doc.title} fallback={`/student/documents/${doc.id}`} />
       <PageHeading
         eyebrow={`NỘP TÀI LIỆU · ${doc.labCode ?? ""}`}
         title={doc.title}
-        description={
-          request
-            ? `Nộp ${nextVersion} sau khi giảng viên yêu cầu chỉnh sửa ${request.version}.`
-            : `Bản nộp đầu tiên · ${nextVersion}.`
-        }
+        description={awaiting ? "Đang chờ review" : approved ? "Đã được giảng viên phê duyệt" : rejected ? "Không đạt" : locked ? "Chưa đủ điều kiện nộp" : request ? `Nộp ${nextVersion} · chỉnh sửa ${request.version}` : `Bản nộp đầu tiên · ${nextVersion}`}
       />
 
       {awaiting && (
@@ -332,31 +349,11 @@ export default function StudentUploadPage() {
         </Card>
       )}
       {!locked && !approved && !rejected && !awaiting && (
-        <Card>
-          <MetaGrid
-            items={[
-              { label: "Lab", value: doc.labTitle ?? "—" },
-
-              {
-                label: "Mục Lab",
-                value: `${doc.itemCode ?? ""} · ${doc.title}`,
-              },
-
-              { label: "Version kế tiếp", value: nextVersion },
-
-              { label: "Deadline", value: dl.ts ? fmtDate(dl.ts) : "—" },
-
-              {
-                label: "Giới hạn file",
-                value: `${maxSizeMB} MB · ${allowed.join("/").toUpperCase()}`,
-              },
-            ]}
-          />
-        </Card>
+        <p className="text-[14px] text-muted">{nextVersion} · {allowed.join("/").toUpperCase()} · Tối đa {maxSizeMB} MB{dl.ts ? ` · Deadline ${fmtDate(dl.ts)}` : ""}</p>
       )}
 
       {!locked && !approved && !rejected && !awaiting && (
-        <Card className="gap-4">
+        <Card className="gap-4" aria-busy={submitting}>
           <div className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-[10px] border-2 border-dashed border-line bg-subtle/50 p-4 text-center">
             <Upload size={22} strokeWidth={1.75} className="text-brand" />
             <span className="break-all text-[14px] font-semibold text-ink">
@@ -371,7 +368,8 @@ export default function StudentUploadPage() {
             )}
             <Button
               type="button"
-              variant="secondary"
+              disabled={submitting}
+              variant={file ? "secondary" : "primary"}
               className="w-auto px-4"
               onClick={() => {
                 const input = document.getElementById(
@@ -381,9 +379,10 @@ export default function StudentUploadPage() {
                 input?.click()
               }}
             >
-              Chọn file
+              {file ? "Chọn file khác" : "Chọn file"}
             </Button>
             <input
+              tabIndex={-1}
               id="student-file"
               aria-label="File tài liệu"
               type="file"
@@ -399,7 +398,15 @@ export default function StudentUploadPage() {
             </p>
           )}
 
-          <Field label="Ghi chú (tùy chọn)">
+          {file && precheckEnabled && precheckRule && <StudentPrecheck
+            key={`${selection}:${documentId}:${file.name}:${file.size}:${file.lastModified}:${ruleKey}`}
+            rule={precheckRule}
+            documentTitle={doc.title}
+            onReady={() => setChecked({ file, ruleKey })}
+          />}
+          {file && !precheckEnabled && <p className="text-[14px] text-muted">AI Pre-check chưa được bật cho tài liệu này.</p>}
+
+          <details><summary>Ghi chú (tùy chọn)</summary><Field label="Ghi chú">
             <TextArea
               rows={3}
               value={note}
@@ -410,20 +417,16 @@ export default function StudentUploadPage() {
                   : "Mô tả ngắn về tài liệu nộp..."
               }
             />
-          </Field>
+          </Field></details>
 
           <Button
             onClick={() => setPending(true)}
-            disabled={!file || submitting}
+            disabled={!file || submitting || (precheckEnabled && !precheckReady)}
             className="disabled:opacity-50"
             loading={submitting}
           >
             {submitting ? "Đang nộp..." : "Tiếp tục nộp"}
           </Button>
-          <Notice>
-            File chỉ được lưu dưới dạng metadata trong prototype (demo PRM323
-            Lab 2), không tải lên máy chủ thực.
-          </Notice>
         </Card>
       )}
 
@@ -444,8 +447,7 @@ export default function StudentUploadPage() {
               )}
               <p>
                 Sau khi nộp, một version bất biến mới sẽ được tạo và gửi yêu cầu
-                review. Bạn không thể sửa hoặc xóa version này. AI và nội dung
-                xem trước là dữ liệu mô phỏng.
+                review. Bạn không thể sửa hoặc xóa version này.
               </p>
             </div>
           </>
@@ -454,6 +456,6 @@ export default function StudentUploadPage() {
         onClose={() => setPending(false)}
         onConfirm={submit}
       />
-    </>
+    </div>
   )
 }

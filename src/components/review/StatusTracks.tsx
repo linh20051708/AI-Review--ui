@@ -1,4 +1,5 @@
 import Badge from "@/components/ui/Badge"
+import type { ReactNode } from "react"
 import StatusBadge from "@/components/ui/StatusBadge"
 import { aiSummary } from "@/data/mockData"
 import type { AICounts, AIStatus, DocumentStatus, SupervisorStatus } from "@/types"
@@ -9,15 +10,16 @@ interface Props {
   ai?: AICounts
   supervisorStatus?: SupervisorStatus
   compact?: boolean
+  aiContent?: ReactNode
 }
 
 /** Document, AI Review and Supervisor Review are separate tracks — never one combined status. */
-export default function StatusTracks({ documentStatus, aiStatus, ai, supervisorStatus, compact }: Props) {
+export default function StatusTracks({ documentStatus, aiStatus, ai, supervisorStatus, compact, aiContent }: Props) {
   const aiBadge =
-    aiStatus === "aiReviewing" ? <StatusBadge status="aiReviewing" /> : aiStatus === "notRun" || !ai ? <Badge>Chưa chạy</Badge> : <Badge tone={ai.errors ? "rust" : "olive"}>Đã hoàn tất · {aiSummary(ai)}</Badge>
+    aiStatus === "aiReviewing" ? <StatusBadge status="aiReviewing" /> : aiStatus === "notRun" || !ai ? <Badge>Chưa chạy</Badge> : <Badge tone={ai.errors ? "rust" : "olive"}>Đề xuất · Chưa xác minh · {aiSummary(ai)}</Badge>
   const rows = [
     { label: "Tài liệu", node: <StatusBadge status={documentStatus} /> },
-    { label: "AI Review", node: aiBadge },
+    { label: "AI đề xuất", node: aiContent ?? aiBadge },
     { label: "Giảng viên", node: supervisorStatus ? <StatusBadge status={supervisorStatus} /> : <Badge>Chưa có yêu cầu</Badge> },
   ]
   return (

@@ -34,6 +34,9 @@ import StudentVersionsPage from "@/pages/student/StudentVersionsPage"
 import StudentNotificationsPage from "@/pages/student/StudentNotificationsPage"
 import StudentProfilePage from "@/pages/student/StudentProfilePage"
 
+import StudentGroupsPage from "@/pages/student/StudentGroupsPage"
+import ProjectRegistrationsPage from "@/pages/projects/ProjectRegistrationsPage"
+
 export const router = createBrowserRouter([
   {
     element: <AuthLayout />,
@@ -45,6 +48,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: "dashboard", element: <DashboardPage /> },
+      { path: "project-registrations", element: <ProjectRegistrationsPage /> },
       { path: "classes", element: <ClassListPage /> },
       { path: "classes/:classId", element: <ClassDetailPage /> },
       { path: "projects", element: <ProjectListPage /> },
@@ -75,6 +79,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/student/dashboard" replace /> },
       { path: "dashboard", element: <StudentDashboardPage /> },
+      { path: "groups", element: <StudentGroupsPage /> },
       { path: "projects/:projectId?", element: <StudentProjectDetailPage /> },
       { path: "documents", element: <StudentDocumentsPage /> },
       { path: "documents/:documentId", element: <StudentDocumentDetailPage /> },

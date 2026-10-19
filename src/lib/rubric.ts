@@ -1,3 +1,4 @@
+import { documentSample, sampleCheckFor } from "@/data/documentSamples"
 import type {
   AIEvaluation,
   ReviewRequest,
@@ -159,55 +160,43 @@ export function resolveReviewRule(
   return result
 }
 
-/** Deterministic synthetic scores. Never examines file bytes or claims real evidence. */
-export function mockEvaluation(run: AIEvaluation): AIEvaluation {
-  const criterionResults = (run.ruleSnapshot.criteria ?? [])
-    .filter((c) => c.enabled)
-    .map((c) => {
-      const hash = [
-        ...`${c.id}|${c.name}|${c.instruction}|${run.documentVersion}`,
-      ].reduce((n, ch) => n + ch.charCodeAt(0), 0)
-      return {
-        criterionId: c.id,
-        name: c.name,
-        maxScore: c.maxScore,
-        score:
-          c.aiEnabled && c.suggestScore
-            ? run.ruleSnapshot.scoringMode === "binary"
-              ? hash % 4 === 0
-                ? 0
-                : c.maxScore
-              : Math.round(c.maxScore * (0.5 + (hash % 5) / 10) * 100) / 100
-            : null,
-        evidence: c.evidenceRequired
-          ? `Chưa xác minh: ${c.evidenceRequirement || "Supervisor đối chiếu với tài liệu gốc."}`
-          : "Không yêu cầu evidence; kết quả vẫn chỉ là mô phỏng.",
-        needsVerification: true,
-        suggestions:
-          c.aiEnabled && c.suggestSuggestions
-            ? [`Gợi ý mô phỏng: kiểm tra và bổ sung nội dung cho “${c.name}”.`]
-            : [],
-      }
-    })
-  const findings = (run.ruleSnapshot.criteria ?? [])
-    .filter((c) => c.enabled && c.aiEnabled && c.suggestFindings)
-    .map((c) => ({
-      id: `${run.id}-${c.id}`,
-      level: c.critical ? "error" as const : "warning" as const,
-      category: c.name,
-      message: `Cần xác minh “${c.name}”. ${c.instruction || c.description} (Finding mô phỏng, chưa đọc file gốc.)`,
-    }))
-  return {
-    ...run,
-    evaluationStatus: "completed",
-    criterionResults,
-    maxScore: criterionResults.reduce((n, c) => n + c.maxScore, 0),
-    overallScore:
-      criterionResults.length && criterionResults.every((c) => c.score !== null)
-        ? Math.round(
-            criterionResults.reduce((n, c) => n + (c.score ?? 0), 0) * 100,
-          ) / 100
-        : null,
-    findings,
-  }
+/** Scenario-based illustration; never examines selected file bytes. */
+export function mockEvaluation(run: AIEvaluation, title = run.sampleDocumentTitle ?? run.ruleSnapshot.documentType ?? ""): AIEvaluation {
+  const sample = documentSample(title)
+  const criterionResults = (run.ruleSnapshot.criteria ?? []).filter(c => c.enabled).map(c => {
+    const scenario = sampleCheckFor(c, sample)
+    const score = c.aiEnabled && c.suggestScore && scenario
+      ? run.ruleSnapshot.scoringMode === "binary" ? (scenario.issue ? 0 : c.maxScore)
+      : Math.round(c.maxScore * scenario.ratio * 100) / 100 : null
+    return {
+      criterionId: c.id, name: c.name, maxScore: c.maxScore, score,
+      comment: scenario?.comment ?? "Tiêu chí cần được đối chiếu thêm.",
+      issue: scenario?.issue,
+      evidence: scenario ? `${sample.title} · Mục ${scenario.name}: ${scenario.text}` : "Chưa có nội dung đối chiếu cho tiêu chí này.",
+      needsVerification: true,
+      suggestions: c.aiEnabled && c.suggestSuggestions && scenario ? [scenario.suggestion] : [],
+    }
+  })
+  const findings = (run.ruleSnapshot.criteria ?? []).filter(c => c.enabled && c.aiEnabled && c.suggestFindings).flatMap(c => {
+    const scenario = sampleCheckFor(c, sample)
+    if (!scenario?.issue) return []
+    const result = criterionResults.find(r => r.criterionId === c.id)!
+    return [{ id: `${run.id}-${c.id}`, level: c.critical || scenario.ratio <= .5 ? "error" as const : "warning" as const,
+      category: c.name, message: scenario.comment, issue: scenario.issue,
+      suggestion: c.suggestSuggestions ? scenario.suggestion : undefined,
+      proposedScore: result.score, maxScore: c.maxScore, pageRef: `Mục ${scenario.name}` }]
+  })
+  return { ...run, sampleDocumentTitle: title, illustrationVersion: 1, evaluationStatus: "completed", criterionResults, findings,
+    maxScore: criterionResults.reduce((n,c) => n+c.maxScore,0),
+    overallScore: criterionResults.length && criterionResults.every(c => c.score !== null)
+      ? Math.round(criterionResults.reduce((n,c) => n+(c.score ?? 0),0)*100)/100 : null }
+}
+
+/** Refresh only legacy generated illustrations for the current-result presentation.
+ * Persisted evaluations and historical records are never rewritten. */
+export function currentIllustration(run: AIEvaluation, title: string): AIEvaluation {
+  const legacyGenerated = run.evaluationStatus === "completed" && !run.illustrationVersion &&
+    (run.findings.some(f => /Finding mô phỏng|Cần xác minh “/.test(f.message)) ||
+     run.criterionResults.some(c => /Gợi ý mô phỏng:/.test(c.suggestions.join(" "))))
+  return legacyGenerated ? mockEvaluation(run, title) : run
 }

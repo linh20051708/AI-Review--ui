@@ -137,7 +137,7 @@ export function seedDemoReviews(s: ReviewState, cfg: ManagementState): ReviewSta
         ruleSetId: rule.id, ruleSetVersion: rule.version ?? 1, ruleSnapshot: structuredClone(rule),
         evaluationStatus: "loading", criterionResults: [], overallScore: null, maxScore: 0,
         findings: [], createdAt: current ? time : previousTime,
-      } satisfies AIEvaluation)
+      } satisfies AIEvaluation, item.title)
       const counts = { errors: evaluation.findings.filter(f => f.level === "error").length,
         warnings: evaluation.findings.filter(f => f.level === "warning").length,
         suggestions: evaluation.findings.filter(f => f.level === "suggestion").length }

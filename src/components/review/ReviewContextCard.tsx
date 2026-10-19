@@ -4,6 +4,7 @@ import Badge from "@/components/ui/Badge"
 import Card from "@/components/ui/Card"
 import type { ReviewRequest } from "@/types"
 import StatusTracks from "./StatusTracks"
+import ReviewAIStatus from "./ReviewAIStatus"
 
 export default function ReviewContextCard({ review, children }: { review: ReviewRequest; children?: ReactNode }) {
   return (
@@ -15,7 +16,7 @@ export default function ReviewContextCard({ review, children }: { review: Review
         <span className="min-w-0 flex-1 text-[14px] font-semibold text-ink">{review.documentTitle}</span>
         <Badge>{review.version}</Badge>
       </div>
-      <StatusTracks documentStatus={review.documentStatus} aiStatus={review.aiStatus} ai={review.ai} supervisorStatus={review.supervisorStatus} compact />
+      <StatusTracks documentStatus={review.documentStatus} aiContent={<ReviewAIStatus review={review} />} supervisorStatus={review.supervisorStatus} compact />
       {children}
     </Card>
   )

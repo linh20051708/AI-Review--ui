@@ -1,0 +1,4 @@
+import "@/styles/phase-two.css"
+export default function PhaseTwoTabs({ tabs, active, onChange, id }: { tabs:string[]; active:string; onChange:(tab:string)=>void; id:string }) {
+  return <div role="tablist" aria-label="Nội dung" className="phase-tabs">{tabs.map((tab,index)=><button key={tab} type="button" role="tab" id={`${id}-${index}`} aria-controls={`${id}-panel-${index}`} aria-selected={active===tab} tabIndex={active===tab?0:-1} onClick={()=>onChange(tab)} onKeyDown={event=>{let next=index;if(event.key==="ArrowRight")next=(index+1)%tabs.length;else if(event.key==="ArrowLeft")next=(index+tabs.length-1)%tabs.length;else if(event.key==="Home")next=0;else if(event.key==="End")next=tabs.length-1;else return;event.preventDefault();onChange(tabs[next]);document.getElementById(`${id}-${next}`)?.focus()}}>{tab}</button>)}</div>
+}

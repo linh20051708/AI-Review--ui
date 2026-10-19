@@ -13,7 +13,7 @@ export default function GroupListPage() {
   const [creatingFor, setCreatingFor] = useState<string | null>(null)
   return (
     <>
-      <PageHeading eyebrow="QUẢN LÝ" title="Nhóm sinh viên" description="Tạo nhóm, xếp sinh viên và gán project trong các lớp bạn phụ trách." />
+      <PageHeading eyebrow="QUẢN LÝ" title="Nhóm sinh viên"  />
       {classes.filter((c) => c.state === "active").map((c) => {
         const list = groups.filter((g) => g.classId === c.id)
         return (
@@ -23,7 +23,7 @@ export default function GroupListPage() {
               <Button variant="secondary" className="w-auto shrink-0 px-3 text-[13px]" onClick={() => setCreatingFor(c.id)}>Thêm nhóm</Button>
             </div>
             {list.length ? (
-              list.map((g) => <ProjectCard key={g.id} group={g} />)
+              <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-white">{list.map((g) => <ProjectCard key={g.id} group={g} compact />)}</ul>
             ) : (
               <EmptyState
                 icon={<Users2 size={24} className="text-brand" />}

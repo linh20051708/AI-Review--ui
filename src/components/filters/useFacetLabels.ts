@@ -7,14 +7,18 @@ export const facetTitles: Record<FacetKey, string> = {
   course: "Môn học",
   class: "Lớp",
   lab: "Lab",
+  labItem: "Tài liệu / Lab Item",
   group: "Nhóm",
   project: "Project",
-  docType: "Deliverable",
+  docType: "Loại tài liệu",
   status: "Trạng thái",
-  ai: "AI Review",
+  ai: "Kết quả AI",
+  documentStatus: "Trạng thái tài liệu",
+  evaluationStatus: "Trạng thái AI",
+  legacyReviewStatus: "Bộ lọc đã lưu",
 }
 
-export const aiLabels: Record<string, string> = { hasErrors: "Có lỗi", clean: "Không có lỗi", running: "AI đang review" }
+export const aiLabels: Record<string, string> = { hasErrors: "Có lỗi", clean: "Không có lỗi", running: "AI đang review", notRun: "Chưa có kết quả" }
 
 export interface LabeledOption extends FacetOption {
   label: string
@@ -40,6 +44,12 @@ export default function useFacetLabels(statusLabels: Record<string, string> = {}
       }
       case "project":
         return projects.find((p) => p.id === v)?.name ?? v
+      case "lab":
+        return v.includes("::") ? `${classes.find(c => c.id === v.split("::")[0])?.code ?? ""} · ${v.split("::").at(-1)}` : v
+      case "labItem": return v.split("::").at(-1) ?? v
+      case "documentStatus": return ({draft:"Bản nháp",submitted:"Đã nộp",resubmitted:"Đã nộp lại",notStarted:"Chưa bắt đầu"} as Record<string,string>)[v] ?? v
+      case "evaluationStatus": return ({loading:"Đang đánh giá",completed:"Đã có kết quả",error:"Lỗi đánh giá",notRun:"Chưa chạy AI",aiReviewing:"Đang đánh giá",aiReviewed:"Đã có kết quả"} as Record<string,string>)[v] ?? v
+      case "legacyReviewStatus": return ({waiting:"Chờ review · lần nộp đầu",resubmitted:"Chờ review · nộp lại",done:"Đã hoàn tất",inReview:"Đang review",needsRevision:"Cần chỉnh sửa"} as Record<string,string>)[v] ?? v
       case "status":
         return statusLabels[v] ?? v
       case "ai":
@@ -51,10 +61,6 @@ export default function useFacetLabels(statusLabels: Record<string, string> = {}
 
   const sub = (key: FacetKey, v: string) => {
     if (key === "course") return courses.find((c) => c.id === v)?.name
-    if (key === "class") {
-      const c = classes.find((x) => x.id === v)
-      return c && c.pendingReviews > 0 ? `${c.pendingReviews} chờ review` : undefined
-    }
     if (key === "semester") return semesters.find((s) => s.id === v)?.academicYear
     return undefined
   }

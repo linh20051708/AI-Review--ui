@@ -6,7 +6,8 @@ import Badge from "@/components/ui/Badge"
 import Button from "@/components/ui/Button"
 import Input from "@/components/ui/Input"
 import Notice from "@/components/ui/Notice"
-import { currentUser } from "@/data/mockData"
+import { useManagement } from "@/data/managementStore"
+import { currentUser, demoStudentId } from "@/data/mockData"
 
 const roleOptions: { value: Role; label: string; icon: ReactNode; hint: string }[] = [
   { value: "supervisor", label: "Giảng viên", icon: <UserRound size={18} strokeWidth={1.75} />, hint: "Review tài liệu, quản lý lớp & project" },
@@ -14,6 +15,8 @@ const roleOptions: { value: Role; label: string; icon: ReactNode; hint: string }
 ]
 
 export default function LoginPage() {
+  const { students } = useManagement()
+  const [studentId, setStudentId] = useState(demoStudentId)
   const navigate = useNavigate()
   const location = useLocation()
   const [role, setRole] = useState<Role>("supervisor")
@@ -32,7 +35,7 @@ export default function LoginPage() {
       setError("Vui lòng nhập email và mật khẩu.")
       return
     }
-    signIn(role)
+    signIn(role, role === "student" ? studentId : undefined)
     const from = (location.state as { from?: string } | null)?.from
     const home = role === "student" ? "/student/dashboard" : "/dashboard"
     const studentRoute = from === "/student" || from?.startsWith("/student/")
@@ -48,9 +51,8 @@ export default function LoginPage() {
         <Badge tone="olive">AI</Badge>
       </div>
       <div className="flex flex-col gap-2">
-        <p className="text-[10px] font-semibold tracking-wide text-brand">PRM323 · LAB 2 PROTOTYPE</p>
         <h1 className="text-[26px] leading-[1.18] font-semibold text-ink">Đăng nhập</h1>
-        <p className="text-[14px] leading-[1.45] text-muted">Chọn vai trò và đăng nhập bằng tài khoản demo.</p>
+        <p className="text-[14px] leading-[1.45] text-muted">Chọn vai trò để tiếp tục.</p>
       </div>
 
       <fieldset>
@@ -71,13 +73,14 @@ export default function LoginPage() {
                 <span className={`flex items-center gap-2 text-[14px] font-semibold ${active ? "text-brand" : "text-ink"}`}>
                   {opt.icon} {opt.label}
                 </span>
-                <span className="text-[11px] leading-[1.4] text-muted">{opt.hint}</span>
+                <span className="text-[14px] leading-[1.4] text-ink">{opt.hint}</span>
               </button>
             )
           })}
         </div>
       </fieldset>
 
+      {role === "student" && <label className="flex flex-col gap-2 text-sm font-semibold">Tài khoản<select className="min-h-12 rounded-lg border border-line p-3" value={studentId} onChange={e => { setStudentId(e.target.value); setEmail(students.find(s => s.id === e.target.value)?.email ?? "") }}>{students.filter(s => [demoStudentId,"self-create","self-join","self-leader"].includes(s.id)).map(s => <option key={s.id} value={s.id}>{s.name} · {s.id === "self-create" ? "Tạo nhóm" : s.id === "self-join" ? "Tham gia nhóm" : s.id === "self-leader" ? "Trưởng nhóm có sẵn" : "Review hiện tại"}</option>)}</select></label>}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <Input
           id="email"
@@ -100,7 +103,6 @@ export default function LoginPage() {
         {error && <p className="text-[12px] text-danger">{error}</p>}
         <Button type="submit">{role === "student" ? "Đăng nhập với vai trò Sinh viên" : "Đăng nhập"}</Button>
       </form>
-      <Notice>Tài khoản demo đã được điền sẵn. AI Review chỉ hỗ trợ — quyết định phê duyệt thuộc về giảng viên.</Notice>
     </div>
   )
 }

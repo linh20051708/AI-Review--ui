@@ -1,3 +1,4 @@
+import SampleDocumentPreview from "@/components/document/SampleDocumentPreview"
 import { History } from "lucide-react"
 import { useState } from "react"
 import DocumentViewer from "@/components/document/DocumentViewer"
@@ -12,7 +13,7 @@ import Modal from "@/components/ui/Modal"
 import Notice from "@/components/ui/Notice"
 import PageHeading from "@/components/ui/PageHeading"
 import SectionHeader from "@/components/ui/SectionHeader"
-import { versionChanges } from "@/data/mockData"
+
 import { useReviewStore } from "@/data/reviewStore"
 import { versionsFor } from "@/data/selectors"
 import type { DocumentVersion } from "@/types"
@@ -36,42 +37,28 @@ export default function VersionHistoryPage() {
 
       <section className="flex flex-col gap-3">
         <SectionHeader title="Các version" meta={`${versionsList.length} version`} />
-        {versionsList.map((v, i) => (
+        {versionsList.map((v, i) => ({v, i})).reverse().map(({v, i}) => (
           <VersionCard key={v.id} version={v} selected={cmp === i} onView={() => setViewing(v)} onCompare={i > 0 ? () => setCompareIndex(i) : undefined} />
         ))}
       </section>
 
       {cmp !== null && cmp > 0 && (
         <section className="flex flex-col gap-3">
-          <SectionHeader title="So sánh version" />
+          <SectionHeader title="So sánh thông tin phiên bản" />
           <Card>
-            <Notice>So sánh minh họa bằng dữ liệu mẫu; prototype không đọc nội dung file đã chọn.</Notice>
-            <div className="flex flex-wrap gap-2">
-              <Badge>Trước: {versionsList[cmp - 1].version}</Badge>
-              <Badge tone="brand">Sau: {versionsList[cmp].version}</Badge>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {[versionsList[cmp - 1], versionsList[cmp]].map(version => <div key={version.id} className="flex min-w-0 flex-col gap-2 text-[14px]">
+                <strong>{version.version}</strong><p className="break-all">{version.fileName}</p><p className="text-muted">{version.submittedAt}</p><p>{version.submitter}</p>
+              </div>)}
             </div>
-            {versionChanges.map((c) => (
-              <div key={c.title} className="flex flex-col gap-2 border-t border-line pt-3">
-                <p className="text-[13px] font-semibold text-ink">{c.title}</p>
-                {c.before && (
-                  <div className="rounded-[8px] bg-danger-soft p-2.5 text-[12px] leading-[1.45]">
-                    <p className="text-[10px] font-semibold text-danger">TRƯỚC · {versionsList[cmp - 1].version}</p>
-                    <p className="text-ink">{c.before}</p>
-                  </div>
-                )}
-                <div className="rounded-[8px] bg-brand-soft p-2.5 text-[12px] leading-[1.45]">
-                  <p className="text-[10px] font-semibold text-brand">SAU · {versionsList[cmp].version}</p>
-                  <p className="text-ink">{c.after}</p>
-                </div>
-              </div>
-            ))}
           </Card>
         </section>
       )}
       <Button variant="secondary" to={`/reviews/${review.id}/history`} icon={<History size={18} strokeWidth={1.75} />}>Xem lịch sử review</Button>
 
       <Modal open={Boolean(viewing)} onClose={() => setViewing(null)} title={`${review.documentTitle} · ${viewing?.version ?? ""}`} description={`Chỉ xem · ${viewing?.fileName ?? ""}`}>
-        {viewing && <DocumentViewer review={{ ...review, version: viewing.version, fileName: viewing.fileName, fileType: viewing.fileType ?? (viewing.fileName.toLowerCase().endsWith(".docx") ? "DOCX" : "PDF"), fileSize: viewing.fileSize, pageCount: viewing.pageCount ?? review.pageCount, submittedAt: viewing.submittedAt, submitter: viewing.submitter }} className="h-[60dvh]" />}
+        {viewing && <DocumentViewer review={{ ...review, version: viewing.version, fileName: viewing.fileName, fileType: viewing.fileType ?? (viewing.fileName.toLowerCase().endsWith(".docx") ? "DOCX" : "PDF"), fileSize: viewing.fileSize, pageCount: viewing.pageCount ?? review.pageCount, submittedAt: viewing.submittedAt, submitter: viewing.submitter }}  />}
+        {viewing && <SampleDocumentPreview key={`${review.id}:${viewing.id}`} review={{ ...review, version: viewing.version, fileName: viewing.fileName, fileType: viewing.fileType ?? (viewing.fileName.toLowerCase().endsWith(".docx") ? "DOCX" : "PDF"), fileSize: viewing.fileSize, pageCount: viewing.pageCount ?? review.pageCount, submittedAt: viewing.submittedAt, submitter: viewing.submitter }}  />}
       </Modal>
     </>
   )

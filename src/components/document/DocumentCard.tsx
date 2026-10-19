@@ -1,4 +1,7 @@
 import { FileText, Lock } from "lucide-react"
+import { useReviewStore } from "@/data/reviewStore"
+import ReviewAIStatus from "@/components/review/ReviewAIStatus"
+import StatusBadge from "@/components/ui/StatusBadge"
 import StatusTracks from "@/components/review/StatusTracks"
 import Badge from "@/components/ui/Badge"
 import Button from "@/components/ui/Button"
@@ -9,9 +12,33 @@ import type { ProjectDocument } from "@/types"
 import useDocumentState from "./useDocumentState"
 
 /** Logical document card. Versions are listed on the version history page; supervisors only read and review. */
-export default function DocumentCard({ doc: raw }: { doc: ProjectDocument }) {
+export default function DocumentCard({ doc: raw, compact = false }: { doc: ProjectDocument; compact?: boolean }) {
   const doc = useDocumentState(raw)
+  const { requests } = useReviewStore()
+  const review = requests.find(r => r.id === doc.reviewId && r.version === doc.latestVersion)
   const reviewable = doc.supervisorStatus === "waiting" || doc.supervisorStatus === "inReview"
+  if (compact) return <li className="flex min-w-0 flex-col gap-2 px-4 py-4">
+    <div className="flex flex-wrap items-start justify-between gap-2">
+      <h2 className="min-w-0 text-[16px] font-semibold">{doc.title} {doc.latestVersion && <span className="text-[14px] font-normal text-muted">· {doc.latestVersion}</span>}</h2>
+      <StatusBadge status={doc.supervisorStatus ?? doc.documentStatus} />
+    </div>
+    {doc.submissionLocked && <p className="flex items-start gap-2 text-[14px] text-muted"><Lock size={16} className="mt-0.5 shrink-0" />{doc.dependsOn ? `Cần duyệt ${doc.dependsOn} trước khi gửi review.` : "Đang khóa gửi review."}</p>}
+    <div className="flex flex-wrap items-start justify-between gap-2">
+      <details className="min-w-0 flex-1 basis-36">
+        <summary className="flex min-h-12 cursor-pointer items-center text-[14px] font-medium text-muted">Chi tiết tài liệu</summary>
+        <div className="flex flex-col gap-3 pb-2 text-[14px]">
+          <StatusTracks documentStatus={doc.documentStatus} aiContent={<ReviewAIStatus review={review} />} supervisorStatus={doc.supervisorStatus} compact />
+          <p className="text-muted">{doc.versionCount} phiên bản · {doc.submitter ?? "Chưa có người nộp"}</p>
+          {doc.updatedAt && <p className="text-muted">Cập nhật: {doc.updatedAt}</p>}
+          {doc.note && <p>{doc.note}</p>}
+          {doc.submissionLocked && doc.dependsOn && <p className="text-muted">{lockReason(doc.dependsOn)}</p>}
+          {doc.reviewId && <Button variant="secondary" to={`/reviews/${doc.reviewId}/versions`}>Lịch sử version</Button>}
+          {!doc.reviewId && doc.latestVersion && <p>Không có yêu cầu review đang mở cho version này.</p>}
+        </div>
+      </details>
+      {doc.reviewId && <Button className="w-auto px-4" variant={reviewable ? "primary" : "secondary"} to={`/reviews/${doc.reviewId}`}>{reviewable ? "Review" : "Xem"}</Button>}
+    </div>
+  </li>
   return (
     <Card>
       <div className="flex items-center gap-2">
@@ -20,7 +47,7 @@ export default function DocumentCard({ doc: raw }: { doc: ProjectDocument }) {
         <Badge>{doc.versionCount ? `${doc.versionCount} version` : "Chưa có version"}</Badge>
       </div>
       <div className="rounded-[8px] bg-subtle p-2.5">
-        <StatusTracks documentStatus={doc.documentStatus} aiStatus={doc.ai ? "aiReviewed" : "notRun"} ai={doc.ai} supervisorStatus={doc.supervisorStatus} compact />
+        <StatusTracks documentStatus={doc.documentStatus} aiContent={<ReviewAIStatus review={review} />} supervisorStatus={doc.supervisorStatus} compact />
       </div>
       {doc.latestVersion && <MetaGrid items={[{ label: "Version mới nhất", value: doc.latestVersion }, { label: "Người nộp", value: doc.submitter ?? "—" }, { label: "Cập nhật", value: doc.updatedAt ?? "—" }]} />}
       {doc.submissionLocked && doc.dependsOn && (

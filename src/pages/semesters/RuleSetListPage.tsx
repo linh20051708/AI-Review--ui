@@ -1,3 +1,6 @@
+import PhaseTwoTabs from "@/components/ui/PhaseTwoTabs"
+import MoreMenu from "@/components/ui/MoreMenu"
+import { ruleDescription } from "@/components/ui/contentText"
 import { useState } from "react"
 import Badge from "@/components/ui/Badge"
 import Button from "@/components/ui/Button"
@@ -61,18 +64,14 @@ export default function RuleSetListPage() {
       }),
     )
   return (
-    <>
+    <div className="phase-two flex min-w-0 flex-col gap-4">
       <PageHeading
         eyebrow="QUẢN LÝ"
         title="Bộ quy tắc"
-        description="Cấu hình workflow, rubric và hướng dẫn AI mô phỏng."
+        
       />
       <Button onClick={create}>Thêm bộ quy tắc</Button>
-      <Notice>
-        Ưu tiên: Lab Item → Class override → Course Offering. Bản nộp mới chụp
-        cấu hình khi gửi; dữ liệu demo cũ chụp khi chạy AI lần đầu. Kết quả đã
-        lưu không đổi khi chỉnh rubric. AI không tự Approve hoặc Reject.
-      </Notice>
+      <p className="text-[14px] text-muted">Ưu tiên: Mục Lab → Lớp → Đợt học. Cấu hình mới áp dụng cho bản nộp mới.</p>
       {cfg.ruleSets.map((raw) => {
         const r = normalizeRule(raw)
         return (
@@ -83,8 +82,8 @@ export default function RuleSetListPage() {
                 {r.status === "active" ? "Active" : "Draft"} · v{r.version}
               </Badge>
             </div>
-            <p className="break-all text-[14px] text-muted">ID: {r.id}</p>
-            <p className="text-[14px]">{r.description}</p>
+            
+            
             <p className="text-[14px]">
               {r.criteria?.filter((c) => c.enabled).length ?? 0} tiêu chí bật ·{" "}
               {r.criteria
@@ -92,37 +91,13 @@ export default function RuleSetListPage() {
                 .reduce((n, c) => n + c.maxScore, 0) ?? 0}{" "}
               điểm · {r.documentType}
             </p>
-            <div className="grid grid-cols-2 gap-2">
-              <Button variant="secondary" onClick={() => setViewing(r)}>
-                Chi tiết / Checklist
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => setEditing(structuredClone(r))}
-              >
-                Chỉnh sửa
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() =>
-                  setEditing({
-                    ...structuredClone(r),
-                    id: nextId("rule"),
-                    name: r.name + " (bản sao)",
-                    version: 1,
-                    status: "draft",
-                  })
-                }
-              >
-                Nhân bản
-              </Button>
-              <Button
-                variant="secondary"
-                disabled={r.status !== "active"}
-                onClick={() => setAssigning(r)}
-              >
-                Áp dụng
-              </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="secondary" onClick={()=>setViewing(r)} className="flex-1">Checklist</Button>
+              <MoreMenu label={`Thao tác ${r.name}`} items={[
+                {label:"Chỉnh sửa",onSelect:()=>setEditing(structuredClone(r))},
+                {label:"Nhân bản",onSelect:()=>setEditing({...structuredClone(r),id:nextId("rule"),name:r.name+" (bản sao)",version:1,status:"draft"})},
+                ...(r.status==="active"?[{label:"Áp dụng",onSelect:()=>setAssigning(r)}]:[])
+              ]}/>
             </div>
           </Card>
         )
@@ -140,7 +115,8 @@ export default function RuleSetListPage() {
           onClose={() => setViewing(null)}
           footer={<Button onClick={() => setViewing(null)}>Đóng</Button>}
         >
-          <p>{viewing.description}</p>
+          {ruleDescription(viewing.description) && <p>{ruleDescription(viewing.description)}</p>}
+          <details><summary>Quy trình &amp; điều kiện nộp</summary>
           <p>
             AI: {viewing.aiEnabled ? "Bật" : "Tắt"} · AI trước Supervisor:{" "}
             {viewing.aiRequiredBeforeSupervisor ? "Bắt buộc" : "Tùy chọn"} ·
@@ -157,19 +133,17 @@ export default function RuleSetListPage() {
           </p>
           <p>
             Đạt ≥{viewing.passThreshold}% · Cần cải thiện ≥
-            {viewing.improveThreshold}% · còn lại Cần làm lại. Điểm mô phỏng
+            {viewing.improveThreshold}% · còn lại Cần làm lại. Điểm đề xuất
             không phải quyết định chính thức.
           </p>
+          </details>
           {!viewing.criteria?.length && (
             <Notice>
               Chưa cấu hình checklist. Thêm tiêu chí để chạy AI Evaluation.
             </Notice>
           )}
           {viewing.criteria?.map((c) => (
-            <Card key={c.id}>
-              <strong>
-                {c.id} · {c.name}
-              </strong>
+            <details key={c.id} className="border-b border-line pb-3"><summary>{c.name} · {c.maxScore}đ{c.critical ? " · Critical" : ""}</summary>
               <p>
                 {c.maxScore} điểm · {c.enabled ? "Bật" : "Tắt"} ·{" "}
                 {c.critical
@@ -183,11 +157,11 @@ export default function RuleSetListPage() {
                 AI: {c.aiEnabled ? "Bật" : "Tắt"} · {c.instruction}
               </p>
               <p>Evidence: {c.evidenceRequirement || "Supervisor xác minh"}</p>
-            </Card>
+            </details>
           ))}
         </Modal>
       )}
-    </>
+    </div>
   )
 }
 function RuleSetEditor({
@@ -197,6 +171,7 @@ function RuleSetEditor({
   rule: RuleSet
   onClose: () => void
 }) {
+  const [section, setSection] = useState("Thông tin")
   const [r, setR] = useState(rule)
   const [error, setError] = useState("")
   const set = <K extends keyof RuleSet>(key: K, value: RuleSet[K]) =>
@@ -234,9 +209,9 @@ function RuleSetEditor({
         </>
       }
     >
-      <p className="break-all text-[14px]">
-        ID: {r.id} · Phiên bản: {r.version} (tự tăng khi lưu chỉnh sửa)
-      </p>
+      <PhaseTwoTabs id="rule-editor" tabs={["Thông tin", "Quy trình", "Tiêu chí"]} active={section} onChange={setSection} />
+      <section className="flex flex-col gap-3" role="tabpanel" id="rule-editor-panel-0" aria-labelledby="rule-editor-0" hidden={section!=="Thông tin"}>
+      <p className="text-[14px] text-muted">Phiên bản {r.version} · Nhấn Lưu để áp dụng</p>
       <Field label="Tên bộ quy tắc">
         <TextInput
           value={r.name}
@@ -265,11 +240,9 @@ function RuleSetEditor({
           onChange={(e) => set("documentType", e.target.value)}
         />
       </Field>
-      <Notice>
-        Phạm vi là mô tả. Chọn Course Offering hoặc Lab Item cụ thể bằng nút Áp
-        dụng.
-      </Notice>
-      <h3 className="font-semibold">Review workflow</h3>
+      <p className="text-[14px] text-muted">Gán cấu hình qua thao tác Áp dụng.</p>
+      </section><section className="flex flex-col gap-3" role="tabpanel" id="rule-editor-panel-1" aria-labelledby="rule-editor-1" hidden={section!=="Quy trình"}>
+      <h3 className="font-semibold">Quy trình review</h3>
       {([
         ["aiEnabled", "Bật AI Review"],
         ["aiRequiredBeforeSupervisor", "AI bắt buộc trước Supervisor"],
@@ -364,6 +337,7 @@ function RuleSetEditor({
           />
         </Field>
       </div>
+      </section><section className="flex flex-col gap-3" role="tabpanel" id="rule-editor-panel-2" aria-labelledby="rule-editor-2" hidden={section!=="Tiêu chí"}>
       <h3 className="font-semibold">Checklist / Rubric</h3>
       <p>
         Tổng điểm tiêu chí bật:{" "}
@@ -375,7 +349,7 @@ function RuleSetEditor({
       {(r.criteria ?? []).map((c, i) => (
         <details key={i} className="rounded-xl border border-line p-3">
           <summary className="min-h-12 cursor-pointer text-[14px] font-semibold">
-            {c.id} · {c.name || "Tiêu chí mới"}
+            {c.name || "Tiêu chí mới"} · {c.maxScore}đ{c.critical ? " · Critical" : ""}
           </summary>
           <div className="flex flex-col gap-3 pt-3">
             <Field label="Criterion ID">
@@ -461,6 +435,7 @@ function RuleSetEditor({
       >
         Thêm tiêu chí
       </Button>
+      </section>
       {(invalid || error) && (
         <p role="alert" className="text-[14px] text-danger">
           {invalid || error}

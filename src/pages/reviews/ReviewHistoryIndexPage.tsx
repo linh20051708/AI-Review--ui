@@ -9,21 +9,21 @@ import PageHeading from "@/components/ui/PageHeading"
 import { requestRecords, reviewStatusLabels } from "@/data/filterRecords"
 import { useManagement } from "@/data/managementStore"
 import { useReviewStore } from "@/data/reviewStore"
-import { filterRecords, type FilterState } from "@/lib/smartFilter"
+import { filterRecords, restoreReviewView, type FilterState } from "@/lib/smartFilter"
 import { parseVN } from "@/lib/time"
 
 export default function ReviewHistoryIndexPage() {
-  const { audit, requests } = useReviewStore()
+  const { audit, requests, evaluations } = useReviewStore()
   const { classes, courses, offerings } = useManagement()
   const [filter, setFilter] = useState<FilterState>({ facets: {}, q: "" })
   // Only requests with audit events; time filter uses the latest event.
   const records = useMemo(() => {
     const withEvents = requests.filter((r) => audit.some((e) => e.reviewId === r.id))
-    return requestRecords(withEvents, classes, offerings).map((rec) => {
+    return requestRecords(withEvents, classes, offerings, evaluations).map((rec) => {
       const events = audit.filter((e) => e.reviewId === rec.item.id)
       return { ...rec, ts: parseVN(events.at(-1)!.time) }
     })
-  }, [audit, requests, classes, offerings])
+  }, [audit, requests, classes, offerings, evaluations])
   const visible = filterRecords(records, filter).sort((a, b) => (b.ts ?? 0) - (a.ts ?? 0))
 
   return (
@@ -33,8 +33,11 @@ export default function ReviewHistoryIndexPage() {
         records={records}
         state={filter}
         onChange={setFilter}
-        facets={["semester", "course", "class", "group", "project", "docType", "status"]}
-        primary={["course", "class", "docType"]}
+        facets={["semester", "course", "class", "lab", "labItem", "group", "project", "docType", "status", "documentStatus", "evaluationStatus", "ai", "legacyReviewStatus"]}
+        primary={["class", "lab", "labItem"]}
+        statusTitle="Giảng viên review"
+        statusGroup="Trạng thái review"
+        restoreView={restoreReviewView}
         time
         statusLabels={reviewStatusLabels}
         searchPlaceholder="Tìm project, tài liệu..."

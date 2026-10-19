@@ -1,3 +1,4 @@
+import "@/styles/phase-two.css"
 import { useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import SmartFilterBar from "@/components/filters/SmartFilterBar"
@@ -8,24 +9,25 @@ import Button from "@/components/ui/Button"
 import EmptyState from "@/components/ui/EmptyState"
 import PageHeading from "@/components/ui/PageHeading"
 import StatusBadge from "@/components/ui/StatusBadge"
-import { aiSummary } from "@/data/mockData"
+import ReviewAIStatus from "@/components/review/ReviewAIStatus"
+import { compareReviewAI } from "@/lib/reviewPresentation"
 import { requestRecords, reviewStatusLabels } from "@/data/filterRecords"
 import { useManagement } from "@/data/managementStore"
 import { useReviewStore } from "@/data/reviewStore"
 import { isCompleted } from "@/data/selectors"
 import { currentSemester } from "@/lib/academic"
-import { filterRecords, type FilterState } from "@/lib/smartFilter"
+import { filterRecords, restoreReviewView, type FilterState } from "@/lib/smartFilter"
 import { fmtRelative, parseISO } from "@/lib/time"
 
 const SORTS = ["Mới nhất", "Cũ nhất", "Deadline gần nhất", "Chờ lâu nhất", "AI có lỗi nhiều nhất"]
 
 export default function ReviewRequestsPage() {
-  const { requests } = useReviewStore()
+  const { requests, evaluations } = useReviewStore()
   const { classes, semesters, courses, projects, offerings } = useManagement()
 
-  // Actionable default: current semester, waiting + resubmitted.
+  // Waiting includes both first submissions and revisions; document state is separate.
   const actionable: FilterState = useMemo(
-    () => ({ facets: { semester: [currentSemester(semesters).id], status: ["waiting", "resubmitted"] }, q: "" }),
+    () => ({ facets: { semester: [currentSemester(semesters).id], status: ["waiting"] }, q: "" }),
     [semesters]
   )
   const [filter, setFilter] = useState<FilterState>(actionable)
@@ -38,7 +40,7 @@ export default function ReviewRequestsPage() {
     setTimeout(() => setLoading(false), 350)
   }
 
-  const records = useMemo(() => requestRecords(requests, classes, offerings), [requests, classes, offerings])
+  const records = useMemo(() => requestRecords(requests, classes, offerings, evaluations), [requests, classes, offerings, evaluations])
   const deadline = (projectId: string) => parseISO(projects.find((p) => p.id === projectId)?.deadline ?? "2099-01-01")
   const items = filterRecords(records, filter)
     .map((r) => r.item)
@@ -51,7 +53,7 @@ export default function ReviewRequestsPage() {
         case "Chờ lâu nhất":
           return Number(isCompleted(a.supervisorStatus)) - Number(isCompleted(b.supervisorStatus)) || a.requestedTs - b.requestedTs
         case "AI có lỗi nhiều nhất":
-          return b.ai.errors - a.ai.errors || b.ai.warnings - a.ai.warnings
+          return compareReviewAI(a, b, evaluations)
         default:
           return b.requestedTs - a.requestedTs
       }
@@ -59,11 +61,11 @@ export default function ReviewRequestsPage() {
   const isDefault = JSON.stringify(filter.facets) === JSON.stringify(actionable.facets)
 
   return (
-    <>
+    <div className="phase-two flex min-w-0 flex-col gap-4">
       <PageHeading
         eyebrow="KHÔNG GIAN REVIEW"
         title="Yêu cầu review"
-        description="Mặc định hiển thị việc cần làm trong học kỳ hiện tại."
+        
         aside={
           isDefault ? (
             <button
@@ -85,11 +87,15 @@ export default function ReviewRequestsPage() {
         }
       />
       <SmartFilterBar
+        compact
         records={records}
         state={filter}
         onChange={handleFilterChange}
-        facets={["semester", "course", "class", "group", "project", "docType", "status", "ai"]}
-        primary={["course", "class", "status"]}
+        facets={["semester", "course", "class", "lab", "labItem", "group", "project", "docType", "status", "documentStatus", "evaluationStatus", "ai", "legacyReviewStatus"]}
+        primary={["class", "lab", "labItem"]}
+        statusTitle="Giảng viên review"
+        statusGroup="Trạng thái review"
+        restoreView={restoreReviewView}
         time
         teaching
         statusLabels={reviewStatusLabels}
@@ -119,7 +125,7 @@ export default function ReviewRequestsPage() {
         <>
           <section className="flex flex-col gap-3 lg:hidden">
             {items.map((r) => (
-              <ReviewRequestCard key={r.id} review={r} />
+              <ReviewRequestCard key={r.id} review={r} compact />
             ))}
           </section>
           <div className="hidden overflow-x-auto rounded-[12px] border border-line bg-white lg:block">
@@ -142,7 +148,7 @@ export default function ReviewRequestsPage() {
                     <td className="px-3 py-3 whitespace-nowrap text-ink">
                       <span className="text-muted">{courses.find((c) => c.id === r.courseId)?.code} · </span>
                       {r.classCode}
-                      <span className="block text-[12px] text-muted">{semesters.find((s) => s.id === r.semesterId)?.name}</span>
+
                     </td>
                     <td className="px-3 py-3 whitespace-nowrap text-ink">{r.groupName}</td>
                     <td className="px-3 py-3 font-semibold text-ink">{r.projectName}</td>
@@ -151,11 +157,7 @@ export default function ReviewRequestsPage() {
                       <Badge>{r.version}</Badge>
                     </td>
                     <td className="px-3 py-3">
-                      {r.aiStatus === "aiReviewing" ? (
-                        <StatusBadge status="aiReviewing" />
-                      ) : (
-                        <Badge tone={r.ai.errors ? "rust" : "olive"}>{aiSummary(r.ai)}</Badge>
-                      )}
+                      <ReviewAIStatus review={r} />
                     </td>
                     <td className="px-3 py-3">
                       <StatusBadge status={r.supervisorStatus} />
@@ -179,6 +181,6 @@ export default function ReviewRequestsPage() {
           </div>
         </>
       )}
-    </>
+    </div>
   )
 }

@@ -1,5 +1,5 @@
 import { MoreHorizontal } from "lucide-react"
-import { useEffect, useRef, useState, type ReactNode } from "react"
+import { useEffect, useId, useRef, useState, type ReactNode } from "react"
 
 interface Item {
   label: string
@@ -21,18 +21,39 @@ export default function MoreMenu({
 }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const menuId = useId()
   useEffect(() => {
     if (!open) return
     const close = (e: MouseEvent) => !ref.current?.contains(e.target as Node) && setOpen(false)
     document.addEventListener("mousedown", close)
-    return () => document.removeEventListener("mousedown", close)
+    const options = () => [...(ref.current?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ?? [])]
+    options()[0]?.focus()
+    const keys = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault(); e.stopPropagation(); setOpen(false); triggerRef.current?.focus(); return
+      }
+      if (e.key === "Tab") { setOpen(false); triggerRef.current?.focus(); return }
+      if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) return
+      e.preventDefault()
+      const items = options(), current = items.indexOf(document.activeElement as HTMLButtonElement)
+      const index = e.key === "Home" ? 0 : e.key === "End" ? items.length - 1 :
+        (current + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length
+      items[index]?.focus()
+    }
+    ref.current?.addEventListener("keydown", keys)
+    const container = ref.current
+    return () => { document.removeEventListener("mousedown", close); container?.removeEventListener("keydown", keys) }
   }, [open])
 
   return (
     <div ref={ref} className="relative">
       {/* 48x48 dp touch target */}
       <button
+        ref={triggerRef}
         type="button"
+        aria-haspopup="menu"
+        aria-controls={open ? menuId : undefined}
         aria-label={label}
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
@@ -42,6 +63,7 @@ export default function MoreMenu({
       </button>
       {open && (
         <ul
+          id={menuId}
           role="menu"
           className={`absolute z-30 min-w-[210px] rounded-[10px] border border-line bg-white p-1.5 shadow-[0_8px_24px_rgba(36,51,45,0.12)] ${
             align === "right" ? "right-0" : "left-0"
@@ -54,9 +76,10 @@ export default function MoreMenu({
                 role="menuitem"
                 onClick={() => {
                   setOpen(false)
+                  triggerRef.current?.focus()
                   item.onSelect()
                 }}
-                className={`flex min-h-[44px] w-full items-center gap-2.5 rounded-[6px] px-3 py-2 text-left text-[14px] font-medium transition hover:bg-subtle ${
+                className={`flex min-h-12 w-full items-center gap-2.5 rounded-[6px] px-3 py-2 text-left text-[14px] font-medium transition hover:bg-subtle ${
                   item.danger ? "text-danger" : "text-ink"
                 }`}
               >

@@ -67,8 +67,12 @@ export interface AIEvaluation {
   ruleSetVersion: number
   ruleSnapshot: RuleSet
   evaluationStatus: "loading" | "completed" | "error"
+  sampleDocumentTitle?: string
+  illustrationVersion?: number
   criterionResults: {
     criterionId: string
+    comment?: string
+    issue?: string
     name: string
     maxScore: number
     score: number | null
@@ -167,9 +171,12 @@ export interface ClassRoom {
   startDate: string
   endDate: string
   capacity: number
+  /** Maximum membership per group; legacy classes default through policy. */
+  maxGroupMembers?: number
   schedule: SchedulePattern
   session: Session
   joinCode: string
+  /** Legacy compatibility field; direct enrollment always sets false. */
   requireApproval: boolean
   /** ISO datetime */
   qrExpiresAt: string
@@ -182,6 +189,7 @@ export interface ClassRoom {
 }
 
 export interface Student {
+  enrolledClassIds?: string[]
   id: string
   initials: string
   name: string
@@ -192,6 +200,7 @@ export interface Student {
 }
 
 export interface JoinRequest {
+  studentId?: string
   id: string
   classId: string
   name: string
@@ -225,6 +234,7 @@ export const deliverableTypes: DeliverableType[] = [
 ]
 
 export interface StudentGroup {
+  leaderId?: string
   id: string
   classId: string
   name: string
@@ -237,6 +247,7 @@ export interface StudentGroup {
 }
 
 export interface Project {
+  registrationId?: string
   id: string
   name: string
   description: string
@@ -255,6 +266,19 @@ export interface Project {
   /** Any submission or review history means the project can only be archived. */
   hasHistory: boolean
   nextStep?: string
+}
+
+export interface ProjectRegistration {
+  id: string
+  groupId: string
+  submittedBy: string
+  name: string
+  description: string
+  status: "pending" | "changesRequested" | "rejected" | "approved"
+  feedback?: string
+  submittedAt: string
+  decisions: { status: string; feedback: string; at: string }[]
+  projectId?: string
 }
 
 export interface AICounts {
@@ -329,6 +353,10 @@ export interface AIFinding {
   category: string
   message: string
   pageRef?: string
+  issue?: string
+  suggestion?: string
+  proposedScore?: number | null
+  maxScore?: number
 }
 
 export interface AICheck {

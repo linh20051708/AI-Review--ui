@@ -13,6 +13,7 @@ import { fmtDateTime, parseISO } from "@/lib/time"
 import { deliverableTypes, type AllowedFiles, type DeliverableType, type Lab, type LabItem, type ReviewRequirement } from "@/types"
 
 interface Props {
+  compact?: boolean
   labs: Lab[]
   onChange?: (labs: Lab[]) => void
   /** Titles that already have submissions in this scope; such items/labs cannot be deleted. */
@@ -32,7 +33,7 @@ const move = <T,>(arr: T[], i: number, d: -1 | 1) => {
   return next
 }
 
-export default function LabStructureEditor({ labs, onChange, usedTitles = new Set(), scopeLabel, inheritedDeadline }: Props) {
+export default function LabStructureEditor({ compact = false, labs, onChange, usedTitles = new Set(), scopeLabel, inheritedDeadline }: Props) {
   const readOnly = !onChange
   const { labTemplates } = useManagement()
   const [labForm, setLabForm] = useState<{ lab?: Lab } | null>(null)
@@ -46,8 +47,27 @@ export default function LabStructureEditor({ labs, onChange, usedTitles = new Se
 
   const removeItemRefs = (ls: Lab[], itemIds: string[]) => ls.map((l) => ({ ...l, items: l.items.map((i) => ({ ...i, dependsOn: i.dependsOn.filter((d) => !itemIds.includes(d)) })) }))
 
+  const actions = (!readOnly && (
+        <div className="flex gap-2">
+          <Button className="flex-1" icon={<Plus size={16} strokeWidth={1.75} />} onClick={() => setLabForm({})}>Thêm Lab</Button>
+          {labTemplates.length > 0 && (
+            <MoreMenu
+              label="Thêm từ mẫu"
+              items={labTemplates.map((t) => ({
+                label: `Từ mẫu: ${t.name}`,
+                icon: <Copy size={16} strokeWidth={1.75} />,
+                onSelect: () => {
+                  update((ls) => [...ls, cloneLab(t.lab, suggestLabCode(ls))])
+                  toast(`Đã thêm Lab từ mẫu “${t.name}”`)
+                },
+              }))}
+            />
+          )}
+        </div>
+      ))
   return (
     <div className="flex flex-col gap-3">
+      {compact && actions}
       {labs.length === 0 && (
         <div className="flex flex-col items-center gap-1 rounded-[12px] border border-dashed border-line bg-white px-4 py-8 text-center">
           <p className="text-[14px] font-semibold text-ink">Chưa có Lab</p>
@@ -87,7 +107,7 @@ export default function LabStructureEditor({ labs, onChange, usedTitles = new Se
             )}
           </div>
 
-          <ul className="flex flex-col divide-y divide-line rounded-[8px] border border-line">
+          <ul className={compact ? "flex flex-col divide-y divide-line" : "flex flex-col divide-y divide-line rounded-[8px] border border-line"}>
             {lab.items.map((it, ii) => {
               const used = usedTitles.has(it.title)
               return (
@@ -95,12 +115,7 @@ export default function LabStructureEditor({ labs, onChange, usedTitles = new Se
                   <span className="mt-0.5 min-w-[42px] shrink-0 rounded-[5px] bg-brand-soft px-1.5 py-0.5 text-center text-[11px] font-semibold text-brand">{it.code}</span>
                   <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                     <p className="text-[13px] font-semibold text-ink">{it.title}</p>
-                    <div className="flex flex-wrap gap-1">
-                      <Badge>{it.deliverableType}</Badge>
-                      <Badge tone={it.required ? "brand" : "neutral"}>{it.required ? "Bắt buộc" : "Tùy chọn"}</Badge>
-                      <Badge tone={it.aiReview === "disabled" ? "neutral" : "olive"}>{aiLabel[it.aiReview]}</Badge>
-                      <Badge>{it.allowedFiles === "Both" ? "PDF, DOCX" : it.allowedFiles}</Badge>
-                    </div>
+                    {compact ? <details><summary className="text-muted">{it.required ? "Bắt buộc" : "Tùy chọn"} · {aiLabel[it.aiReview]}</summary><LabItemMeta item={it} compact/></details> : <LabItemMeta item={it}/>}
                     {it.dependsOn.length > 0 && (
                       <p className="inline-flex items-center gap-1 text-[11px] text-muted"><GitBranch size={12} strokeWidth={1.75} />Phụ thuộc: {it.dependsOn.map(codeOf).join(", ")}</p>
                     )}
@@ -108,7 +123,12 @@ export default function LabStructureEditor({ labs, onChange, usedTitles = new Se
                     {used && <p className="inline-flex items-center gap-1 text-[11px] text-muted"><Lock size={11} strokeWidth={2} />Đã có bài nộp · không thể xóa</p>}
                   </div>
                   {!readOnly && (
-                    <div className="flex shrink-0 items-center">
+                    compact ? <MoreMenu label={`Thao tác ${it.code}`} items={[
+                      {label:"Chỉnh sửa", onSelect:()=>setItemForm({labId:lab.id,item:it})},
+                      ...(ii>0?[{label:"Di chuyển lên",onSelect:()=>patchLab(lab.id,l=>({...l,items:move(l.items,ii,-1)}))}]:[]),
+                      ...(ii<lab.items.length-1?[{label:"Di chuyển xuống",onSelect:()=>patchLab(lab.id,l=>({...l,items:move(l.items,ii,1)}))}]:[]),
+                      ...(!used?[{label:"Xóa",danger:true,onSelect:()=>setDeleting({labId:lab.id,itemId:it.id})}]:[])
+                    ]}/> : <div className="flex shrink-0 items-center">
                       <button type="button" aria-label="Lên" disabled={ii === 0} onClick={() => patchLab(lab.id, (l) => ({ ...l, items: move(l.items, ii, -1) }))} className="flex size-8 items-center justify-center rounded-[6px] text-muted hover:bg-subtle disabled:opacity-30"><ArrowUp size={14} strokeWidth={1.75} /></button>
                       <button type="button" aria-label="Xuống" disabled={ii === lab.items.length - 1} onClick={() => patchLab(lab.id, (l) => ({ ...l, items: move(l.items, ii, 1) }))} className="flex size-8 items-center justify-center rounded-[6px] text-muted hover:bg-subtle disabled:opacity-30"><ArrowDown size={14} strokeWidth={1.75} /></button>
                       <button type="button" aria-label="Sửa" onClick={() => setItemForm({ labId: lab.id, item: it })} className="flex size-8 items-center justify-center rounded-[6px] text-muted hover:bg-subtle"><Pencil size={14} strokeWidth={1.75} /></button>
@@ -128,24 +148,7 @@ export default function LabStructureEditor({ labs, onChange, usedTitles = new Se
         </section>
       ))}
 
-      {!readOnly && (
-        <div className="flex gap-2">
-          <Button className="flex-1" icon={<Plus size={16} strokeWidth={1.75} />} onClick={() => setLabForm({})}>Thêm Lab</Button>
-          {labTemplates.length > 0 && (
-            <MoreMenu
-              label="Thêm từ mẫu"
-              items={labTemplates.map((t) => ({
-                label: `Từ mẫu: ${t.name}`,
-                icon: <Copy size={16} strokeWidth={1.75} />,
-                onSelect: () => {
-                  update((ls) => [...ls, cloneLab(t.lab, suggestLabCode(ls))])
-                  toast(`Đã thêm Lab từ mẫu “${t.name}”`)
-                },
-              }))}
-            />
-          )}
-        </div>
-      )}
+      {!compact && actions}
 
       {labForm && (
         <LabFormModal
@@ -190,6 +193,15 @@ export default function LabStructureEditor({ labs, onChange, usedTitles = new Se
       />
     </div>
   )
+}
+
+function LabItemMeta({item:it,compact=false}:{item:LabItem;compact?:boolean}) {
+  return <div className="flex flex-wrap gap-1">
+    <Badge>{it.deliverableType}</Badge>
+    {!compact && <><Badge tone={it.required ? "brand" : "neutral"}>{it.required ? "Bắt buộc" : "Tùy chọn"}</Badge>
+    <Badge tone={it.aiReview === "disabled" ? "neutral" : "olive"}>{aiLabel[it.aiReview]}</Badge></>}
+    <Badge>{it.allowedFiles === "Both" ? "PDF, DOCX" : it.allowedFiles}</Badge>
+  </div>
 }
 
 type LabDraft = Pick<Lab, "code" | "title" | "description" | "deadline">

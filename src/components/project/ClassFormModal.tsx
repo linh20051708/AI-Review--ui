@@ -1,3 +1,4 @@
+import { DEFAULT_MAX_GROUP_MEMBERS, groupMemberLimit } from "@/data/selfServicePolicy"
 import { useEffect, useState } from "react"
 import Button from "@/components/ui/Button"
 import { ChoiceChips, Field, TextInput } from "@/components/ui/Form"
@@ -19,6 +20,7 @@ interface Form {
   startDate: string
   endDate: string
   capacity: number
+  maxGroupMembers: number
   schedule: SchedulePattern
   session: Session
 }
@@ -33,7 +35,7 @@ const Inherited = ({ label, value, hint }: { label: string; value: string; hint:
 
 /** A class always belongs to a Course Offering; semester and course are derived from it. */
 export default function ClassFormModal({ open, classRoom, onClose }: { open: boolean; classRoom?: ClassRoom; onClose: () => void }) {
-  const { semesters, courses, offerings, ruleSets } = useManagement()
+  const { semesters, courses, offerings, ruleSets, groups } = useManagement()
   const usableSemesters = sortSemesters(semesters).filter((s) => semesterPhase(s) !== "archived" && semesterPhase(s) !== "ended")
   const usable = usableSemesters.flatMap((s) => offerings.filter((o) => o.semesterId === s.id))
   // Keep the current offering selectable while editing, even if its semester has ended.
@@ -43,14 +45,14 @@ export default function ClassFormModal({ open, classRoom, onClose }: { open: boo
   const blank = (): Form => {
     const o = usable[0]
     const sem = semesters.find((s) => s.id === o?.semesterId)
-    return { code: "", offeringId: o?.id ?? "", startDate: sem?.startDate ?? "", endDate: sem?.endDate ?? "", capacity: 40, schedule: "25", session: "morning" }
+    return { code: "", offeringId: o?.id ?? "", startDate: sem?.startDate ?? "", endDate: sem?.endDate ?? "", capacity: 40, maxGroupMembers: DEFAULT_MAX_GROUP_MEMBERS, schedule: "25", session: "morning" }
   }
   const [form, setForm] = useState<Form>(blank)
   useEffect(() => {
     if (!open) return
     setForm(
       classRoom
-        ? { code: classRoom.code, offeringId: classRoom.offeringId, startDate: classRoom.startDate.slice(0, 10), endDate: classRoom.endDate.slice(0, 10), capacity: classRoom.capacity, schedule: classRoom.schedule, session: classRoom.session }
+        ? { code: classRoom.code, offeringId: classRoom.offeringId, startDate: classRoom.startDate.slice(0, 10), endDate: classRoom.endDate.slice(0, 10), capacity: classRoom.capacity, maxGroupMembers: groupMemberLimit(classRoom), schedule: classRoom.schedule, session: classRoom.session }
         : blank(),
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,7 +64,7 @@ export default function ClassFormModal({ open, classRoom, onClose }: { open: boo
   const rule = resolveRuleSet(classRoom, offering, ruleSets, label)
   const labs = resolveLabStructure(classRoom, offering)
   const dateError = form.startDate && form.endDate && form.endDate <= form.startDate ? "Ngày kết thúc phải sau ngày bắt đầu." : undefined
-  const canSave = Boolean(form.code.trim() && offering && form.startDate && form.endDate && !dateError && form.capacity > 0)
+  const canSave = Boolean(form.code.trim() && offering && form.startDate && form.endDate && !dateError && form.capacity > 0 && Number.isInteger(form.maxGroupMembers) && form.maxGroupMembers > 0)
 
   const pickOffering = (id: string) => {
     const o = offerings.find((x) => x.id === id)
@@ -73,7 +75,7 @@ export default function ClassFormModal({ open, classRoom, onClose }: { open: boo
   const save = () => {
     if (!canSave || !offering) return
     const code = form.code.trim().toUpperCase()
-    const data = { code, offeringId: offering.id, semesterId: offering.semesterId, courseId: offering.courseId, startDate: form.startDate, endDate: form.endDate, capacity: form.capacity, schedule: form.schedule, session: form.session }
+    const data = { code, offeringId: offering.id, semesterId: offering.semesterId, courseId: offering.courseId, startDate: form.startDate, endDate: form.endDate, capacity: form.capacity, maxGroupMembers: form.maxGroupMembers, schedule: form.schedule, session: form.session }
     if (classRoom) {
       updateManagement((s) => ({ classes: s.classes.map((c) => (c.id === classRoom.id ? { ...c, ...data } : c)) }))
       toast(`Đã cập nhật lớp ${code}`)
@@ -85,7 +87,7 @@ export default function ClassFormModal({ open, classRoom, onClose }: { open: boo
         id: slugify(code),
         ...data,
         joinCode: `${code}-${tag}-${suffix}`,
-        requireApproval: true,
+        requireApproval: false,
         qrExpiresAt: `${form.endDate}T23:59`,
         lecturer: currentUser.name,
         groupCount: 0,
@@ -139,6 +141,8 @@ export default function ClassFormModal({ open, classRoom, onClose }: { open: boo
         <Field label="Ngày kết thúc" required hint={dateError}><TextInput type="date" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} /></Field>
         <Field label="Sĩ số tối đa" required><TextInput type="number" min={1} value={form.capacity} onChange={(e) => setForm({ ...form, capacity: Number(e.target.value) })} /></Field>
       </div>
+      <Field label="Số thành viên tối đa mỗi nhóm" required><TextInput type="number" min={1} step={1} value={form.maxGroupMembers} onChange={e => setForm({ ...form, maxGroupMembers: Number(e.target.value) })} /></Field>
+      {classRoom && groups.some(g => g.classId === classRoom.id && g.memberIds.length > form.maxGroupMembers) && <p role="status" className="text-[14px] text-amber">Có nhóm vượt giới hạn mới. Giữ nguyên thành viên; không thể thêm người cho đến khi nhóm còn chỗ.</p>}
       <Field label="Lịch học"><ChoiceChips options={patterns.map(scheduleLabel)} value={scheduleLabel(form.schedule)} onChange={(v) => setForm({ ...form, schedule: patterns.find((p) => scheduleLabel(p) === v) ?? form.schedule })} /></Field>
       <Field label="Buổi"><ChoiceChips options={sessions.map((x) => sessionMeta[x].label)} value={sessionMeta[form.session].label} onChange={(v) => setForm({ ...form, session: sessions.find((x) => sessionMeta[x].label === v) ?? form.session })} /></Field>
     </Modal>

@@ -37,6 +37,7 @@ export default function OptionList({ options, selected, onToggle, single, search
               onClick={() => onToggle(o.value)}
               className={`inline-flex items-center gap-1.5 rounded-[8px] border px-3 py-2 text-[13px] font-medium transition ${on ? "border-brand bg-brand-soft text-brand" : "border-line bg-white text-ink"}`}
             >
+              {on && <Check size={16} aria-hidden="true" className="shrink-0" />}
               {o.label}
               {o.current && <span className="text-[10px] font-semibold text-brand">Hiện tại</span>}
               <span className={`text-[11px] ${on ? "text-brand" : "text-muted"}`}>{o.count}</span>

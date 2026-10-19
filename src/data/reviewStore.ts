@@ -208,6 +208,8 @@ function submissionRule(
   resubmit = false,
 ) {
   const cfg = getManagementState()
+  const project = cfg.projects.find(p => p.id === review.projectId)
+  if (!project || project.state !== "active" || (project.registrationId && !cfg.registrations?.some(r => r.id === project.registrationId && r.status === "approved" && r.projectId === project.id))) throw new Error("Project phải được Supervisor duyệt và đang hoạt động trước khi nộp tài liệu.")
   const rule = resolveReviewRule({ ...review, ruleSnapshot: undefined }, cfg)
   if (!rule || rule.status !== "active")
     throw new Error("Cần gán bộ quy tắc Active trước khi nộp.")
@@ -333,9 +335,9 @@ export async function runEvaluation(reviewId: string, simulateError = false) {
     ? {
         ...run,
         evaluationStatus: "error",
-        error: "Lỗi AI mô phỏng. Chọn Thử lại để chạy lại với cùng rubric.",
+        error: "Không thể tạo kết quả. Chọn Thử lại để tiếp tục.",
       }
-    : mockEvaluation(run)
+    : mockEvaluation(run, review.documentTitle)
   const counts = {
     errors: result.findings.filter((f) => f.level === "error").length,
     warnings: result.findings.filter((f) => f.level === "warning").length,
@@ -360,12 +362,12 @@ export async function runEvaluation(reviewId: string, simulateError = false) {
       ...state.audit,
       event(
         reviewId,
-        `AI mô phỏng ${
+        `AI Review ${
           simulateError ? "gặp lỗi" : "hoàn tất"
         } · ${run.documentVersion} · ${rule.name} v${rule.version ?? 1}`,
         simulateError ? "rust" : "olive",
         undefined,
-        "AI (mô phỏng)",
+        "AI Review",
       ),
     ],
   })
@@ -374,7 +376,7 @@ export async function runEvaluation(reviewId: string, simulateError = false) {
       projectId: review.projectId,
       documentId: review.documentId,
       documentTitle: review.documentTitle,
-      title: `AI Evaluation mô phỏng hoàn tất cho ${review.documentTitle} ${review.version}.`,
+      title: `AI Review có kết quả tham khảo cho ${review.documentTitle} ${review.version}.`,
       meta: review.projectName,
     })
 }

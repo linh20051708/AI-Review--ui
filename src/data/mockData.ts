@@ -1,3 +1,4 @@
+import { sampleProjectState } from "@/data/projectStatuses"
 import { NOW, parseVN } from "@/lib/time"
 import type {
   AICheck,
@@ -204,7 +205,7 @@ const cls = (id: string, code: string, semesterId: string, courseId: string, sch
   schedule,
   session,
   joinCode: `${code}-${semesterId === "fall-2026" ? "F26" : "S26"}-${joinSuffix}`,
-  requireApproval: true,
+  requireApproval: false,
   qrExpiresAt: "2026-10-30T23:59",
   lecturer: "Nguyễn Văn An",
   studentCount: counts[0],
@@ -331,7 +332,7 @@ export const projects: Project[] = studentGroups
         const s = students.find((x) => x.id === id)!
         return { initials: s.initials, name: s.name, role: roles[i] }
       }),
-      state: "active" as const,
+      state: sampleProjectState(g.projectId!),
       hasHistory: g.health !== "notSubmitted",
       ...(g.projectId === "smart-campus-management" && {
         nextStep: "Review Sequence Diagram v2. State Diagram đang chờ sinh viên nộp version mới; SRS vẫn khóa gửi review.",
@@ -339,10 +340,12 @@ export const projects: Project[] = studentGroups
     }
   })
 
-export const joinRequests: JoinRequest[] = [
+export const legacyJoinRequests: JoinRequest[] = [
   { id: "j1", classId: "se1701", name: "Phùng Thanh Sơn", studentCode: "SE170255", email: "sonpt0255@university.edu.vn", requestedAt: NOW - 25 * 60_000 },
   { id: "j2", classId: "se1701", name: "Giang Mỹ Tiên", studentCode: "SE170261", email: "tiengm0261@university.edu.vn", requestedAt: NOW - 3 * 3_600_000 },
 ]
+
+export const joinRequests: JoinRequest[] = []
 
 /** University directory used by manual add (students not yet in a class). */
 export const directoryStudents = [

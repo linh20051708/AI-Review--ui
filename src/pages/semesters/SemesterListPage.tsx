@@ -1,3 +1,4 @@
+import "@/styles/phase-two.css"
 import { Archive, CalendarRange, ChevronRight, Pencil, Plus, RotateCcw, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import Badge from "@/components/ui/Badge"
@@ -48,8 +49,8 @@ export default function SemesterListPage() {
   }
 
   return (
-    <>
-      <PageHeading eyebrow="QUẢN LÝ" title="Học kỳ" description="Học kỳ chỉ lưu thông tin thời gian. Cấu hình review thuộc từng môn học trong học kỳ. Trạng thái tự cập nhật theo ngày." />
+    <div className="phase-two flex min-w-0 flex-col gap-4">
+      <PageHeading eyebrow="QUẢN LÝ" title="Học kỳ"  />
       <div className="grid grid-cols-2 gap-2">
         <Button icon={<Plus size={18} strokeWidth={1.75} />} onClick={() => setForm({ open: true })}>Tạo học kỳ</Button>
         <Button variant="secondary" to="/rule-sets" className="flex-row-reverse" icon={<ChevronRight size={18} strokeWidth={1.75} />}>Bộ quy tắc</Button>
@@ -92,7 +93,7 @@ export default function SemesterListPage() {
                   />
                 </div>
               </div>
-              <MetaGrid items={[{ label: "Bắt đầu", value: fmtDate(parseISO(s.startDate)) }, { label: "Kết thúc", value: fmtDate(parseISO(s.endDate)) }, { label: "Lớp", value: `${semClasses.length} lớp` }, { label: "Môn học", value: semCourses.join(", ") || "—" }]} />
+              <details><summary>{fmtDate(parseISO(s.startDate))} – {fmtDate(parseISO(s.endDate))} · {semClasses.length} lớp</summary><MetaGrid items={[{ label: "Bắt đầu", value: fmtDate(parseISO(s.startDate)) }, { label: "Kết thúc", value: fmtDate(parseISO(s.endDate)) }, { label: "Lớp", value: `${semClasses.length} lớp` }, { label: "Môn học", value: semCourses.join(", ") || "—" }]} /></details>
             </Card>
           )
         }))}
@@ -137,6 +138,6 @@ export default function SemesterListPage() {
         }}
         onClose={() => setDeleting(null)}
       />
-    </>
+    </div>
   )
 }

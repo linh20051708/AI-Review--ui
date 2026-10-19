@@ -1,4 +1,5 @@
-import { aiFindings, documents } from "@/data/mockData"
+import { mockEvaluation, resolveReviewRule } from "@/lib/rubric"
+import { documents } from "@/data/mockData"
 import {
   classOfProject,
   offeringOf,
@@ -17,14 +18,15 @@ import type {
   StudentGroup,
 } from "@/types"
 
-/** AI findings shown for a request, limited to its reported counts. */
-export const findingsFor = (r: ReviewRequest) => [
-  ...aiFindings.filter((f) => f.level === "error").slice(0, r.ai.errors),
-  ...aiFindings.filter((f) => f.level === "warning").slice(0, r.ai.warnings),
-  ...aiFindings
-    .filter((f) => f.level === "suggestion")
-    .slice(0, r.ai.suggestions),
-]
+/** Read-only illustration for legacy requests; never changes stored counts/history. */
+export const findingsFor = (r: ReviewRequest) => {
+  const rule = resolveReviewRule(r, getManagementState())
+  if (!rule || !rule.aiEnabled || r.aiStatus !== "aiReviewed") return []
+  return mockEvaluation({ id: `${r.id}-sample`, reviewId: r.id, documentId: r.documentId ?? "",
+    documentVersionId: "", documentVersion: r.version, ruleSetId: rule.id, ruleSetVersion: rule.version ?? 1,
+    ruleSnapshot: rule, evaluationStatus: "loading", criterionResults: [], overallScore: null,
+    maxScore: 0, findings: [], createdAt: r.submittedAt }, r.documentTitle).findings
+}
 
 /** Immutable version list for the request's logical document; the current version reflects live supervisor status. */
 export const versionsFor = (

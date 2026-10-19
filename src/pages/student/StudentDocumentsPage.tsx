@@ -1,14 +1,15 @@
+import Button from "@/components/ui/Button"
+import "@/styles/student-refinement.css"
 import { FileText } from "lucide-react"
 import { Fragment, useState } from "react"
 import { Link } from "react-router-dom"
 import Badge from "@/components/ui/Badge"
-import Card from "@/components/ui/Card"
 import EmptyState from "@/components/ui/EmptyState"
 import PageHeading from "@/components/ui/PageHeading"
-import SegmentedTabs from "@/components/ui/SegmentedTabs"
 import StatusBadge from "@/components/ui/StatusBadge"
 import { fmtDate } from "@/lib/time"
 import type { ProjectDocument } from "@/types"
+import StudentClassPicker from "./StudentClassPicker"
 import { useStudentContext } from "./useStudentContext"
 
 const filters: { label: string; match: (d: ProjectDocument) => boolean }[] = [
@@ -28,26 +29,23 @@ export default function StudentDocumentsPage() {
   const visible = docs.filter(filters[active].match)
 
   return (
-    <>
+    <div className="student-refine phase-two flex min-w-0 flex-col gap-4">
       <PageHeading
         eyebrow="TÀI LIỆU"
         title="Tài liệu của tôi"
-        description={`${docs.length} tài liệu thuộc project ${ctx.project?.name ?? ""}`}
+
       />
-      <SegmentedTabs tabs={tabs} active={tabs[active]} onChange={(t) => setActive(tabs.indexOf(t))} />
+      <StudentClassPicker destination="/student/documents" />
+      {ctx.project && <label className="flex flex-col gap-2 text-[14px] font-semibold">Trạng thái<select className="min-h-12 w-full rounded-lg border bg-white p-3" value={active} onChange={e=>setActive(Number(e.target.value))}>{tabs.map((t,i)=><option key={i} value={i}>{t}</option>)}</select></label>}
       <section className="flex flex-col gap-3">
         {visible.length ? (
           ctx.labs.map((lab) => <Fragment key={lab.id}>
             {visible.some((d) => d.lab.id === lab.id) && <h2 className="text-[16px] font-semibold">{lab.code} · {lab.title}</h2>}
-            {visible.filter((d) => d.lab.id === lab.id).map((d) => {
+            <div className="rounded-xl border border-line bg-white px-4">{visible.filter((d) => d.lab.id === lab.id).map((d) => {
             const dl = ctx.deadlineFor(d.id)
             return (
-              <Link key={d.id} to={`/student/documents/${d.id}`}>
-                <Card className="hover:border-brand/40">
+              <Link className="student-row" key={d.id} to={!d.latestVersion && !d.submissionLocked ? `/student/documents/${d.id}/upload` : `/student/documents/${d.id}`}><div>
                   <div className="flex items-center justify-between gap-3 text-[14px] text-muted">
-                    <span>
-                      {d.labCode} · {d.itemCode}
-                    </span>
                     {dl.ts && <span className="shrink-0">Đến hạn {fmtDate(dl.ts)}</span>}
                   </div>
                   <p className="flex flex-wrap items-center gap-2 text-[16px] leading-[1.45] font-semibold text-ink">
@@ -57,17 +55,17 @@ export default function StudentDocumentsPage() {
                   </p>
                   <div className="flex flex-wrap items-center gap-1.5 pt-1">
                     <StatusBadge status={d.supervisorStatus ?? d.documentStatus} />
-                    {ctx.requestFor(d.reviewId) && <Badge tone="olive">{ctx.requestFor(d.reviewId)?.aiStatus === "aiReviewed" ? "AI đã review" : "AI chưa hoàn tất"}</Badge>}
+
                     {d.submissionLocked && <Badge tone="neutral">Khóa gửi review</Badge>}
                   </div>
-                </Card>
+                </div><span className="text-[14px] font-semibold text-brand">{d.supervisorStatus==="needsRevision" ? "Xem feedback" : !d.latestVersion && !d.submissionLocked ? "Nộp bài" : "Xem"}</span>
               </Link>
             )
-          })}</Fragment>)
+          })}</div></Fragment>)
         ) : (
-          <EmptyState title="Không có tài liệu phù hợp" description="Thử chọn bộ lọc khác." />
+          <EmptyState title={ctx.project ? "Không có tài liệu phù hợp" : "Chưa có project hoạt động"} description={ctx.project ? "Thử chọn bộ lọc khác." : "Kiểm tra đăng ký project của lớp đang xem."} action={!ctx.project ? <Button to="/student/groups">Xem đăng ký project</Button> : undefined} />
         )}
       </section>
-    </>
+    </div>
   )
 }

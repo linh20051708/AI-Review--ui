@@ -1,15 +1,12 @@
-import { Filter, GraduationCap, Mail, Plus, Search, UserCheck, Users } from "lucide-react"
+import { Filter, Plus } from "lucide-react"
 import { useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import AddStudentsModal from "@/components/project/AddStudentsModal"
 import Avatar from "@/components/ui/Avatar"
-import Badge from "@/components/ui/Badge"
 import Button from "@/components/ui/Button"
-import Card from "@/components/ui/Card"
 import EmptyState from "@/components/ui/EmptyState"
 import { Field, TextInput } from "@/components/ui/Form"
 import PageHeading from "@/components/ui/PageHeading"
-import StatCard from "@/components/ui/StatCard"
 import { useManagement } from "@/data/managementStore"
 
 export default function StudentListPage() {
@@ -73,8 +70,8 @@ export default function StudentListPage() {
     <>
       <PageHeading
         eyebrow="QUẢN LÝ HỌC VỤ"
-        title="Danh sách Sinh viên"
-        description="Quản lý và tra cứu sinh viên theo học kỳ, môn học và lớp."
+        title="Sinh viên"
+        
       />
 
       {/* Action bar */}
@@ -89,34 +86,31 @@ export default function StudentListPage() {
 
         <div className="w-full sm:w-72">
           <TextInput
-            placeholder="Tìm theo tên, MSSV, email..."
+            aria-label="Tìm sinh viên"
+            placeholder="Tên, MSSV hoặc email"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
       </div>
 
-      {/* Stats summary */}
-      <div className="grid grid-cols-3 gap-2">
-        <StatCard label="Tổng sinh viên (lọc)" value={totalCount} />
-        <StatCard label="Đã có nhóm" value={groupedCount} />
-        <StatCard label="Chưa có nhóm" value={unassignedCount} />
-      </div>
+      <p className="text-[14px] text-muted">{totalCount} sinh viên · {groupedCount} có nhóm · {unassignedCount} chưa có nhóm</p>
 
       {/* Filter panel */}
-      <Card>
-        <div className="flex items-center gap-2 border-b border-line pb-2.5">
+      <details className="rounded-xl border border-line bg-white px-4">
+        <summary className="flex min-h-12 cursor-pointer items-center gap-2 text-[14px] font-semibold">
           <Filter size={16} className="text-brand" />
-          <span className="text-[14px] font-semibold text-ink">Bộ lọc học vụ</span>
-        </div>
+          <span>Bộ lọc học vụ{[selectedSemester, selectedCourse, selectedClass].some(v => v !== "all") ? " · Đang lọc" : ""}</span>
+        </summary>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 py-3">
           <Field label="Học kỳ">
             <select
-              className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand min-h-12"
+              className="w-full rounded-[8px] border border-muted bg-white p-3 text-[16px] text-ink outline-none focus:border-brand min-h-12"
               value={selectedSemester}
               onChange={(e) => {
                 setSelectedSemester(e.target.value)
+                setSelectedCourse("all")
                 setSelectedClass("all")
               }}
             >
@@ -131,7 +125,7 @@ export default function StudentListPage() {
 
           <Field label="Môn học">
             <select
-              className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand min-h-12"
+              className="w-full rounded-[8px] border border-muted bg-white p-3 text-[16px] text-ink outline-none focus:border-brand min-h-12"
               value={selectedCourse}
               onChange={(e) => {
                 setSelectedCourse(e.target.value)
@@ -149,7 +143,7 @@ export default function StudentListPage() {
 
           <Field label="Lớp học">
             <select
-              className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand min-h-12"
+              className="w-full rounded-[8px] border border-muted bg-white p-3 text-[16px] text-ink outline-none focus:border-brand min-h-12"
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
             >
@@ -162,7 +156,8 @@ export default function StudentListPage() {
             </select>
           </Field>
         </div>
-      </Card>
+        <Button variant="secondary" className="mb-3" onClick={() => { setSelectedSemester("all"); setSelectedCourse("all"); setSelectedClass("all"); setSearchQuery("") }}>Xóa bộ lọc</Button>
+      </details>
 
       {/* Student List */}
       {filteredStudents.length === 0 ? (
@@ -175,7 +170,7 @@ export default function StudentListPage() {
           }
         />
       ) : (
-        <div className="flex flex-col gap-2">
+        <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-white">
           {filteredStudents.map((student) => {
             const cls = classes.find((c) => c.id === student.classId)
             const crs = courses.find((c) => c.id === cls?.courseId)
@@ -184,51 +179,27 @@ export default function StudentListPage() {
             )
 
             return (
-              <Card key={student.id}>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
+              <li key={student.id} className="min-w-0 px-4 py-2">
+                <details>
+                  <summary className="flex min-h-16 cursor-pointer items-center gap-3 py-2">
                     <Avatar initials={student.initials} size={40} />
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[15px] font-semibold text-ink">{student.name}</span>
-                        <Badge tone="neutral">{student.studentCode}</Badge>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-[12px] text-muted mt-0.5">
-                        <Mail size={13} />
-                        <span>{student.email}</span>
-                      </div>
-                    </div>
+                    <span className="min-w-0 flex-1 text-[14px] leading-relaxed">
+                      <span className="block font-semibold text-ink">{student.name}</span>
+                      <span className="block text-muted">{student.studentCode} · {cls?.code ?? "—"}</span>
+                      <span className="block text-muted">{studentGroup?.name ?? "Chưa vào nhóm"}</span>
+                    </span>
+                    <span aria-hidden="true" className="text-muted">›</span>
+                  </summary>
+                  <div className="flex flex-col gap-2 pb-3 text-[14px]">
+                    <p className="break-all text-muted">{student.email}</p>
+                    {cls && <Link to={`/classes/${cls.id}`} className="flex min-h-12 items-center rounded-lg border border-line px-3 font-medium text-brand">Mở lớp {cls.code}{crs ? ` · ${crs.code}` : ""}</Link>}
+                    {studentGroup && <Link to={`/groups/${studentGroup.id}`} className="flex min-h-12 items-center rounded-lg border border-line px-3 font-medium text-brand">Mở {studentGroup.name}</Link>}
                   </div>
-
-                  <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-                    {cls && (
-                      <Link
-                        to={`/classes/${cls.id}`}
-                        className="rounded-[6px] bg-subtle px-2.5 py-1 text-[12px] font-medium text-ink hover:bg-subtle/80 hover:text-brand transition"
-                      >
-                        Lớp: <strong>{cls.code}</strong>
-                        {crs && <span className="text-muted ml-1">({crs.code})</span>}
-                      </Link>
-                    )}
-
-                    {studentGroup ? (
-                      <Link
-                        to={`/groups/${studentGroup.id}`}
-                        className="inline-flex items-center gap-1"
-                      >
-                        <Badge tone="brand">
-                          {studentGroup.name}
-                        </Badge>
-                      </Link>
-                    ) : (
-                      <Badge tone="amber">Chưa vào nhóm</Badge>
-                    )}
-                  </div>
-                </div>
-              </Card>
+                </details>
+              </li>
             )
           })}
-        </div>
+        </ul>
       )}
 
       {/* Add Student Modal */}

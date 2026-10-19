@@ -13,10 +13,14 @@ interface Props {
 export default function Popover({ label, active, children, width = 280, align = "left", icon }: Props) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
   useEffect(() => {
     if (!open) return
     const close = (e: MouseEvent) => !ref.current?.contains(e.target as Node) && setOpen(false)
-    const esc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false)
+    const esc = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return
+      e.preventDefault(); e.stopPropagation(); setOpen(false); triggerRef.current?.focus()
+    }
     document.addEventListener("mousedown", close)
     document.addEventListener("keydown", esc)
     return () => {
@@ -27,6 +31,7 @@ export default function Popover({ label, active, children, width = 280, align = 
   return (
     <div ref={ref} className="relative shrink-0">
       <button
+        ref={triggerRef}
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}

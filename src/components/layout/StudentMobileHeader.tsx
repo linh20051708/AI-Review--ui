@@ -2,16 +2,13 @@ import { Bell, Files } from "lucide-react"
 import { Link } from "react-router-dom"
 import Avatar from "@/components/ui/Avatar"
 import Badge from "@/components/ui/Badge"
-import { demoStudentId } from "@/data/mockData"
-import { useManagement } from "@/data/managementStore"
 import { useNotifications } from "@/data/notificationStore"
 import { useStudentContext } from "@/pages/student/useStudentContext"
 
 export default function StudentMobileHeader() {
   const notifications = useNotifications()
-  const { students } = useManagement()
-  const student = students.find((s) => s.id === demoStudentId)
   const ctx = useStudentContext()
+  const student = ctx.student
   const hasUnread = notifications.some((n) => n.unread && n.projectId === ctx.project?.id)
   return (
     <header className="mobile-header w-full border-b border-line">

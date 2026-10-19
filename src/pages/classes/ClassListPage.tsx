@@ -35,6 +35,8 @@ export default function ClassListPage() {
         facets={["semester", "course", "status"]}
         primary={["course", "status"]}
         teaching
+        statusTitle="Trạng thái lớp"
+        statusGroup="Lớp"
         statusLabels={{ active: "Đang giảng dạy", archived: "Đã lưu trữ" }}
         searchPlaceholder="Tìm lớp..."
         noun="lớp"

@@ -1,3 +1,6 @@
+import ProjectStateBadge from "@/components/project/ProjectStateBadge"
+import PhaseTwoTabs from "@/components/ui/PhaseTwoTabs"
+import "@/styles/phase-two.css"
 import { Archive, CalendarClock, ChevronRight, Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
@@ -20,7 +23,7 @@ import ProgressBar from "@/components/ui/ProgressBar"
 import SectionHeader from "@/components/ui/SectionHeader"
 import SegmentedTabs from "@/components/ui/SegmentedTabs"
 import { toast } from "@/components/ui/Toast"
-import { lockReason } from "@/data/mockData"
+import { lockReason, projects as sampleProjects } from "@/data/mockData"
 import { updateManagement, useManagement } from "@/data/managementStore"
 import { useReviewStore } from "@/data/reviewStore"
 import { documentsFor } from "@/data/selectors"
@@ -28,7 +31,7 @@ import { resolveProjectAcademicContext } from "@/lib/config"
 import { courseLabel } from "@/lib/academic"
 import { fmtDate, fmtDateTime, parseISO } from "@/lib/time"
 
-const TABS = ["Tổng quan", "Tài liệu", "Thành viên", "Lịch sử review"]
+const TABS = ["Tổng quan", "Tài liệu", "Thành viên", "Lịch sử review", "Thông tin"]
 
 export default function ProjectDetailPage() {
   const { projectId } = useParams()
@@ -51,17 +54,24 @@ export default function ProjectDetailPage() {
   const blocked = docs.find((d) => d.submissionLocked && d.documentStatus === "draft")
   const projectReviews = requests.filter((r) => r.projectId === project.id)
   const events = audit.filter((e) => projectReviews.some((r) => r.id === e.reviewId))
+  const nextDocument = docs.find(d => d.supervisorStatus === "needsRevision") ?? docs.find(d => ["waiting", "inReview"].includes(d.supervisorStatus ?? "")) ?? docs.find(d => !d.latestVersion && !d.submissionLocked)
+  const suggestedNextStep = nextDocument
+    ? nextDocument.supervisorStatus === "needsRevision" ? `${nextDocument.title}: chờ nhóm nộp bản chỉnh sửa.`
+      : ["waiting", "inReview"].includes(nextDocument.supervisorStatus ?? "") ? `Review ${nextDocument.title} ${nextDocument.latestVersion ?? ""}.`
+      : `${nextDocument.title}: chờ nhóm nộp tài liệu.`
+    : docs.length && docs.every(d => d.supervisorStatus === "approved") ? "Tất cả tài liệu đã được giảng viên phê duyệt." : "Đối chiếu trạng thái tài liệu trước khi tiếp tục."
+  const nextStep = project.nextStep === sampleProjects.find(p => p.id === project.id)?.nextStep ? suggestedNextStep : project.nextStep
   const archived = project.state === "archived"
 
   const setState = (state: "active" | "archived") => updateManagement((s) => ({ projects: s.projects.map((p) => (p.id === project.id ? { ...p, state } : p)) }))
 
   return (
-    <>
+    <div className="phase-two flex min-w-0 flex-col gap-4">
       <BackLink label={`${classCode} / ${groupName}`} fallback={ctx.cls ? `/classes/${ctx.cls.id}` : "/projects"} />
       <PageHeading
-        eyebrow={[semester?.name, course?.code, classCode, groupName].join(" → ").toUpperCase()}
+        eyebrow={`${classCode} · ${groupName}`}
         title={project.name}
-        description={project.description}
+
         aside={
           <MoreMenu
             items={[
@@ -77,10 +87,17 @@ export default function ProjectDetailPage() {
       />
       <Card>
         <div className="flex items-center justify-between">
-          <Badge tone={archived ? "neutral" : "brand"}>{archived ? "Đã lưu trữ" : "Đang thực hiện"}</Badge>
+          <ProjectStateBadge state={project.state} />
           <CalendarClock size={18} strokeWidth={1.75} className="text-muted" />
         </div>
-        <MetaGrid
+        <ProgressBar value={project.progress} label="Tiến độ project (ghi nhận)" />
+        <p className="text-[14px] text-muted">Tài liệu được duyệt: {docs.filter(d => d.supervisorStatus === "approved").length}/{docs.length}</p>
+      </Card>
+      {archived && <Notice>Project đã được lưu trữ. Toàn bộ tài liệu, version và lịch sử review vẫn được giữ nguyên ở chế độ chỉ đọc.</Notice>}
+
+      <Button to={`/projects/${project.id}/documents`}>Mở tài liệu</Button>
+      <PhaseTwoTabs id="project" tabs={TABS} active={tab} onChange={setTab} />
+      {tab === "Thông tin" && <section role="tabpanel" id="project-panel-4" aria-labelledby="project-4" className="flex flex-col gap-4"><p className="text-[14px]">{project.description}</p>        <MetaGrid
           items={[
             { label: "Học kỳ", value: semester?.name ?? "—" },
             { label: "Môn học", value: courseLabel(course) },
@@ -101,39 +118,35 @@ export default function ProjectDetailPage() {
           </span>
           <ChevronRight size={16} strokeWidth={1.75} className="text-muted" />
         </Link>
-        <ProgressBar value={project.progress} label="Tiến độ tài liệu" />
-      </Card>
-      {archived && <Notice>Project đã được lưu trữ. Toàn bộ tài liệu, version và lịch sử review vẫn được giữ nguyên ở chế độ chỉ đọc.</Notice>}
-
-      <SegmentedTabs tabs={TABS} active={tab} onChange={setTab} />
+</section>}
 
       {tab === "Tổng quan" && (
-        <>
+        <section role="tabpanel" id="project-panel-0" aria-labelledby="project-0" className="flex flex-col gap-4">
           {project.nextStep && (
-            <Card tinted>
+            <div className="border-l-2 border-brand pl-3">
               <p className="text-[14px] font-semibold text-ink">Việc tiếp theo của bạn</p>
-              <p className="text-[13px] leading-[1.45] text-ink">{project.nextStep}</p>
-            </Card>
+              <p className="text-[14px] leading-[1.45] text-ink">{nextStep}</p>
+            </div>
           )}
           <section className="flex flex-col gap-3">
-            <SectionHeader title="Tiến độ tài liệu" description="Dependency chỉ khóa việc gửi yêu cầu review. Tài liệu sau vẫn có thể tồn tại ở dạng bản nháp." />
+            <SectionHeader title="Tiến độ tài liệu"  />
             <Card className="gap-0 py-1">
               <ul>{docs.map((d) => <DocumentRoadmapItem key={d.id} doc={d} />)}</ul>
             </Card>
             {blocked?.dependsOn && <Notice>{blocked.title}: {lockReason(blocked.dependsOn)}</Notice>}
           </section>
-        </>
+        </section>
       )}
 
       {tab === "Tài liệu" && (
-        <section className="flex flex-col gap-3">
+        <section role="tabpanel" id="project-panel-1" aria-labelledby="project-1" className="flex flex-col gap-3">
           <SectionHeader title="Tài liệu" meta={`${docs.length} tài liệu`} linkTo={`/projects/${project.id}/documents`} linkLabel="Mở trang tài liệu" />
           {docs.map((d) => <DocumentCard key={d.id} doc={d} />)}
         </section>
       )}
 
       {tab === "Thành viên" && (
-        <section className="flex flex-col gap-3">
+        <section role="tabpanel" id="project-panel-2" aria-labelledby="project-2" className="flex flex-col gap-3">
           <SectionHeader title="Thành viên" meta={`${project.members.length} sinh viên`} linkTo={`/groups/${project.groupId}`} linkLabel="Quản lý nhóm" />
           {project.members.length ? (
             <Card className="gap-0 py-1">
@@ -146,7 +159,7 @@ export default function ProjectDetailPage() {
       )}
 
       {tab === "Lịch sử review" && (
-        <section className="flex flex-col gap-3">
+        <section role="tabpanel" id="project-panel-3" aria-labelledby="project-3" className="flex flex-col gap-3">
           <SectionHeader title="Lịch sử review" meta={`${events.length} sự kiện`} />
           {projectReviews.length > 0 && (
             <div className="flex flex-wrap gap-2">
@@ -167,7 +180,7 @@ export default function ProjectDetailPage() {
         </section>
       )}
 
-      {!archived && (
+      {!archived && tab === "Thông tin" && (
         <Button variant="secondary" icon={<Pencil size={16} strokeWidth={1.75} />} onClick={() => setEditing(true)}>
           Chỉnh sửa thông tin project
         </Button>
@@ -200,6 +213,6 @@ export default function ProjectDetailPage() {
         }}
         onClose={() => setConfirm(null)}
       />
-    </>
+    </div>
   )
 }

@@ -34,14 +34,16 @@ export default function DocumentListPage() {
 
   return (
     <>
-      <PageHeading eyebrow="KHÔNG GIAN LÀM VIỆC" title="Tài liệu" description="Tài liệu sinh viên đã nộp. Giảng viên chỉ xem và review." />
+      <PageHeading eyebrow="KHÔNG GIAN LÀM VIỆC" title="Tài liệu"  />
       <SmartFilterBar
         records={records}
         state={filter}
         onChange={setFilter}
-        facets={["semester", "course", "class", "group", "project", "docType", "status"]}
-        primary={["course", "class", "docType", "status"]}
+        facets={["semester", "course", "class", "lab", "labItem", "group", "project", "docType", "status", "documentStatus"]}
+        primary={["class", "lab", "labItem"]}
         teaching
+        statusTitle="Tiến độ tài liệu"
+        statusGroup="Tài liệu"
         statusLabels={docStatusLabels}
         searchPlaceholder="Tìm tài liệu hoặc project..."
         noun="tài liệu"

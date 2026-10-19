@@ -1,3 +1,4 @@
+import "@/styles/filter-refinement.css"
 import { Bookmark, BookmarkPlus, Search, SlidersHorizontal, X } from "lucide-react"
 import { useEffect, useMemo, useState, type ReactNode } from "react"
 import Button from "@/components/ui/Button"
@@ -12,6 +13,12 @@ import { ScheduleControl, SessionControl, TimeRangeControl } from "./TimeControl
 import useFacetLabels, { facetTitles } from "./useFacetLabels"
 
 export interface SmartFilterProps {
+  mobilePrimary?: FacetKey[]
+  facetValues?: Partial<Record<FacetKey, string[]>>
+  compact?: boolean
+  statusTitle?: string
+  statusGroup?: string
+  restoreView?: (state: FilterState, legacy: boolean) => FilterState
   records: FilterRecord[]
   state: FilterState
   onChange: (s: FilterState) => void
@@ -29,10 +36,10 @@ export interface SmartFilterProps {
   extra?: ReactNode
 }
 
-const SECTIONS: { title: string; keys: (FacetKey | "time" | "session" | "schedule")[] }[] = [
-  { title: "Học vụ", keys: ["semester", "course", "class", "group"] },
-  { title: "Lab & Project", keys: ["lab", "project", "docType"] },
-  { title: "Review", keys: ["status", "ai"] },
+const sections = (statusGroup = "Trạng thái"): { title: string; keys: (FacetKey | "time" | "session" | "schedule")[] }[] => [
+  { title: "Học vụ", keys: ["class", "lab", "labItem"] },
+  { title: statusGroup, keys: ["status", "documentStatus", "evaluationStatus", "ai"] },
+  { title: "Nâng cao", keys: ["semester", "course", "docType", "group", "project"] },
   { title: "Thời gian", keys: ["time", "session", "schedule"] },
 ]
 const timeTitles = { time: "Thời gian gửi", session: "Buổi học", schedule: "Lịch học" }
@@ -40,10 +47,12 @@ const timeTitles = { time: "Thời gian gửi", session: "Buổi học", schedul
 interface SavedView {
   name: string
   state: FilterState
+  schema?: number
 }
 
 export default function SmartFilterBar(props: SmartFilterProps) {
-  const { records, state, onChange, facets, primary, time, teaching, statusLabels, searchPlaceholder, noun, sort, viewKey, extra } = props
+  const { compact = false, records, state, onChange, facets, primary, time, teaching, statusLabels, searchPlaceholder, noun, sort, viewKey, extra } = props
+  const titles = { ...facetTitles, status: props.statusTitle ?? "Trạng thái" }
   const { label, decorate } = useFacetLabels(statusLabels)
   const [drawer, setDrawer] = useState<"all" | "more" | null>(null)
   const [views, setViews] = useState<SavedView[]>(() => JSON.parse(localStorage.getItem(`filters:${viewKey}`) ?? "[]"))
@@ -61,18 +70,18 @@ export default function SmartFilterBar(props: SmartFilterProps) {
 
   const chips = useMemo(() => {
     const out: { key: string; text: string; remove: () => FilterState }[] = []
-    for (const key of facets)
-      for (const v of state.facets[key] ?? []) out.push({ key: `${key}:${v}`, text: label(key, v), remove: () => toggle(state, key, v) })
+    for (const key of facets.filter(key=>!compact || key!=="semester"))
+      for (const v of state.facets[key] ?? []) out.push({ key: `${key}:${v}`, text: `${titles[key]}: ${label(key, v)}`, remove: () => toggle(state, key, v) })
     if (state.time) out.push({ key: "time", text: `Thời gian: ${rangeLabel(state.time)}`, remove: () => ({ ...state, time: undefined }) })
     if (state.session) out.push({ key: "session", text: `Buổi ${sessionMeta[state.session].label.toLowerCase()}`, remove: () => ({ ...state, session: undefined }) })
     if (state.schedule) out.push({ key: "schedule", text: state.schedule.length === 2 ? scheduleLabel(state.schedule as SchedulePattern) : `T${state.schedule}`, remove: () => ({ ...state, schedule: undefined }) })
     return out
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, facets])
+  }, [state, facets, compact])
 
   const saveView = () => {
     const name = chips.map((c) => c.text).join(" · ") || "Tất cả"
-    setViews((v) => [...v.filter((x) => x.name !== name), { name, state }])
+    setViews((v) => [...v.filter((x) => x.name !== name), { name, state, schema: 2 }])
     toast(`Đã lưu chế độ xem “${name}”`)
   }
 
@@ -96,7 +105,7 @@ export default function SmartFilterBar(props: SmartFilterProps) {
       label="Chế độ xem"
       items={[
         { label: "Lưu chế độ xem", icon: <BookmarkPlus size={16} strokeWidth={1.75} />, onSelect: saveView },
-        ...views.map((v) => ({ label: v.name, icon: <Bookmark size={16} strokeWidth={1.75} />, onSelect: () => onChange(v.state) })),
+        ...views.map((v) => ({ label: v.name, icon: <Bookmark size={16} strokeWidth={1.75} />, onSelect: () => set(props.restoreView ? props.restoreView(v.state, v.schema !== 2) : v.state) })),
       ]}
     />
   )
@@ -109,7 +118,7 @@ export default function SmartFilterBar(props: SmartFilterProps) {
   )
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="review-filter flex min-w-0 flex-col gap-3">
       {/* Desktop toolbar */}
       <div className="hidden flex-wrap items-center gap-2 lg:flex">
         {search}
@@ -117,8 +126,8 @@ export default function SmartFilterBar(props: SmartFilterProps) {
         {primary.filter((k) => facets.includes(k)).map((key) => {
           const sel = state.facets[key] ?? []
           return (
-            <Popover key={key} label={sel.length ? `${facetTitles[key]} · ${sel.length === 1 ? label(key, sel[0]) : sel.length}` : facetTitles[key]} active={sel.length > 0}>
-              {() => <OptionList options={decorate(key, facetOptions(records, state, key))} selected={sel} onToggle={(v) => set(toggle(state, key, v))} searchPlaceholder={`Tìm ${facetTitles[key].toLowerCase()}...`} />}
+            <Popover key={key} label={sel.length ? `${titles[key]} · ${sel.length === 1 ? label(key, sel[0]) : sel.length}` : titles[key]} active={sel.length > 0}>
+              {() => <OptionList options={decorate(key, facetOptions(records, state, key, props.facetValues?.[key]))} selected={sel} onToggle={(v) => set(toggle(state, key, v))} searchPlaceholder={`Tìm ${titles[key].toLowerCase()}...`} />}
             </Popover>
           )
         })}
@@ -154,6 +163,10 @@ export default function SmartFilterBar(props: SmartFilterProps) {
           {extra}
           {moreMenu}
         </div>
+        {props.mobilePrimary?.filter(key => facets.includes(key)).map(key => <section key={key} className="flex flex-col gap-2" aria-label={titles[key]}>
+          <h2 className="text-[14px] font-semibold">{titles[key]}</h2>
+          <OptionList variant="chips" options={decorate(key, facetOptions(records,state,key,props.facetValues?.[key]))} selected={state.facets[key] ?? []} onToggle={v => set(toggle(state,key,v))} />
+        </section>)}
       </div>
 
       {chips.length > 0 && (
@@ -208,7 +221,10 @@ type DrawerProps = SmartFilterProps & {
 }
 
 /** Bottom sheet holding a draft; the apply button always shows the live result count. */
-function FilterDrawer({ records, state, facets, time, teaching, only, onApply, onClose, decorate }: DrawerProps) {
+function FilterDrawer({ compact = false, statusTitle, statusGroup, facetValues, records, state, facets, time, teaching, only, onApply, onClose, decorate }: DrawerProps) {
+  const Group = "details"
+  const GroupTitle = "summary"
+  const titles = { ...facetTitles, status: statusTitle ?? "Trạng thái" }
   const [draft, setDraftRaw] = useState(state)
   const setDraft = (s: FilterState) => setDraftRaw(prune(records, s))
   const results = filterRecords(records, draft).length
@@ -224,7 +240,7 @@ function FilterDrawer({ records, state, facets, time, teaching, only, onApply, o
       open
       onClose={onClose}
       title="Bộ lọc"
-      description="Các bộ lọc kết hợp với nhau (AND). Chọn nhiều giá trị trong cùng một mục sẽ lấy bất kỳ (OR)."
+      description={undefined}
       footer={
         <>
           <Button variant="secondary" className="w-auto shrink-0 px-4" onClick={() => setDraftRaw({ facets: { semester: draft.facets.semester }, q: draft.q })}>Xóa bộ lọc</Button>
@@ -232,16 +248,16 @@ function FilterDrawer({ records, state, facets, time, teaching, only, onApply, o
         </>
       }
     >
-      {SECTIONS.map((sec) => {
+      {sections(statusGroup).map((sec) => {
         const keys = sec.keys.filter(available)
         if (!keys.length) return null
         return (
-          <section key={sec.title} className="flex flex-col gap-3 border-b border-line pb-4 last:border-b-0">
-            <h3 className="text-[11px] font-semibold tracking-wide text-brand">{sec.title.toUpperCase()}</h3>
+          <Group key={sec.title} open={sec.title === "Học vụ" || sec.title === (statusGroup ?? "Trạng thái")} className="flex flex-col gap-3 border-b border-line pb-4 last:border-b-0">
+            <GroupTitle className={compact ? "text-[14px] font-semibold text-brand" : "text-[11px] font-semibold tracking-wide text-brand"}>{compact ? sec.title : sec.title.toUpperCase()}</GroupTitle>
             {keys.map((k) => (
               <div key={k} className="flex flex-col gap-2">
                 <p className="text-[13px] font-semibold text-ink">
-                  {k in timeTitles ? timeTitles[k as keyof typeof timeTitles] : facetTitles[k as FacetKey]}
+                  {k in timeTitles ? timeTitles[k as keyof typeof timeTitles] : titles[k as FacetKey]}
                   {HIERARCHY.includes(k as FacetKey) && (draft.facets[k as FacetKey]?.length ?? 0) > 0 && <span className="ml-1.5 text-[11px] font-medium text-brand">{draft.facets[k as FacetKey]!.length} đã chọn</span>}
                 </p>
                 {k === "time" ? (
@@ -251,11 +267,11 @@ function FilterDrawer({ records, state, facets, time, teaching, only, onApply, o
                 ) : k === "schedule" ? (
                   <ScheduleControl value={draft.schedule} onChange={(v) => setDraft({ ...draft, schedule: v })} count={(v) => countPatch({ schedule: v })} />
                 ) : (
-                  <OptionList variant="chips" options={decorate(k as FacetKey, facetOptions(records, draft, k as FacetKey))} selected={draft.facets[k as FacetKey] ?? []} onToggle={(v) => toggle(k as FacetKey, v)} searchPlaceholder={`Tìm ${facetTitles[k as FacetKey].toLowerCase()}...`} />
+                  <OptionList variant="chips" options={decorate(k as FacetKey, facetOptions(records, draft, k as FacetKey, facetValues?.[k as FacetKey]))} selected={draft.facets[k as FacetKey] ?? []} onToggle={(v) => toggle(k as FacetKey, v)} searchPlaceholder={`Tìm ${titles[k as FacetKey].toLowerCase()}...`} />
                 )}
               </div>
             ))}
-          </section>
+          </Group>
         )
       })}
     </Modal>

@@ -1,0 +1,13 @@
+/* Presentation-only overrides, scoped to the three Phase 1 screens. */
+.phase-one { min-width: 0; overflow-wrap: anywhere; line-height: 1.45; }
+.phase-one :is([class*="text-[10px]"], [class*="text-[11px]"], [class*="text-[12px]"], [class*="text-[13px]"]) { font-size: 14px; }
+.phase-one :is(button, a, summary, select, input:not([type="checkbox"]):not([type="radio"])) { min-height: 48px; min-width: 48px; }
+.phase-one :is(button, a, summary, select, input, textarea):focus-visible { outline: 2px solid var(--color-brand); outline-offset: 3px; }
+.phase-one .refinement-details { min-width: 0; border-bottom: 1px solid var(--color-line); padding-bottom: 4px; }
+.phase-one .refinement-details > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 600; list-style: none; }
+.phase-one .refinement-details > summary::-webkit-details-marker { display: none; }
+.phase-one .refinement-details > summary::after { content: "›"; font-size: 22px; flex-shrink: 0; }
+.phase-one .refinement-details[open] > summary::after { transform: rotate(90deg); }
+.phase-one [role="tabpanel"][hidden] { display: none; }
+
+.phase-one label:has(> input[type="search"]) { min-height: 48px; height: auto; }

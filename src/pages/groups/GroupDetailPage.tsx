@@ -1,3 +1,6 @@
+import { groupMemberLimit } from "@/data/selfServicePolicy"
+import { enrolled, addMemberBySupervisor } from "@/data/selfService"
+import { activityText } from "@/components/ui/contentText"
 import { FolderPlus, Pencil, Trash2, UserMinus, UserPlus } from "lucide-react"
 import { useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
@@ -39,7 +42,8 @@ export default function GroupDetailPage() {
 
   const classRoom = classes.find((c) => c.id === group.classId)
   const members = group.memberIds.map((id) => students.find((s) => s.id === id)).filter(Boolean) as Student[]
-  const available = students.filter((s) => s.classId === group.classId && !s.groupId)
+  const limit = groupMemberLimit(classRoom)
+  const available = students.filter(s => enrolled(s, group.classId) && !groups.some(g => g.classId === group.classId && g.memberIds.includes(s.id)))
   const project = projects.find((p) => p.id === group.projectId)
   const unassigned = projects.filter((p) => classOfProject(p, groups, classes)?.id === group.classId && !groups.some((g) => g.projectId === p.id))
   // A group whose project has history cannot be deleted.
@@ -48,7 +52,7 @@ export default function GroupDetailPage() {
   const syncMembers = (memberIds: string[]) =>
     updateManagement((s) => ({
       groups: s.groups.map((g) => (g.id === group.id ? { ...g, memberIds } : g)),
-      students: s.students.map((st) => (memberIds.includes(st.id) ? { ...st, groupId: group.id } : st.groupId === group.id ? { ...st, groupId: undefined } : st)),
+      students: s.students.map((st) => (st.classId !== group.classId ? st : memberIds.includes(st.id) ? { ...st, groupId: group.id } : st.groupId === group.id ? { ...st, groupId: undefined } : st)),
       projects: s.projects.map((p) =>
         p.groupId === group.id ? { ...p, members: memberIds.map((id, i) => { const st = s.students.find((x) => x.id === id)!; return { initials: st.initials, name: st.name, role: i === 0 ? "Trưởng nhóm" : "Thành viên" } }) } : p,
       ),
@@ -71,13 +75,14 @@ export default function GroupDetailPage() {
       />
       <Card>
         <div className="flex items-center justify-between gap-2">
-          <span className="text-[12px] text-muted">{members.length} sinh viên · Hoạt động {group.lastActivity}</span>
+          <span className="text-[12px] text-muted">{members.length}/{limit} thành viên · Hoạt động {activityText(group.lastActivity)}</span>
           <Badge tone={groupHealthMeta[group.health].tone}>{groupHealthMeta[group.health].label}</Badge>
         </div>
-        <ProgressBar value={group.progress} label="Tiến độ" />
+        <ProgressBar value={group.progress} label="Tiến độ nhóm (ghi nhận)" />
         <p className="text-[12px] text-muted">Chờ review: <span className="font-semibold text-ink">{group.pendingReviews} tài liệu</span></p>
       </Card>
 
+      {members.length > limit && <p role="status" className="text-[14px] text-amber">Nhóm có {members.length}/{limit} thành viên. Giữ nguyên thành viên; không thể thêm người mới.</p>}
       <section className="flex flex-col gap-3">
         <SectionHeader title="Project" />
         {project ? (
@@ -98,7 +103,7 @@ export default function GroupDetailPage() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <SectionHeader title="Thành viên" meta={`${members.length} sinh viên`} />
+        <SectionHeader title="Thành viên" meta={`${members.length}/${limit} thành viên`} />
         {members.length ? (
           <Card className="gap-0 py-1">
             <ul className="divide-y divide-line">
@@ -130,18 +135,21 @@ export default function GroupDetailPage() {
         open={adding}
         onClose={() => setAdding(false)}
         title="Thêm thành viên"
-        description={`Sinh viên ${classRoom?.code} chưa thuộc nhóm nào`}
+        description={`${group.memberIds.length}/${limit} thành viên · Sinh viên ${classRoom?.code} chưa có nhóm`}
         footer={
           <>
             <Button variant="secondary" onClick={() => setAdding(false)}>Hủy</Button>
             <Button
-              disabled={!available.length}
+              disabled={!available.length || group.memberIds.length >= limit}
               className="disabled:opacity-50"
               onClick={() => {
                 const st = available.find((s) => s.name === pick) ?? available[0]
-                syncMembers([...group.memberIds, st.id])
-                toast(`Đã thêm ${st.name} vào ${group.name}`)
-                setAdding(false)
+                if (!st || group.memberIds.length >= limit) { toast("Nhóm đã đạt giới hạn thành viên của lớp."); return }
+                try {
+                  addMemberBySupervisor(group.id, st.id)
+                  toast(`Đã thêm ${st.name} vào ${group.name}`)
+                  setAdding(false)
+                } catch (error) { toast((error as Error).message) }
               }}
             >
               Thêm vào nhóm
@@ -149,6 +157,7 @@ export default function GroupDetailPage() {
           </>
         }
       >
+        {group.memberIds.length >= limit && <Notice>Nhóm đã đạt giới hạn thành viên của lớp.</Notice>}
         {available.length ? (
           <Field label="Sinh viên"><Select options={available.map((s) => s.name)} value={pick || available[0].name} onChange={(e) => setPick(e.target.value)} /></Field>
         ) : (

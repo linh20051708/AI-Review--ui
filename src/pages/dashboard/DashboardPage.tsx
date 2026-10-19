@@ -1,13 +1,6 @@
-import {
-  BookOpen,
-  Calendar,
-  ChevronRight,
-  FileText,
-  GraduationCap,
-  School,
-  Sparkles,
-  Users2,
-} from "lucide-react";
+import { projectStateMeta } from "@/data/projectStatuses";
+import ReviewAIStatus from "@/components/review/ReviewAIStatus";
+import { ChevronRight, FileText } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import SmartFilterBar from "@/components/filters/SmartFilterBar";
@@ -15,11 +8,7 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import EmptyState from "@/components/ui/EmptyState";
-import PageHeading from "@/components/ui/PageHeading";
-import SectionHeader from "@/components/ui/SectionHeader";
-import StatCard from "@/components/ui/StatCard";
-import StatusBadge from "@/components/ui/StatusBadge";
-import { aiSummary, attentionItems, currentUser } from "@/data/mockData";
+import { attentionItems } from "@/data/mockData";
 import { useManagement } from "@/data/managementStore";
 import { useReviewStore } from "@/data/reviewStore";
 import { requestRecords } from "@/data/filterRecords";
@@ -27,51 +16,46 @@ import { currentSemester } from "@/lib/academic";
 import { filterRecords, type FilterState } from "@/lib/smartFilter";
 import { fmtRelative } from "@/lib/time";
 import type { ReviewRequest } from "@/types";
+import "@/styles/review-refinement.css";
 
-function ReviewRow({ r, cta }: { r: ReviewRequest; cta: string }) {
+function ReviewRow({ review }: { review: ReviewRequest }) {
   return (
-    <li className="flex flex-col gap-2.5 border-b border-line py-3.5 last:border-b-0 sm:flex-row sm:items-center sm:gap-4">
-      <div className="flex min-w-0 flex-1 flex-col gap-1.5 leading-[1.45]">
-        <p className="text-[12px] text-muted">
-          {r.classCode} · {r.groupName} · {r.projectName}
-        </p>
-        <div className="flex flex-wrap items-center gap-2">
-          <FileText
-            size={16}
-            strokeWidth={1.75}
-            className="shrink-0 text-muted"
-          />
-          <span className="text-[14px] font-semibold text-ink">
-            {r.documentTitle}
-          </span>
-          <Badge>{r.version}</Badge>
-        </div>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[12px] text-muted">
-          <span>
-            AI Review:{" "}
-            <span
-              className={r.ai.errors ? "font-semibold text-rust" : "text-ink"}
-            >
-              {r.aiStatus === "aiReviewing" ? "đang chạy" : aiSummary(r.ai)}
-            </span>
-          </span>
-          <span>Yêu cầu: {fmtRelative(r.requestedTs)}</span>
-          <StatusBadge status={r.supervisorStatus} />
-        </div>
-      </div>
-      <Button
-        to={`/reviews/${r.id}`}
-        variant={cta === "Review ngay" ? "primary" : "secondary"}
-        className="sm:w-auto sm:shrink-0"
+    <li className="border-b border-line last:border-0">
+      <Link
+        to={`/reviews/${review.id}`}
+        className="flex min-h-12 items-center gap-3 py-4"
       >
-        {cta}
-      </Button>
+        <FileText
+          size={18}
+          className="shrink-0 text-muted"
+          aria-hidden="true"
+        />
+        <div className="flex min-w-0 flex-1 flex-col gap-1 text-[14px] leading-[1.45]">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-semibold">{review.documentTitle}</span>
+            <Badge>{review.version}</Badge>
+          </div>
+          <p className="break-words">{review.projectName}</p>
+          <p className="text-muted">
+            {review.classCode} · {review.groupName}
+          </p>
+          <p className="text-muted">
+            <ReviewAIStatus review={review} />
+          </p>
+          <p className="text-muted">{fmtRelative(review.requestedTs)}</p>
+        </div>
+        <ChevronRight
+          size={20}
+          className="shrink-0 text-muted"
+          aria-hidden="true"
+        />
+      </Link>
     </li>
   );
 }
 
 export default function DashboardPage() {
-  const { requests: allRequests } = useReviewStore();
+  const { requests: allRequests, evaluations } = useReviewStore();
   const {
     classes: allClasses,
     semesters,
@@ -80,19 +64,18 @@ export default function DashboardPage() {
     offerings,
     groups,
     students,
+    registrations = [],
   } = useManagement();
   const [filter, setFilter] = useState<FilterState>(() => ({
     facets: { semester: [currentSemester(semesters).id] },
     q: "",
   }));
   const records = useMemo(
-    () => requestRecords(allRequests, allClasses, offerings),
-    [allRequests, allClasses, offerings],
+    () => requestRecords(allRequests, allClasses, offerings, evaluations),
+    [allRequests, allClasses, offerings, evaluations],
   );
   const requests = filterRecords(records, filter).map((r) => r.item);
   const sel = filter.facets;
-
-  // Stats follow the same semester / course / class context.
   const classes = allClasses.filter(
     (c) =>
       (!sel.semester?.length || sel.semester.includes(c.semesterId)) &&
@@ -108,234 +91,207 @@ export default function DashboardPage() {
       )
       .map((p) => p.id),
   );
-  const attention = attentionItems.filter((a) => projectIds.has(a.projectId));
+  const activeProjectCount = projects.filter(p => projectIds.has(p.id) && p.state === "active").length;
+  const archivedProjectCount = projects.filter(p => projectIds.has(p.id) && p.state === "archived").length;
+  const attention = attentionItems.filter((a) => projectIds.has(a.projectId) && projects.some(p => p.id === a.projectId && p.state === "active"));
   const waiting = requests.filter((r) => r.supervisorStatus === "waiting");
   const inReview = requests.filter((r) => r.supervisorStatus === "inReview");
-  // Mock: 4 further revision requests live in classes without seeded review requests.
-  const needsRevision =
-    requests.filter((r) => r.supervisorStatus === "needsRevision").length +
-    (classes.some((c) => c.id === "se1701") ? 4 : 0);
-
-  const stats = [
-    { value: waiting.length, label: "Chờ tôi review" },
-    { value: inReview.length, label: "Đang review" },
-    { value: needsRevision, label: "Cần sinh viên chỉnh sửa" },
-    {
-      value: attention.filter(
-        (a) => a.label === "Sắp đến hạn" || a.label === "Quá hạn",
-      ).length,
-      label: "Sắp đến deadline",
-    },
-    {
-      value: classes.filter((c) => c.state === "active").length,
-      label: "Lớp đang phụ trách",
-    },
-    {
-      value: classes.reduce((n, c) => n + c.projectCount, 0),
-      label: "Project đang hoạt động",
-    },
+  const pendingRegistrations = registrations.filter(
+    (r) => r.status === "pending",
+  ).length;
+  const needsRevision = requests.filter(r => r.supervisorStatus === "needsRevision").length;
+  const academicLinks = [
+    { label: "Học kỳ", count: semesters.length, to: "/semesters" },
+    { label: "Môn học", count: courses.length, to: "/courses" },
+    { label: "Lớp", count: allClasses.length, to: "/classes" },
+    { label: "Sinh viên", count: students.length, to: "/students" },
+    { label: "Nhóm", count: groups.length, to: "/groups" },
+    { label: "Bộ quy tắc", to: "/rule-sets" },
   ];
-
-  // Compact quick-access items near the top (min 48x48 touch target)
-  const quickAccessItems = [
-    {
-      title: "Học kỳ",
-      badge: semesters.length,
-      icon: <Calendar size={18} className="text-brand shrink-0" />,
-      path: "/semesters",
-    },
-    {
-      title: "Môn học",
-      badge: courses.length,
-      icon: <BookOpen size={18} className="text-brand shrink-0" />,
-      path: "/courses",
-    },
-    {
-      title: "Lớp",
-      badge: allClasses.length,
-      icon: <School size={18} className="text-brand shrink-0" />,
-      path: "/classes",
-    },
-    {
-      title: "Sinh viên",
-      badge: students.length,
-      icon: <GraduationCap size={18} className="text-brand shrink-0" />,
-      path: "/students",
-    },
-    {
-      title: "Nhóm",
-      badge: groups.length,
-      icon: <Users2 size={18} className="text-brand shrink-0" />,
-      path: "/groups",
-    },
-  ];
-
   return (
-    <>
-      {/* 1. Greeting + current Semester */}
-      <div className="flex items-center justify-between gap-3 leading-[1.45]">
-        <div className="min-w-0">
-          <p className="text-[13px] font-semibold text-ink">
-            Xin chào, {currentUser.name}
-          </p>
-          <p className="text-[12px] text-muted">{currentUser.role}</p>
-        </div>
-        <Badge>{currentUser.semester}</Badge>
-      </div>
-
-      {/* 2. Dashboard title + description */}
-      <PageHeading
-        eyebrow="TỔNG QUAN HỌC VỤ"
-        title="Dashboard"
-        description="Quản lý tiến độ review tài liệu đồ án và điều phối dữ liệu học vụ."
-      />
-
-      {/* 3. Search & Context Filters */}
-      <SmartFilterBar
-        records={records}
-        state={filter}
-        onChange={setFilter}
-        facets={["semester", "course", "class"]}
-        primary={["course", "class"]}
-        searchPlaceholder="Tìm project, tài liệu..."
-        noun="yêu cầu review trong phạm vi"
-        viewKey="dashboard"
-      />
-
-      {/* 4. TRUY CẬP NHANH (Compact Quick Academic Access near the top) */}
-      <section className="flex flex-col gap-2">
-        <div className="flex items-center justify-between px-0.5">
-          <h2 className="text-[12px] font-bold uppercase tracking-wider text-muted">
-            TRUY CẬP NHANH
-          </h2>
-          <span className="text-[11px] text-muted">Quản lý học vụ</span>
-        </div>
-
-        {/* Compact row on mobile (horizontal scroll or clean flex) with >=48x48dp touch targets */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar sm:grid sm:grid-cols-5 sm:gap-2.5">
-          {quickAccessItems.map((item) => (
-            <Link
-              key={item.title}
-              to={item.path}
-              className="
-        flex min-h-14 min-w-[112px] shrink-0
-        items-center justify-between gap-2
-        rounded-[10px] border border-line bg-white
-        px-3 py-2 shadow-xs
-        transition hover:border-brand/40 hover:bg-brand-soft/20
-        active:scale-[0.98]
-        sm:min-w-0
-      "
+    <div className="phase-one flex min-w-0 flex-col gap-5 text-[14px]">
+      <header className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h1 className="text-[26px] font-semibold leading-tight">
+            Việc cần làm
+          </h1>
+          <label className="min-w-0">
+            <span className="sr-only">Học kỳ đang xem</span>
+            <select
+              className="min-h-12 max-w-full rounded-lg border border-line bg-white px-3 text-[14px]"
+              value={filter.facets.semester?.[0] ?? ""}
+              onChange={(e) =>
+                setFilter((s) => ({
+                  ...s,
+                  facets: {
+                    ...s.facets,
+                    semester: e.target.value ? [e.target.value] : [],
+                  },
+                }))
+              }
             >
-              <div className="flex min-w-0 items-center gap-2">
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-[6px] bg-brand-soft text-brand">
-                  {item.icon}
-                </div>
-
-                <span className="whitespace-nowrap text-[14px] font-semibold text-ink">
-                  {item.title}
-                </span>
-              </div>
-
-              <span className="shrink-0 rounded-full bg-subtle px-1.5 py-0.5 text-[11px] font-semibold text-muted">
-                {item.badge}
+              <option value="">Tất cả học kỳ</option>
+              {semesters.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <p className="text-muted">
+          <strong className="text-ink">{waiting.length}</strong> chờ review ·{" "}
+          <strong className="text-ink">{inReview.length}</strong> đang review
+        </p>
+        <Button to="/reviews">Mở Review</Button>
+      </header>
+      <section aria-labelledby="priority-title" className="flex flex-col gap-2">
+        <h2 id="priority-title" className="text-[16px] font-semibold">
+          Cần review
+        </h2>
+        {waiting.length ? (
+          <>
+            <Card className="gap-0 py-0">
+              <ul>
+                {waiting.slice(0, 3).map((r) => (
+                  <ReviewRow key={r.id} review={r} />
+                ))}
+              </ul>
+            </Card>
+            <Link
+              to="/reviews"
+              className="flex min-h-12 items-center justify-between font-semibold text-brand"
+            >
+              Xem {waiting.length} yêu cầu
+              <ChevronRight size={18} aria-hidden="true" />
+            </Link>
+            {waiting.length > 3 && (
+              <details className="refinement-details">
+                <summary>Yêu cầu khác ({waiting.length - 3})</summary>
+                <ul>
+                  {waiting.slice(3).map((r) => (
+                    <ReviewRow key={r.id} review={r} />
+                  ))}
+                </ul>
+              </details>
+            )}
+          </>
+        ) : (
+          <EmptyState title="Không còn tài liệu chờ review" />
+        )}
+      </section>
+      <Link
+        to="/project-registrations"
+        className="flex min-h-12 items-center justify-between gap-3 border-y border-line py-3 font-semibold"
+      >
+        <span>Đăng ký project</span>
+        <span className="flex items-center gap-2">
+          <Badge tone={pendingRegistrations ? "amber" : "neutral"}>
+            {pendingRegistrations} chờ duyệt
+          </Badge>
+          <ChevronRight size={18} aria-hidden="true" />
+        </span>
+      </Link>
+      <details className="refinement-details">
+        <summary>Đang review ({inReview.length})</summary>
+        {inReview.length ? (
+          <ul>
+            {inReview.map((r) => (
+              <ReviewRow key={r.id} review={r} />
+            ))}
+          </ul>
+        ) : (
+          <p className="py-3 text-muted">Không có tài liệu đang review.</p>
+        )}
+      </details>
+      <details className="refinement-details">
+        <summary>Học vụ</summary>
+        <dl className="grid grid-cols-2 gap-3 border-b border-line py-4">
+          <div>
+            <dt className="text-muted">Lớp phụ trách</dt>
+            <dd className="font-semibold">
+              {classes.filter((c) => c.state === "active").length}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-muted">{projectStateMeta.active.label}</dt>
+            <dd className="font-semibold">
+              {activeProjectCount}
+            </dd>
+          </div>
+          <div><dt className="text-muted">{projectStateMeta.archived.label}</dt><dd className="font-semibold">{archivedProjectCount}</dd></div>
+          <div>
+            <dt className="text-muted">Chờ sinh viên sửa</dt>
+            <dd className="font-semibold">{needsRevision}</dd>
+          </div>
+          <div>
+            <dt className="text-muted">Sắp đến deadline</dt>
+            <dd className="font-semibold">
+              {
+                attention.filter(
+                  (a) => a.label === "Sắp đến hạn" || a.label === "Quá hạn",
+                ).length
+              }
+            </dd>
+          </div>
+        </dl>
+        <nav aria-label="Quản lý học vụ" className="divide-y divide-line">
+          {academicLinks.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="flex min-h-12 items-center justify-between gap-3 py-3"
+            >
+              <span>{item.label}</span>
+              <span className="flex items-center gap-2 text-muted">
+                {item.count}
+                <ChevronRight size={18} aria-hidden="true" />
               </span>
             </Link>
           ))}
-        </div>
-      </section>
-
-      {/* 5. VIỆC CẦN LÀM (Key Supervisor Actionable Stats) */}
-      <section className="flex flex-col gap-2.5">
-        <div className="px-0.5">
-          <h2 className="text-[12px] font-bold uppercase tracking-wider text-muted">
-            VIỆC CẦN LÀM
-          </h2>
-        </div>
-        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-          {stats.map((s) => (
-            <StatCard key={s.label} {...s} />
-          ))}
-        </div>
-      </section>
-
-      {/* 6. TÀI LIỆU CẦN REVIEW */}
-      <section className="flex flex-col gap-3">
-        <SectionHeader
-          title="Tài liệu cần review"
-          meta={`${waiting.length} yêu cầu`}
-          linkTo="/reviews"
-        />
-        {waiting.length ? (
-          <Card className="gap-0 py-0.5">
-            <ul>
-              {waiting.map((r) => (
-                <ReviewRow key={r.id} r={r} cta="Review ngay" />
-              ))}
-            </ul>
-          </Card>
-        ) : (
-          <EmptyState
-            title="Không còn tài liệu chờ review"
-            description="Bạn đã xử lý tất cả yêu cầu."
-          />
-        )}
-      </section>
-
-      {/* 7. ĐANG REVIEW */}
-      <section className="flex flex-col gap-3">
-        <SectionHeader
-          title="Đang review"
-          meta={`${inReview.length} tài liệu`}
-        />
-        {inReview.length ? (
-          <Card className="gap-0 py-0.5">
-            <ul>
-              {inReview.map((r) => (
-                <ReviewRow key={r.id} r={r} cta="Tiếp tục review" />
-              ))}
-            </ul>
-          </Card>
-        ) : (
-          <EmptyState title="Không có tài liệu đang review" />
-        )}
-      </section>
-
-      {/* 8. PROJECT CẦN CHÚ Ý */}
-      <section className="flex flex-col gap-3">
-        <SectionHeader
-          title="Project cần chú ý"
-          meta={`${attention.length} project`}
-        />
-        <Card className="gap-0 py-1">
-          <ul>
-            {attention.map((item) => (
-              <li
-                key={item.title}
-                className="border-b border-line last:border-b-0"
+        </nav>
+      </details>
+      <details className="refinement-details">
+        <summary>Project cần chú ý ({attention.length})</summary>
+        <ul className="divide-y divide-line">
+          {attention.map((item) => (
+            <li key={item.title}>
+              <Link
+                to={`/projects/${item.projectId}`}
+                className="flex min-h-12 items-center gap-3 py-4"
               >
-                <Link
-                  to={`/projects/${item.projectId}`}
-                  className="flex items-center gap-3 py-3"
-                >
-                  <div className="flex min-w-0 flex-1 flex-col items-start gap-1.5 leading-[1.45]">
+                <div className="flex min-w-0 flex-1 flex-col gap-2">
+                  <span>
                     <Badge tone={item.tone}>{item.label}</Badge>
-                    <p className="text-[14px] font-semibold text-ink">
-                      {item.title}
-                    </p>
-                    <p className="text-[12px] text-muted">{item.detail}</p>
-                  </div>
-                  <ChevronRight
-                    size={18}
-                    strokeWidth={1.75}
-                    className="shrink-0 text-muted"
-                  />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      </section>
-    </>
+                  </span>
+                  <p className="font-semibold">{item.title}</p>
+                  <p className="text-muted">{item.detail}</p>
+                </div>
+                <ChevronRight
+                  size={18}
+                  className="shrink-0"
+                  aria-hidden="true"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </details>
+      <details className="refinement-details">
+        <summary>Tìm kiếm & phạm vi</summary>
+        <div className="pt-3">
+          <SmartFilterBar
+            records={records}
+            state={filter}
+            onChange={setFilter}
+            facets={["semester", "course", "class"]}
+            primary={["course", "class"]}
+            searchPlaceholder="Tìm project, tài liệu..."
+            noun="yêu cầu review trong phạm vi"
+            viewKey="dashboard"
+          />
+        </div>
+      </details>
+    </div>
   );
 }

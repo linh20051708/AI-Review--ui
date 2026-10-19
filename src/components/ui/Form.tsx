@@ -1,7 +1,8 @@
 import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from "react"
+import { Check } from "lucide-react"
 
 const field =
-  "w-full rounded-[8px] border border-line bg-white p-3 text-[14px] leading-[1.45] text-ink outline-none transition focus:border-brand focus:ring-1 focus:ring-brand disabled:bg-subtle disabled:text-muted disabled:cursor-not-allowed"
+  "w-full rounded-[8px] border border-muted bg-white p-3 text-[16px] leading-[1.45] text-ink outline-none transition focus:border-brand focus:ring-1 focus:ring-brand disabled:bg-subtle disabled:text-muted disabled:cursor-not-allowed"
 
 export function Field({
   label,
@@ -100,6 +101,7 @@ export function ChoiceChips<T extends string>({
               : "border-line bg-white text-ink hover:bg-subtle"
           }`}
         >
+            {o === value && <Check size={16} aria-hidden="true" className="mr-1 inline-block" />}
           {o}
         </button>
       ))}

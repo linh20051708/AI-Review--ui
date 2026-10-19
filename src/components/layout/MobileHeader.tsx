@@ -1,3 +1,4 @@
+import { obsoleteJoinApproval } from "@/data/selfServicePolicy"
 import { Bell, Files } from "lucide-react"
 import { Link } from "react-router-dom"
 import Avatar from "@/components/ui/Avatar"
@@ -5,7 +6,7 @@ import Badge from "@/components/ui/Badge"
 import { currentUser, notifications } from "@/data/mockData"
 
 export default function MobileHeader() {
-  const hasUnread = notifications.some((n) => n.unread)
+  const hasUnread = notifications.some((n) => n.unread && !obsoleteJoinApproval(n))
   return (
     <header className="mobile-header w-full border-b border-line">
       <div className="mobile-header-inner gap-2 px-4 sm:px-5">

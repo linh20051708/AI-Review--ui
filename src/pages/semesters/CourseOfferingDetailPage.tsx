@@ -1,3 +1,5 @@
+import PhaseTwoTabs from "@/components/ui/PhaseTwoTabs"
+import "@/styles/phase-two.css"
 import {
   BookOpen,
   Calendar,
@@ -37,6 +39,7 @@ const teachingMethodsList: TeachingMethod[] = [
 export default function CourseOfferingDetailPage() {
   const { offeringId } = useParams<{ offeringId: string }>()
   const { offerings, courses, semesters, ruleSets, classes } = useManagement()
+  const [section, setSection] = useState("Cấu hình")
   const [addClassOpen, setAddClassOpen] = useState(false)
 
   const offering = offerings.find((o) => o.id === offeringId)
@@ -108,22 +111,24 @@ export default function CourseOfferingDetailPage() {
   const scopeLabel = `${course?.code ?? "Môn học"} · ${semester?.name ?? "Học kỳ"}`
 
   return (
-    <>
+    <div className="phase-two flex min-w-0 flex-col gap-4">
       <BackLink label="Danh sách môn học" fallback="/courses" />
       <PageHeading
         eyebrow={`HỌC KỲ ${semester?.name?.toUpperCase() ?? "KHÔNG XÁC ĐỊNH"}`}
         title={`${course?.code ?? offering.courseId} · ${course?.name ?? "Chưa đặt tên"}`}
-        description="Cấu hình cấu trúc Lab, quy tắc đánh giá và phương pháp giảng dạy cho đợt học này."
+        
         aside={<Badge tone="brand">{classesUsing.length} lớp đang học</Badge>}
       />
 
+      <PhaseTwoTabs id="offering" tabs={["Cấu hình", "Lab", "Lớp"]} active={section} onChange={setSection} />
+      <section role="tabpanel" id="offering-panel-0" aria-labelledby="offering-0" hidden={section !== "Cấu hình"}>
       {/* Basic Offering Settings */}
       <Card>
         <div className="flex items-center justify-between border-b border-line pb-3">
           <div className="flex items-center gap-2">
             <School size={18} className="text-brand" />
             <h2 className="text-[15px] font-semibold text-ink">
-              Thông tin & Cấu hình chung
+              Cấu hình
             </h2>
           </div>
           <Button
@@ -131,38 +136,15 @@ export default function CourseOfferingDetailPage() {
             icon={<Save size={14} />}
             onClick={handleSaveConfig}
           >
-            {saved ? "Đã lưu" : "Lưu thay đổi"}
+            {saved ? "Đã lưu" : "Lưu cấu hình"}
           </Button>
         </div>
 
+        <p className="text-[14px] text-muted">Nhấn Lưu để áp dụng thay đổi.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-          <div className="flex flex-col gap-1 rounded-[8px] bg-subtle p-3">
-            <span className="text-[12px] font-medium text-muted">Học kỳ</span>
-            <span className="text-[14px] font-semibold text-ink flex items-center gap-1.5">
-              <Calendar size={14} className="text-muted" />
-              {semester?.name} ({semester?.academicYear})
-            </span>
-            <span className="text-[11px] text-muted">
-              {semester?.startDate} đến {semester?.endDate}
-            </span>
-          </div>
-
-          <div className="flex flex-col gap-1 rounded-[8px] bg-subtle p-3">
-            <span className="text-[12px] font-medium text-muted">
-              Môn học gốc (Master Data)
-            </span>
-            <span className="text-[14px] font-semibold text-ink flex items-center gap-1.5">
-              <BookOpen size={14} className="text-muted" />
-              {course?.code} - {course?.name}
-            </span>
-            <span className="text-[11px] text-muted">
-              {course?.description || "Không có mô tả"}
-            </span>
-          </div>
-
           <Field
             label="Phương pháp giảng dạy"
-            hint="Các lớp thuộc đợt này sẽ kế thừa phương pháp này nếu không ghi đè."
+            hint="Áp dụng cho lớp không có cấu hình riêng."
           >
             <select
               className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand min-h-12"
@@ -179,7 +161,7 @@ export default function CourseOfferingDetailPage() {
 
           <Field
             label="Bộ quy tắc đánh giá (Rule Set)"
-            hint="Quy định tiêu chuẩn AI và giảng viên review."
+            
           >
             <select
               className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand min-h-12"
@@ -207,13 +189,16 @@ export default function CourseOfferingDetailPage() {
         </div>
       </Card>
 
+      </section>
+      <section role="tabpanel" id="offering-panel-1" aria-labelledby="offering-1" hidden={section !== "Lab"}>
       {/* Lab Structure Section */}
       <div className="flex flex-col gap-2 pt-2">
         <SectionHeader
           title="Cấu trúc Lab & Deliverables"
-          description={`Các lớp thuộc ${scopeLabel} sẽ kế thừa toàn bộ cấu trúc Lab này.`}
+          description="Thao tác Lab được lưu ngay."
         />
         <LabStructureEditor
+          compact
           labs={offering.labs}
           onChange={handleUpdateLabs}
           scopeLabel={scopeLabel}
@@ -221,12 +206,14 @@ export default function CourseOfferingDetailPage() {
         />
       </div>
 
+      </section>
+      <section role="tabpanel" id="offering-panel-2" aria-labelledby="offering-2" hidden={section !== "Lớp"}>
       {/* Classes using this offering */}
       <div className="flex flex-col gap-3 pt-4">
         <div className="flex items-center justify-between">
           <SectionHeader
             title="Các lớp thuộc đợt này"
-            description="Danh sách các lớp học kế thừa hoặc tùy biến từ cấu hình này."
+            
           />
           <Button
             className="w-auto min-h-[36px] py-1.5 px-3 text-[13px]"
@@ -259,13 +246,13 @@ export default function CourseOfferingDetailPage() {
                     <div>
                       <Link
                         to={`/classes/${cls.id}`}
-                        className="text-[15px] font-semibold text-brand hover:underline"
+                        className="inline-flex items-center text-[15px] font-semibold text-brand hover:underline"
                       >
                         {cls.code}
                       </Link>
                       <div className="flex items-center gap-2 text-[12px] text-muted mt-1">
                         <Users size={14} />
-                        <span>{cls.capacity} sinh viên</span>
+                        <span>Tối đa {cls.capacity} sinh viên</span>
                       </div>
                     </div>
                     <Badge
@@ -290,7 +277,7 @@ export default function CourseOfferingDetailPage() {
                   </div>
 
                   <div className="pt-2 flex justify-end">
-                    <Link to={`/classes/${cls.id}`}>
+                    <Link to={`/classes/${cls.id}`} className="inline-flex items-center">
                       <Button
                         variant="secondary"
                         className="w-auto min-h-[32px] py-1 px-3 text-[12px]"
@@ -306,10 +293,11 @@ export default function CourseOfferingDetailPage() {
         )}
       </div>
 
+      </section>
       <ClassFormModal
         open={addClassOpen}
         onClose={() => setAddClassOpen(false)}
       />
-    </>
+    </div>
   )
 }

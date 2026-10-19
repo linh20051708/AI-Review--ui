@@ -1,10 +1,10 @@
 import { matchesSchedule, resolveRange, type SchedulePattern, type Session, type TimeRange } from "@/lib/time"
 
 /** Facet categories in cascading priority order. */
-export const FACETS = ["semester", "course", "class", "lab", "group", "project", "docType", "status", "ai"] as const
+export const FACETS = ["semester", "course", "class", "lab", "labItem", "docType", "group", "project", "status", "documentStatus", "evaluationStatus", "ai", "legacyReviewStatus"] as const
 export type FacetKey = (typeof FACETS)[number]
 /** Upstream facets narrow the options of downstream ones; invalid downstream selections are pruned. */
-export const HIERARCHY: FacetKey[] = ["semester", "course", "class", "lab", "group", "project"]
+export const HIERARCHY: FacetKey[] = ["semester", "course", "class", "lab", "labItem", "docType", "group", "project"]
 
 export type FilterRecord = Partial<Record<FacetKey, string>> & {
   ts?: number
@@ -49,29 +49,43 @@ export interface FacetOption {
   count: number
 }
 
-/** Options for one facet given every other active filter. Zero-count values are hidden unless selected. */
-export function facetOptions(records: FilterRecord[], s: FilterState, key: FacetKey): FacetOption[] {
-  const counts = new Map<string, number>()
-  for (const r of records) {
-    const v = r[key]
-    if (!v || !matches(r, s, key)) continue
-    counts.set(v, (counts.get(v) ?? 0) + 1)
-  }
-  for (const v of s.facets[key] ?? []) if (!counts.has(v)) counts.set(v, 0)
-  return [...counts].map(([value, count]) => ({ value, count }))
+/** Scope comes only from parents; child selections cannot hide a replacement parent. */
+function upstreamState(s: FilterState, key: FacetKey): FilterState {
+  const parents = HIERARCHY.slice(0, HIERARCHY.indexOf(key))
+  return { facets: Object.fromEntries(parents.map(k => [k, s.facets[k]])), q: "" }
 }
 
-/** Drop hierarchy selections that no longer exist under upstream choices. */
+/** Counts are disjunctive: results for this value with the other filters applied. */
+export function facetOptions(records: FilterRecord[], s: FilterState, key: FacetKey, includeValues: string[] = []): FacetOption[] {
+  const hierarchical = HIERARCHY.includes(key)
+  const scope = hierarchical ? records.filter(r => matches(r, upstreamState(s,key))) : records
+  const values = new Set(scope.map(r => r[key]).filter((v): v is string => Boolean(v)))
+  if (!hierarchical) for (const value of includeValues) values.add(value)
+  const options = [...values].map(value => {
+    const candidate = { ...s, facets: { ...s.facets, [key]: [value] } }
+    const count = filterRecords(records, hierarchical ? prune(records,candidate) : candidate).length
+    return {value,count}
+  })
+  return options.filter(o => o.count > 0 || s.facets[key]?.includes(o.value) || (!hierarchical && includeValues.includes(o.value)))
+}
+
+/** Validate children against parents only, never against search/status or descendants. */
 export function prune(records: FilterRecord[], s: FilterState): FilterState {
   let next = s
   for (const key of HIERARCHY) {
     const sel = next.facets[key]
     if (!sel?.length) continue
-    const valid = new Set(facetOptions(records, next, key).filter((o) => o.count > 0).map((o) => o.value))
-    const kept = sel.filter((v) => valid.has(v))
+    const valid = new Set(records.filter(r => matches(r, upstreamState(next,key))).map(r => r[key]))
+    const kept = sel.filter(v => valid.has(v))
     if (kept.length !== sel.length) next = { ...next, facets: { ...next.facets, [key]: kept } }
   }
   return next
+}
+
+/** Preserve the exact OR semantics of saved review views from the old combined status. */
+export function restoreReviewView(s: FilterState, legacy: boolean): FilterState {
+  if (!legacy || !s.facets.status?.length) return s
+  return {...s, facets:{...s.facets,status:[],legacyReviewStatus:s.facets.status}}
 }
 
 export const activeFilterCount = (s: FilterState, exclude: FacetKey[] = []) =>

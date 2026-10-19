@@ -1,0 +1,4 @@
+.review-filter :is(button,select,summary) { min-height: 48px; min-width: 48px; }
+.review-filter :is(input,select) { font-size: 16px; }
+.review-filter :is(p,span,label,button,summary) { font-size: max(14px, 1em); }
+.review-filter summary { display: list-item; cursor: pointer; align-content: center; }

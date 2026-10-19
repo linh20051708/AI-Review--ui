@@ -1,4 +1,4 @@
-import { Archive, Pencil, Plus, QrCode, UserCheck, UserPlus, UserX } from "lucide-react"
+import { Archive, Pencil, Plus, QrCode, UserPlus } from "lucide-react"
 import { useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import GroupFormModal from "@/components/project/GroupFormModal"
@@ -7,7 +7,7 @@ import ClassFormModal from "@/components/project/ClassFormModal"
 import MoreMenu from "@/components/ui/MoreMenu"
 import { toast } from "@/components/ui/Toast"
 import { classContext, courseLabel } from "@/lib/academic"
-import { fmtDate, fmtRelative, parseISO, scheduleLabel, sessionMeta } from "@/lib/time"
+import { fmtDate, parseISO, scheduleLabel, sessionMeta } from "@/lib/time"
 import ProjectCard from "@/components/project/ProjectCard"
 import ReviewRequestCard from "@/components/review/ReviewRequestCard"
 import Avatar from "@/components/ui/Avatar"
@@ -34,28 +34,16 @@ export default function ClassDetailPage() {
   const [addingGroup, setAddingGroup] = useState(false)
   const [adding, setAdding] = useState(false)
   const [editing, setEditing] = useState(false)
-  const { classes, semesters, courses, joinRequests, groups: allGroups, students: allStudents, projects: allProjects } = useManagement()
+  const { classes, semesters, courses, groups: allGroups, students: allStudents, projects: allProjects } = useManagement()
   const { requests } = useReviewStore()
   const classRoom = classes.find((c) => c.id === classId)
 
   if (!classRoom) return <EmptyState title="Không tìm thấy lớp" description={`Mã lớp “${classId}” không tồn tại.`} />
 
   const groups = allGroups.filter((g) => g.classId === classRoom.id)
-  const students = allStudents.filter((s) => s.classId === classRoom.id)
+  const students = allStudents.filter((s) => s.classId === classRoom.id || s.enrolledClassIds?.includes(classRoom.id))
   const projects = allProjects.filter((p) => groups.some((g) => g.id === p.groupId))
-  const pendingJoins = joinRequests.filter((j) => j.classId === classRoom.id)
   const course = courses.find((c) => c.id === classRoom.courseId)
-  const resolveJoin = (id: string, accept: boolean) => {
-    const j = joinRequests.find((x) => x.id === id)!
-    updateManagement((s) => ({
-      joinRequests: s.joinRequests.filter((x) => x.id !== id),
-      ...(accept && {
-        students: [...s.students, { id: `join-${id}`, initials: j.name.split(" ").slice(-2).map((w) => w[0]).join("").toUpperCase(), name: j.name, studentCode: j.studentCode, email: j.email, classId: j.classId }],
-        classes: s.classes.map((c) => (c.id === j.classId ? { ...c, studentCount: c.studentCount + 1 } : c)),
-      }),
-    }))
-    toast(accept ? `Đã chấp nhận ${j.name}` : `Đã từ chối yêu cầu của ${j.name}`)
-  }
   const reviews = requests.filter((r) => r.classCode === classRoom.code && !isCompleted(r.supervisorStatus))
 
   return (
@@ -78,13 +66,6 @@ export default function ClassDetailPage() {
           ]}
         />
       </div>
-      {pendingJoins.length > 0 && tab !== "Sinh viên" && (
-        <button type="button" onClick={() => setTab("Sinh viên")} className="flex items-center gap-2 rounded-[10px] border border-amber/30 bg-amber-soft px-3 py-2.5 text-left text-[13px] text-amber">
-          <UserCheck size={16} strokeWidth={1.75} />
-          <span className="flex-1"><span className="font-semibold">{pendingJoins.length} yêu cầu tham gia</span> đang chờ bạn duyệt</span>
-          <span className="text-[12px] font-semibold">Xem</span>
-        </button>
-      )}
       <SegmentedTabs tabs={TABS} active={tab} onChange={setTab} />
 
       {tab === "Tổng quan" && (
@@ -121,29 +102,6 @@ export default function ClassDetailPage() {
         </section>
       )}
 
-      {tab === "Sinh viên" && pendingJoins.length > 0 && (
-        <section className="flex flex-col gap-3">
-          <SectionHeader title="Yêu cầu tham gia" meta={`${pendingJoins.length} chờ duyệt`} />
-          <Card className="gap-0 py-1">
-            <ul className="divide-y divide-line">
-              {pendingJoins.map((j) => (
-                <li key={j.id} className="flex flex-wrap items-center gap-3 py-3">
-                  <div className="min-w-0 flex-1 leading-[1.45]">
-                    <p className="text-[14px] font-semibold text-ink">{j.name}</p>
-                    <p className="text-[12px] text-muted">{j.studentCode} · {j.email}</p>
-                    <p className="text-[11px] text-muted">Quét QR · {fmtRelative(j.requestedAt)}</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button type="button" onClick={() => resolveJoin(j.id, false)} className="inline-flex h-9 items-center gap-1 rounded-[8px] border border-line px-3 text-[12px] font-semibold text-muted"><UserX size={14} strokeWidth={1.75} />Từ chối</button>
-                    <button type="button" onClick={() => resolveJoin(j.id, true)} className="inline-flex h-9 items-center gap-1 rounded-[8px] border border-brand bg-brand px-3 text-[12px] font-semibold text-white"><UserCheck size={14} strokeWidth={1.75} />Chấp nhận</button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </Card>
-        </section>
-      )}
-
       {tab === "Sinh viên" && (
         <section className="flex flex-col gap-3">
           <SectionHeader title="Sinh viên" meta={`${students.length} sinh viên`} />
@@ -157,7 +115,7 @@ export default function ClassDetailPage() {
                       <p className="text-[14px] font-semibold text-ink">{s.name}</p>
                       <p className="text-[12px] text-muted">{s.studentCode}</p>
                     </div>
-                    {s.groupId ? <Badge>{allGroups.find((g) => g.id === s.groupId)?.name}</Badge> : <Badge tone="amber">Chưa có nhóm</Badge>}
+                    {groups.some(g => g.memberIds.includes(s.id)) ? <Badge>{groups.find(g => g.memberIds.includes(s.id))?.name}</Badge> : <Badge tone="amber">Chưa có nhóm</Badge>}
                   </li>
                 ))}
               </ul>

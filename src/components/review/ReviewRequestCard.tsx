@@ -1,3 +1,5 @@
+import StatusBadge from "@/components/ui/StatusBadge"
+import { contentText } from "@/components/ui/contentText"
 import { Eye, FilePenLine, FileText } from "lucide-react"
 import Badge from "@/components/ui/Badge"
 import Button from "@/components/ui/Button"
@@ -7,11 +9,21 @@ import { useManagement } from "@/data/managementStore"
 import { fmtRelative } from "@/lib/time"
 import type { ReviewRequest } from "@/types"
 import StatusTracks from "./StatusTracks"
+import ReviewAIStatus from "./ReviewAIStatus"
 
-export default function ReviewRequestCard({ review }: { review: ReviewRequest }) {
+export default function ReviewRequestCard({ review, compact = false }: { review: ReviewRequest; compact?: boolean }) {
   const { courses } = useManagement()
   const done = isCompleted(review.supervisorStatus)
   const cta = review.supervisorStatus === "inReview" ? "Tiếp tục review" : "Review ngay"
+  if (compact) return <Card>
+    <div className="flex items-start gap-2">
+      <h2 className="min-w-0 flex-1 text-[17px] font-semibold leading-snug">{review.documentTitle}</h2><Badge>{review.version}</Badge>
+    </div>
+    <p className="text-[14px] font-medium">{review.projectName}</p>
+    <div className="flex flex-wrap items-center justify-between gap-2 text-[14px] text-muted"><span>{review.classCode} · {review.groupName}</span><StatusBadge status={review.supervisorStatus}/></div>
+    <p><ReviewAIStatus review={review} /></p>
+    <div className="flex items-center justify-between gap-3"><span className="text-[14px] text-muted" title={review.requestedAt}>{fmtRelative(review.requestedTs)}</span><Button to={`/reviews/${review.id}`} variant={done ? "secondary" : "primary"} className="w-auto px-4">{done ? "Xem" : cta}</Button></div>
+  </Card>
   return (
     <Card>
       <div className="flex justify-between gap-3 text-[12px] leading-[1.45] text-muted">
@@ -26,9 +38,9 @@ export default function ReviewRequestCard({ review }: { review: ReviewRequest })
         <Badge>{review.fileType === "PDF" ? "PDF" : "Word"}</Badge>
       </div>
       <div className="rounded-[8px] bg-subtle p-2.5">
-        <StatusTracks documentStatus={review.documentStatus} aiStatus={review.aiStatus} ai={review.ai} supervisorStatus={review.supervisorStatus} compact />
+        <StatusTracks documentStatus={review.documentStatus} aiContent={<ReviewAIStatus review={review} />} supervisorStatus={review.supervisorStatus} compact />
       </div>
-      {review.note && <p className="text-[12px] leading-[1.45] text-muted">{review.note}</p>}
+      {contentText(review.note) && <p className="text-[12px] leading-[1.45] text-muted">{contentText(review.note)}</p>}
       {done ? (
         <Button variant="secondary" to={`/reviews/${review.id}`} icon={<Eye size={18} strokeWidth={1.75} />}>Xem</Button>
       ) : (
