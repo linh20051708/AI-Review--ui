@@ -141,7 +141,7 @@ export default function LabStructureEditor({ compact = false, labs, onChange, us
             {!lab.items.length && <li className="px-3 py-4 text-center text-[12px] text-muted">Chưa có mục nào</li>}
           </ul>
           {!readOnly && (
-            <button type="button" onClick={() => setItemForm({ labId: lab.id })} className="inline-flex items-center gap-1.5 self-start text-[13px] font-semibold text-brand">
+            <button type="button" onClick={() => setItemForm({ labId: lab.id })} className="-my-2 inline-flex items-center gap-1.5 self-start px-1 py-2 text-[13px] font-semibold text-brand">
               <Plus size={15} strokeWidth={2} />Thêm mục vào {lab.code}
             </button>
           )}

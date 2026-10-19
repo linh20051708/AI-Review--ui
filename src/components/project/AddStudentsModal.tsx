@@ -100,23 +100,45 @@ export default function AddStudentsModal({
           </Field>
         </div>
       )}
-      <div role="tablist" className="grid grid-cols-3 gap-1 rounded-[8px] bg-subtle p-1">
+      <div id="add-students-tablist" role="tablist" className="grid grid-cols-3 gap-1 rounded-[8px] bg-subtle p-1">
         {tabs.map((t) => (
           <button
             key={t.id}
+            id={`add-students-tab-${t.id}`}
             role="tab"
             type="button"
             aria-selected={tab === t.id}
+            aria-controls={`add-students-tabpanel-${t.id}`}
+            tabIndex={tab === t.id ? 0 : -1}
             onClick={() => setTab(t.id)}
-            className={`rounded-[6px] px-1 py-2 text-[12px] font-medium transition sm:text-[13px] ${tab === t.id ? "bg-white text-brand shadow-[0_1px_2px_rgba(36,51,45,0.08)]" : "text-muted"}`}
+            onKeyDown={(e) => {
+              const i = tabs.findIndex((x) => x.id === tab)
+              if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+                e.preventDefault()
+                const next = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length]
+                setTab(next.id)
+                document.getElementById(`add-students-tab-${next.id}`)?.focus()
+              } else if (e.key === "Home") {
+                e.preventDefault()
+                setTab(tabs[0].id)
+                document.getElementById(`add-students-tab-${tabs[0].id}`)?.focus()
+              } else if (e.key === "End") {
+                e.preventDefault()
+                setTab(tabs[tabs.length - 1].id)
+                document.getElementById(`add-students-tab-${tabs[tabs.length - 1].id}`)?.focus()
+              }
+            }}
+            className={`rounded-[6px] px-1 py-2 text-[12px] font-medium transition sm:text-[13px] ${tab === t.id ? "bg-white text-brand" : "text-muted"}`}
           >
             {t.label}
           </button>
         ))}
       </div>
-      {tab === "qr" && <QRTab classRoom={activeClass} />}
-      {tab === "import" && <ImportTab inClass={inClass} onAdd={addStudents} />}
-      {tab === "manual" && <ManualTab inClass={inClass} onAdd={addStudents} />}
+      <div id={`add-students-tabpanel-${tab}`} role="tabpanel" aria-labelledby={`add-students-tab-${tab}`}>
+        {tab === "qr" && <QRTab classRoom={activeClass} />}
+        {tab === "import" && <ImportTab inClass={inClass} onAdd={addStudents} />}
+        {tab === "manual" && <ManualTab inClass={inClass} onAdd={addStudents} />}
+      </div>
     </Modal>
   )
 }

@@ -7,7 +7,14 @@ export default function ProgressBar({ value, label }: { value: number; label?: s
           <span className="font-semibold text-ink">{value}%</span>
         </div>
       )}
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-brand-soft" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100}>
+      <div
+        className="h-1.5 w-full overflow-hidden rounded-full bg-brand-soft"
+        role="progressbar"
+        aria-valuenow={value}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={label || "Progress"}
+      >
         <div className="h-full rounded-full bg-brand" style={{ width: `${value}%` }} />
       </div>
     </div>

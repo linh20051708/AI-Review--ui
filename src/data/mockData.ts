@@ -478,9 +478,11 @@ export const attentionItems: AttentionItem[] = [
   { label: "Sắp đến hạn", tone: "amber", title: "Group 05 · Dormitory Management Platform", detail: "Deadline SRS 08/10 · còn 4 ngày", projectId: "dormitory-management-platform" },
 ]
 
-export const notifications: Notification[] = [
-  { id: "n1", title: "Group 03 vừa gửi yêu cầu review State Diagram v2", meta: "SE1701 · 20 phút trước", unread: true, link: "/reviews/review-006" },
-  { id: "n2", title: "Group 04 gửi yêu cầu review Use Case Diagram v2", meta: "SE1701 · 2 giờ trước", unread: true, link: "/reviews/review-001" },
-  { id: "n3", title: "AI Review hoàn tất cho Sequence Diagram v2 · Group 01", meta: "SE1701 · 3 giờ trước", unread: false, link: "/reviews/review-008" },
-  { id: "n4", title: "Sequence Diagram v2 của Group 08 đã chờ review 4 ngày", meta: "SE1701 · Nhắc việc", unread: false, link: "/reviews/review-004" },
+export type NotificationKind = "file-up" | "badge-check" | "clock" | "bell"
+
+export const notifications: (Notification & { kind: NotificationKind; section: string })[] = [
+  { id: "n1", title: "Group 03 vừa gửi yêu cầu review State Diagram v2", meta: "SE1701 · 20 phút trước", unread: true, link: "/reviews/review-006", kind: "file-up", section: "Cập nhật review" },
+  { id: "n2", title: "Group 04 gửi yêu cầu review Use Case Diagram v2", meta: "SE1701 · 2 giờ trước", unread: true, link: "/reviews/review-001", kind: "file-up", section: "Cập nhật review" },
+  { id: "n3", title: "AI Review hoàn tất cho Sequence Diagram v2 · Group 01", meta: "SE1701 · 3 giờ trước", unread: false, link: "/reviews/review-008", kind: "badge-check", section: "Cập nhật review" },
+  { id: "n4", title: "Sequence Diagram v2 của Group 08 đã chờ review 4 ngày", meta: "SE1701 · Nhắc việc", unread: false, link: "/reviews/review-004", kind: "clock", section: "Cập nhật review" },
 ]

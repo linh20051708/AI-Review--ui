@@ -42,8 +42,10 @@ export default function ProjectDocumentsPage() {
       <div className="flex flex-wrap items-center justify-between gap-2 text-[14px] text-muted">
         <span>{ctx.cls?.code ?? "—"} · {ctx.group?.name ?? "—"}</span><ProjectStateBadge state={project.state} />
       </div>
-      <SegmentedTabs tabs={tabs} active={tabs[active]} onChange={(t) => setActive(tabs.indexOf(t))} />
-      {visible.length ? <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-white">{visible.map((d) => <DocumentCard key={d.id} doc={d} compact />)}</ul> : <EmptyState title="Không có tài liệu" />}
+      <SegmentedTabs id="project-docs" tabs={tabs} active={tabs[active]} onChange={(t) => setActive(tabs.indexOf(t))} />
+      <div id="project-docs-tabpanel" role="tabpanel" aria-labelledby={`project-docs-tab-${tabs[active]}`}>
+      {visible.length ? <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-white">{visible.map((d) => <DocumentCard key={d.id} doc={d} compact />)}</ul>  : <EmptyState title="Không có tài liệu" />}
+      </div>
     </>
   )
 }

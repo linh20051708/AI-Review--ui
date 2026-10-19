@@ -43,7 +43,7 @@ export default function Popover({ label, active, children, width = 280, align = 
       </button>
       {open && (
         <div
-          className={`absolute top-full z-40 mt-1.5 max-h-[420px] overflow-y-auto rounded-[10px] border border-line bg-white p-2 shadow-[0_8px_24px_rgba(36,51,45,0.12)] ${align === "right" ? "right-0" : "left-0"}`}
+          className={`absolute top-full z-40 mt-1.5 max-h-[420px] overflow-y-auto rounded-[10px] border border-line bg-white p-2 ${align === "right" ? "right-0" : "left-0"}`}
           style={{ width }}
         >
           {children(() => setOpen(false))}

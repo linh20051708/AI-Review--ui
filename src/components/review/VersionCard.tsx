@@ -36,9 +36,9 @@ export default function VersionCard({ version, selected, onView, onCompare }: Pr
         <div className="flex items-center justify-between gap-2"><dt className="text-muted">Feedback</dt><dd className="font-semibold text-ink">{version.feedbackCount} feedback</dd></div>
       </dl>
       {version.summary && <p className="text-[12px] leading-[1.45] text-muted">{version.summary}</p>}
-      <div className="flex gap-4">
-        <button type="button" onClick={onView} className="inline-flex items-center gap-1 text-[12px] font-semibold text-brand"><Eye size={14} strokeWidth={1.75} />Xem version</button>
-        {onCompare && <button type="button" onClick={onCompare} className="text-[12px] font-semibold text-brand">So sánh với version trước</button>}
+      <div className="-mx-2 flex gap-4">
+        <button type="button" onClick={onView} className="-my-2 inline-flex items-center gap-1 px-2 py-2 text-[12px] font-semibold text-brand"><Eye size={14} strokeWidth={1.75} />Xem version</button>
+        {onCompare && <button type="button" onClick={onCompare} className="-my-2 px-2 py-2 text-[12px] font-semibold text-brand">So sánh với version trước</button>}
       </div>
     </Card>
   )

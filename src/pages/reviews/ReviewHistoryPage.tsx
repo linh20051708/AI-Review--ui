@@ -75,7 +75,7 @@ export default function ReviewHistoryPage() {
       </section>
       <Link
         to={`/reviews/${review.id}/versions`}
-        className="self-start text-[13px] font-semibold text-brand"
+        className="-my-2 self-start px-2 py-2 text-[13px] font-semibold text-brand"
       >
         Xem lịch sử version →
       </Link>

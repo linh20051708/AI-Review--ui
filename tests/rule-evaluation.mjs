@@ -117,10 +117,12 @@ const first = structuredClone(flow.latestEvaluation(review))
 assert.equal(first.evaluationStatus, "completed")
 assert.equal(first.criterionResults.length, 10)
 assert.equal(first.maxScore, 100)
-assert.ok(first.criterionResults.every((c) => c.score === 0 || c.score === 10))
+assert.ok(first.criterionResults.every((c) => c.score === null || (Number.isFinite(c.score) && c.score >= 0 && c.score <= c.maxScore)), "Illustrative scores stay within the frozen criterion scale")
 assert.equal(
   first.overallScore,
-  first.criterionResults.reduce((n, c) => n + c.score, 0),
+  first.criterionResults.every(c => c.score !== null)
+    ? first.criterionResults.reduce((n, c) => n + c.score, 0)
+    : null,
 )
 assert.ok(first.criterionResults.every((c) => c.needsVerification))
 assert.ok(

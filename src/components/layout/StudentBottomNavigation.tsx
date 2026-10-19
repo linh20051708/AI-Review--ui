@@ -18,7 +18,7 @@ export default function StudentBottomNavigation() {
             <NavLink
               to={to}
               className={({ isActive }) =>
-                `flex min-h-12 flex-col items-center justify-center gap-1 rounded-[8px] px-1 py-1 text-[11px] font-semibold leading-tight transition-colors ${
+                `flex min-h-12 flex-col items-center justify-center gap-1 rounded-[8px] px-1 py-1 text-[10px] leading-tight transition-colors ${
                   isActive ? "bg-brand-soft text-brand" : "text-muted hover:text-ink"
                 }`
               }

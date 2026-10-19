@@ -246,7 +246,7 @@ export default function CourseOfferingDetailPage() {
                     <div>
                       <Link
                         to={`/classes/${cls.id}`}
-                        className="inline-flex items-center text-[15px] font-semibold text-brand hover:underline"
+                        className="inline-flex min-h-12 items-center text-[15px] font-semibold text-brand hover:underline"
                       >
                         {cls.code}
                       </Link>

@@ -106,7 +106,7 @@ export default function StudentListPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 py-3">
           <Field label="Học kỳ">
             <select
-              className="w-full rounded-[8px] border border-muted bg-white p-3 text-[16px] text-ink outline-none focus:border-brand min-h-12"
+              className="w-full rounded-[8px] border border-muted bg-white p-3 text-[16px] text-ink outline-none focus:border-brand focus-visible:ring-2 focus-visible:ring-brand min-h-12"
               value={selectedSemester}
               onChange={(e) => {
                 setSelectedSemester(e.target.value)
@@ -125,7 +125,7 @@ export default function StudentListPage() {
 
           <Field label="Môn học">
             <select
-              className="w-full rounded-[8px] border border-muted bg-white p-3 text-[16px] text-ink outline-none focus:border-brand min-h-12"
+              className="w-full rounded-[8px] border border-muted bg-white p-3 text-[16px] text-ink outline-none focus:border-brand focus-visible:ring-2 focus-visible:ring-brand min-h-12"
               value={selectedCourse}
               onChange={(e) => {
                 setSelectedCourse(e.target.value)
@@ -143,7 +143,7 @@ export default function StudentListPage() {
 
           <Field label="Lớp học">
             <select
-              className="w-full rounded-[8px] border border-muted bg-white p-3 text-[16px] text-ink outline-none focus:border-brand min-h-12"
+              className="w-full rounded-[8px] border border-muted bg-white p-3 text-[16px] text-ink outline-none focus:border-brand focus-visible:ring-2 focus-visible:ring-brand min-h-12"
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
             >

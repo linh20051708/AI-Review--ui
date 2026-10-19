@@ -1,5 +1,5 @@
 import { MoreHorizontal } from "lucide-react"
-import { useEffect, useId, useRef, useState, type ReactNode } from "react"
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react"
 
 interface Item {
   label: string
@@ -20,35 +20,57 @@ export default function MoreMenu({
   up?: boolean
 }) {
   const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-  const triggerRef = useRef<HTMLButtonElement>(null)
   const menuId = useId()
+  const [activeIndex, setActiveIndex] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLUListElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+
+  const close = useCallback(() => setOpen(false), [])
+
   useEffect(() => {
     if (!open) return
-    const close = (e: MouseEvent) => !ref.current?.contains(e.target as Node) && setOpen(false)
-    document.addEventListener("mousedown", close)
-    const options = () => [...(ref.current?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ?? [])]
-    options()[0]?.focus()
-    const keys = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault(); e.stopPropagation(); setOpen(false); triggerRef.current?.focus(); return
-      }
-      if (e.key === "Tab") { setOpen(false); triggerRef.current?.focus(); return }
-      if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) return
-      e.preventDefault()
-      const items = options(), current = items.indexOf(document.activeElement as HTMLButtonElement)
-      const index = e.key === "Home" ? 0 : e.key === "End" ? items.length - 1 :
-        (current + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length
-      items[index]?.focus()
-    }
-    ref.current?.addEventListener("keydown", keys)
-    const container = ref.current
-    return () => { document.removeEventListener("mousedown", close); container?.removeEventListener("keydown", keys) }
+    const onPointerDown = (e: MouseEvent) => !containerRef.current?.contains(e.target as Node) && close()
+    document.addEventListener("mousedown", onPointerDown)
+    return () => document.removeEventListener("mousedown", onPointerDown)
+  }, [open, close])
+
+  useEffect(() => {
+    if (open) setActiveIndex(0)
   }, [open])
 
+  useEffect(() => {
+    if (!open) return
+    listRef.current?.querySelectorAll<HTMLButtonElement>("[role='menuitem']")[activeIndex]?.focus()
+  }, [open, activeIndex])
+
+  const onMenuKeyDown = (e: React.KeyboardEvent) => {
+    const last = items.length - 1
+    if (e.key === "ArrowDown") {
+      e.preventDefault()
+      setActiveIndex((i) => (i >= last ? 0 : i + 1))
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault()
+      setActiveIndex((i) => (i <= 0 ? last : i - 1))
+    } else if (e.key === "Home") {
+      e.preventDefault()
+      setActiveIndex(0)
+    } else if (e.key === "End") {
+      e.preventDefault()
+      setActiveIndex(last)
+    } else if (e.key === "Escape") {
+      e.preventDefault()
+      e.stopPropagation()
+      close()
+      triggerRef.current?.focus()
+    } else if (e.key === "Tab") {
+      close()
+      triggerRef.current?.focus()
+    }
+  }
+
   return (
-    <div ref={ref} className="relative">
-      {/* 48x48 dp touch target */}
+    <div ref={containerRef} className="relative">
       <button
         ref={triggerRef}
         type="button"
@@ -57,23 +79,33 @@ export default function MoreMenu({
         aria-label={label}
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+            e.preventDefault()
+            setOpen(true)
+          }
+        }}
         className="flex size-12 items-center justify-center rounded-[8px] border border-line bg-white text-ink hover:bg-subtle active:scale-95 transition"
       >
         <MoreHorizontal size={20} strokeWidth={1.75} />
       </button>
       {open && (
         <ul
+          ref={listRef}
           id={menuId}
           role="menu"
-          className={`absolute z-30 min-w-[210px] rounded-[10px] border border-line bg-white p-1.5 shadow-[0_8px_24px_rgba(36,51,45,0.12)] ${
+          aria-label={label}
+          onKeyDown={onMenuKeyDown}
+          className={`absolute z-30 min-w-[210px] rounded-[10px] border border-line bg-white p-1.5 ${
             align === "right" ? "right-0" : "left-0"
           } ${up ? "bottom-full mb-2" : "top-full mt-2"}`}
         >
-          {items.map((item) => (
+          {items.map((item, index) => (
             <li key={item.label}>
               <button
                 type="button"
                 role="menuitem"
+                tabIndex={index === activeIndex ? 0 : -1}
                 onClick={() => {
                   setOpen(false)
                   triggerRef.current?.focus()

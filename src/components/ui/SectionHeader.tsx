@@ -15,7 +15,7 @@ export default function SectionHeader({ title, description, meta, linkTo, linkLa
         <h2 className="min-w-0 text-[18px] font-semibold text-ink">{title}</h2>
         {meta && <span className="shrink-0 text-[12px] text-muted">{meta}</span>}
         {linkTo && (
-          <Link to={linkTo} className="shrink-0 text-[12px] font-semibold text-brand">
+          <Link to={linkTo} className="-my-2 -mr-2 flex min-h-12 shrink-0 items-center px-2 py-2 text-[12px] font-semibold text-brand">
             {linkLabel}
           </Link>
         )}

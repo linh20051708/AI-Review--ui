@@ -35,9 +35,9 @@ export default function OriginalDocumentPanel({
 
   return (
     <Card>
-      <h3 className="text-[14px] font-semibold">
+      <h2 className="text-[14px] font-semibold">
         Đối chiếu file gốc{!compact && ` · ${review.fileName}`}
-      </h3>
+      </h2>
       <label className="flex min-h-12 flex-col gap-2 text-[14px]">
         {compact ? "Chọn PDF/DOCX · tối đa 50 MB" : "Chọn file gốc PDF/DOCX"}
         <input

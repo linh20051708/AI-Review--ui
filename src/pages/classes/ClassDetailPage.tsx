@@ -66,9 +66,10 @@ export default function ClassDetailPage() {
           ]}
         />
       </div>
-      <SegmentedTabs tabs={TABS} active={tab} onChange={setTab} />
+      <SegmentedTabs id="class-detail" tabs={TABS} active={tab} onChange={setTab} />
 
-      {tab === "Tổng quan" && (
+      <div id="class-detail-tabpanel" role="tabpanel" aria-labelledby={`class-detail-tab-${tab}`}>
+        {tab === "Tổng quan" && (
         <>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <StatCard value={students.length || classRoom.studentCount} label="Sinh viên" />
@@ -152,6 +153,7 @@ export default function ClassDetailPage() {
       <GroupFormModal open={addingGroup} classId={classRoom.id} onClose={() => setAddingGroup(false)} />
       <AddStudentsModal open={adding} classRoom={classRoom} onClose={() => setAdding(false)} />
       <ClassFormModal open={editing} classRoom={classRoom} onClose={() => setEditing(false)} />
+      </div>
     </>
   )
 }

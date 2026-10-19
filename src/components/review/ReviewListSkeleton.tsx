@@ -4,7 +4,7 @@ export default function ReviewListSkeleton({ count = 3 }: { count?: number }) {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="flex flex-col gap-3 rounded-[12px] border border-line bg-white p-4 shadow-xs animate-pulse"
+          className="flex flex-col gap-3 rounded-[12px] border border-line bg-white p-4 animate-pulse"
         >
           {/* Header row: Context pills & status */}
           <div className="flex items-center justify-between gap-2">

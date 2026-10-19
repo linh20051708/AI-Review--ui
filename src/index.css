@@ -12,6 +12,7 @@
   --color-brand: #146b55;
   --color-brand-soft: #eaf4ed;
   --color-brand-tint: #f2f7f3;
+  --color-brand-hover: #105945;
   --color-olive: #637344;
   --color-olive-soft: #f1f4e9;
   --color-amber: #756534;
@@ -41,6 +42,8 @@
     background: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.45;
     font-synthesis: none;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
@@ -73,7 +76,7 @@
   }
 
   .mobile-header-inner {
-    min-height: 56px;
+    min-height: 64px;
     display: flex;
     align-items: center;
   }

@@ -129,8 +129,7 @@ export default function ReviewWorkspacePage() {
     const block = supervisorBlock(review)
 
     if (block) {
-      toast(block)
-
+      toast(block, "error")
       return
     }
 
@@ -157,8 +156,7 @@ export default function ReviewWorkspacePage() {
     const block = supervisorBlock(review)
 
     if (block) {
-      toast(block)
-
+      toast(block, "error")
       return
     }
 
