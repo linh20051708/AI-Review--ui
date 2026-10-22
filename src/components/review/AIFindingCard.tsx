@@ -35,7 +35,7 @@ export default function AIFindingCard({ finding, added, onAdd }: Props) {
           className="inline-flex min-h-12 min-w-12 items-center gap-1 self-start text-[14px] font-semibold text-brand disabled:text-muted"
         >
           {added ? <Check size={14} strokeWidth={2} /> : <Plus size={14} strokeWidth={2} />}
-          {added ? "Đã thêm vào feedback" : "Thêm vào feedback"}
+          {added ? "Đã thêm vào phản hồi" : "Thêm vào phản hồi"}
         </button>
       )}
     </div>

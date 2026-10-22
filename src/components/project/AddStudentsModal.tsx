@@ -242,14 +242,14 @@ function ImportTab({ inClass, onAdd }: { inClass: Student[]; onAdd: (l: Omit<Stu
         <input ref={fileRef} type="file" accept=".csv,.xlsx" className="hidden" onChange={(e) => load(e.target.files?.[0])} />
         <button type="button" onClick={() => fileRef.current?.click()} className="flex flex-col items-center gap-1.5 rounded-[12px] border border-dashed border-line bg-subtle px-4 py-8 text-[13px] text-muted hover:border-brand/40">
           <Upload size={22} strokeWidth={1.75} className="text-brand" />
-          <span className="font-semibold text-ink">Chọn file danh sách</span>
+          <span className="font-semibold text-ink">Chọn tệp danh sách</span>
           CSV hoặc XLSX · tối đa 500 dòng
         </button>
         <div className="rounded-[8px] border border-line p-3 text-[12px] leading-[1.5]">
           <p className="font-semibold text-ink">Cột bắt buộc</p>
           <p className="text-muted">Mã sinh viên · Họ và tên · Email</p>
         </div>
-        <button type="button" onClick={() => load()} className="self-start text-[12px] font-semibold text-brand">Dùng file mẫu để xem trước</button>
+        <button type="button" onClick={() => load()} className="self-start text-[12px] font-semibold text-brand">Dùng tệp mẫu để xem trước</button>
       </div>
     )
 
@@ -258,7 +258,7 @@ function ImportTab({ inClass, onAdd }: { inClass: Student[]; onAdd: (l: Omit<Stu
       <div className="flex items-center gap-2 text-[13px]">
         <FileSpreadsheet size={18} strokeWidth={1.75} className="text-brand" />
         <span className="min-w-0 flex-1 truncate font-medium text-ink">{fileName}</span>
-        <button type="button" onClick={() => setRows([])} className="text-[12px] font-semibold text-muted">Chọn file khác</button>
+        <button type="button" onClick={() => setRows([])} className="text-[12px] font-semibold text-muted">Chọn tệp khác</button>
       </div>
       <p className="text-[14px] font-semibold text-ink">Đã đọc {rows.length} sinh viên</p>
       <div className="flex flex-wrap gap-2">

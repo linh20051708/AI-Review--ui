@@ -6,6 +6,7 @@ import { currentUser } from "@/data/mockData"
 import { reviewActions } from "@/data/reviewStore"
 import type { ReviewFeedback } from "@/types"
 import { severityTone } from "./severity"
+import uiLabel from "@/lib/uiLabels"
 
 export default function FeedbackItem({
   feedback,
@@ -22,9 +23,9 @@ export default function FeedbackItem({
       <div className="flex flex-wrap items-center gap-2">
         {feedback.pageRef && <Badge tone="brand">{feedback.pageRef}</Badge>}
         <Badge tone={severityTone[feedback.severity]}>
-          {feedback.severity}
+          {uiLabel(feedback.severity)}
         </Badge>
-        <Badge>{feedback.category}</Badge>
+        <Badge>{uiLabel(feedback.category)}</Badge>
         {!feedback.official && <Badge>Bản nháp · chưa công bố</Badge>}
       </div>
       {editing ? (
@@ -33,7 +34,7 @@ export default function FeedbackItem({
             rows={3}
             value={text}
             onChange={(e) => setText(e.target.value)}
-            aria-label="Nội dung feedback"
+            aria-label="Nội dung phản hồi"
           />
           <div className="flex gap-3">
             <button
@@ -64,11 +65,11 @@ export default function FeedbackItem({
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted">
         <span>{feedback.author}</span>
         <span>{feedback.createdAt}</span>
-        <span>Version {feedback.version}</span>
+        <span>Phiên bản {feedback.version}</span>
         {feedback.official ? (
           <span className="ml-auto inline-flex items-center gap-1">
             <Lock size={11} strokeWidth={2} />
-            Thuộc lịch sử review
+            Thuộc lịch sử đánh giá
           </span>
         ) : (
           editable &&

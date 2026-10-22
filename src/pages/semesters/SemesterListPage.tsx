@@ -1,5 +1,5 @@
 import "@/styles/phase-two.css"
-import { Archive, CalendarRange, ChevronRight, Pencil, Plus, RotateCcw, Trash2 } from "lucide-react"
+import { Archive, CalendarRange, Pencil, Plus, RotateCcw, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import Badge from "@/components/ui/Badge"
 import Button from "@/components/ui/Button"
@@ -51,10 +51,7 @@ export default function SemesterListPage() {
   return (
     <div className="phase-two flex min-w-0 flex-col gap-4">
       <PageHeading eyebrow="QUẢN LÝ" title="Học kỳ"  />
-      <div className="grid grid-cols-2 gap-2">
         <Button icon={<Plus size={18} strokeWidth={1.75} />} onClick={() => setForm({ open: true })}>Tạo học kỳ</Button>
-        <Button variant="secondary" to="/rule-sets" className="flex-row-reverse" icon={<ChevronRight size={18} strokeWidth={1.75} />}>Bộ quy tắc</Button>
-      </div>
       <section className="flex flex-col gap-3">
         {semesters.length === 0 ? (
           <EmptyState
@@ -98,7 +95,7 @@ export default function SemesterListPage() {
           )
         }))}
       </section>
-      <Notice>Học kỳ đã có lớp chỉ có thể lưu trữ để giữ nguyên lịch sử project và review.</Notice>
+      <Notice>Học kỳ đã có lớp chỉ có thể lưu trữ để giữ nguyên lịch sử dự án và đánh giá.</Notice>
 
       <Modal
         open={form.open}

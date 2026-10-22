@@ -29,8 +29,8 @@ export default function ProjectListPage() {
 
   return (
     <div className="phase-two flex min-w-0 flex-col gap-4">
-      <PageHeading eyebrow="QUẢN LÝ PROJECT" title="Project"  />
-      <Button icon={<Plus size={18} strokeWidth={1.75} />} onClick={() => setCreating(true)}>Tạo project</Button>
+      <PageHeading eyebrow="QUẢN LÝ DỰ ÁN" title="Dự án"  />
+      <Button icon={<Plus size={18} strokeWidth={1.75} />} onClick={() => setCreating(true)}>Tạo dự án</Button>
       <SmartFilterBar
         compact
         records={records}
@@ -41,11 +41,11 @@ export default function ProjectListPage() {
         mobilePrimary={["status"]}
         facetValues={{status: Object.keys(projectStatusLabels)}}
         teaching
-        statusTitle="Trạng thái project"
-        statusGroup="Project"
+        statusTitle="Trạng thái dự án"
+        statusGroup="Dự án"
         statusLabels={projectStatusLabels}
-        searchPlaceholder="Tìm project hoặc nhóm..."
-        noun="project"
+        searchPlaceholder="Tìm dự án hoặc nhóm..."
+        noun="dự án"
         viewKey="projects"
       />
       <section className="flex flex-col gap-3">
@@ -62,8 +62,8 @@ export default function ProjectListPage() {
                   <span className="flex max-w-full flex-wrap gap-1"><ProjectStateBadge state={p.state} />{p.state === "active" && health && <Badge tone={health.tone}>{health.label}</Badge>}</span>
                 </div>
                 <p className="text-[17px] leading-[1.45] font-semibold text-ink">{p.name}</p>
-                <ProgressBar value={p.progress} label="Tiến độ project (ghi nhận)" />
-                <p className="text-[12px] text-muted">Deadline {fmtDate(parseISO(p.deadline))}</p>
+                <ProgressBar value={p.progress} label="Tiến độ dự án (ghi nhận)" />
+                <p className="text-[12px] text-muted">Hạn nộp {fmtDate(parseISO(p.deadline))}</p>
               </Card>
             </Link>
           )
@@ -71,7 +71,7 @@ export default function ProjectListPage() {
         {!visible.length && (
           <EmptyState
             icon={<Folder size={24} className="text-brand" />}
-            title="Chưa có project phù hợp"
+            title="Chưa có dự án phù hợp"
             description="Chọn trạng thái khác hoặc xóa bộ lọc."
             action={
               <Button variant="secondary" onClick={() => setFilter({facets:{},q:""})}>

@@ -22,7 +22,7 @@ export default function DocumentCard({ doc: raw, compact = false }: { doc: Proje
       <h2 className="min-w-0 text-[16px] font-semibold">{doc.title} {doc.latestVersion && <span className="text-[14px] font-normal text-muted">· {doc.latestVersion}</span>}</h2>
       <StatusBadge status={doc.supervisorStatus ?? doc.documentStatus} />
     </div>
-    {doc.submissionLocked && <p className="flex items-start gap-2 text-[14px] text-muted"><Lock size={16} className="mt-0.5 shrink-0" />{doc.dependsOn ? `Cần duyệt ${doc.dependsOn} trước khi gửi review.` : "Đang khóa gửi review."}</p>}
+    {doc.submissionLocked && <p className="flex items-start gap-2 text-[14px] text-muted"><Lock size={16} className="mt-0.5 shrink-0" />{doc.dependsOn ? `Cần duyệt ${doc.dependsOn} trước khi gửi đánh giá.` : "Đang khóa gửi đánh giá."}</p>}
     <div className="flex flex-wrap items-start justify-between gap-2">
       <details className="min-w-0 flex-1 basis-36">
         <summary className="flex min-h-12 cursor-pointer items-center text-[14px] font-medium text-muted">Chi tiết tài liệu</summary>
@@ -32,11 +32,11 @@ export default function DocumentCard({ doc: raw, compact = false }: { doc: Proje
           {doc.updatedAt && <p className="text-muted">Cập nhật: {doc.updatedAt}</p>}
           {doc.note && <p>{doc.note}</p>}
           {doc.submissionLocked && doc.dependsOn && <p className="text-muted">{lockReason(doc.dependsOn)}</p>}
-          {doc.reviewId && <Button variant="secondary" to={`/reviews/${doc.reviewId}/versions`}>Lịch sử version</Button>}
-          {!doc.reviewId && doc.latestVersion && <p>Không có yêu cầu review đang mở cho version này.</p>}
+          {doc.reviewId && <Button variant="secondary" to={`/reviews/${doc.reviewId}/versions`}>Lịch sử phiên bản</Button>}
+          {!doc.reviewId && doc.latestVersion && <p>Không có yêu cầu đánh giá đang mở cho phiên bản này.</p>}
         </div>
       </details>
-      {doc.reviewId && <Button className="w-auto px-4" variant={reviewable ? "primary" : "secondary"} to={`/reviews/${doc.reviewId}`}>{reviewable ? "Review" : "Xem"}</Button>}
+      {doc.reviewId && <Button className="w-auto px-4" variant={reviewable ? "primary" : "secondary"} to={`/reviews/${doc.reviewId}`}>{reviewable ? "Đánh giá" : "Xem"}</Button>}
     </div>
   </li>
   return (
@@ -44,29 +44,29 @@ export default function DocumentCard({ doc: raw, compact = false }: { doc: Proje
       <div className="flex items-center gap-2">
         <FileText size={18} strokeWidth={1.75} className="shrink-0 text-muted" />
         <span className="min-w-0 flex-1 text-[17px] font-semibold text-ink">{doc.title}</span>
-        <Badge>{doc.versionCount ? `${doc.versionCount} version` : "Chưa có version"}</Badge>
+        <Badge>{doc.versionCount ? `${doc.versionCount} phiên bản` : "Chưa có phiên bản"}</Badge>
       </div>
       <div className="rounded-[8px] bg-subtle p-2.5">
         <StatusTracks documentStatus={doc.documentStatus} aiContent={<ReviewAIStatus review={review} />} supervisorStatus={doc.supervisorStatus} compact />
       </div>
-      {doc.latestVersion && <MetaGrid items={[{ label: "Version mới nhất", value: doc.latestVersion }, { label: "Người nộp", value: doc.submitter ?? "—" }, { label: "Cập nhật", value: doc.updatedAt ?? "—" }]} />}
+      {doc.latestVersion && <MetaGrid items={[{ label: "Phiên bản mới nhất", value: doc.latestVersion }, { label: "Người nộp", value: doc.submitter ?? "—" }, { label: "Cập nhật", value: doc.updatedAt ?? "—" }]} />}
       {doc.submissionLocked && doc.dependsOn && (
         <div className="flex gap-2 rounded-[8px] border border-line p-2.5 text-[12px] leading-[1.45]">
           <Lock size={14} strokeWidth={1.75} className="mt-0.5 shrink-0 text-muted" />
           <p className="text-muted">
-            <span className="font-semibold text-ink">Khóa gửi review</span> · Phụ thuộc: {doc.dependsOn}. {lockReason(doc.dependsOn)}
+            <span className="font-semibold text-ink">Khóa gửi đánh giá</span> · Phụ thuộc: {doc.dependsOn}. {lockReason(doc.dependsOn)}
           </p>
         </div>
       )}
       {doc.note && <p className="text-[12px] leading-[1.45] text-muted">{doc.note}</p>}
       {doc.reviewId && (
         <div className="grid grid-cols-2 gap-2">
-          <Button variant="secondary" to={`/reviews/${doc.reviewId}/versions`}>Lịch sử version</Button>
-          <Button variant={reviewable ? "primary" : "secondary"} to={`/reviews/${doc.reviewId}`}>{reviewable ? "Review" : "Xem"}</Button>
+          <Button variant="secondary" to={`/reviews/${doc.reviewId}/versions`}>Lịch sử phiên bản</Button>
+          <Button variant={reviewable ? "primary" : "secondary"} to={`/reviews/${doc.reviewId}`}>{reviewable ? "Đánh giá" : "Xem"}</Button>
         </div>
       )}
       {!doc.reviewId && doc.latestVersion && (
-        <p className="text-[12px] text-muted">Không có yêu cầu review đang mở cho version này.</p>
+        <p className="text-[12px] text-muted">Không có yêu cầu đánh giá đang mở cho phiên bản này.</p>
       )}
     </Card>
   )

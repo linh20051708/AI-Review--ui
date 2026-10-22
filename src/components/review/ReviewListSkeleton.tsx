@@ -1,6 +1,6 @@
 export default function ReviewListSkeleton({ count = 3 }: { count?: number }) {
   return (
-    <div className="flex flex-col gap-3" role="status" aria-label="Đang tải danh sách yêu cầu review...">
+    <div className="flex flex-col gap-3" role="status" aria-label="Đang tải danh sách yêu cầu đánh giá...">
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}

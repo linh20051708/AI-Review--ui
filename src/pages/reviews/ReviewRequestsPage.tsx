@@ -19,7 +19,7 @@ import { currentSemester } from "@/lib/academic"
 import { filterRecords, restoreReviewView, type FilterState } from "@/lib/smartFilter"
 import { fmtRelative, parseISO } from "@/lib/time"
 
-const SORTS = ["Mới nhất", "Cũ nhất", "Deadline gần nhất", "Chờ lâu nhất", "AI có lỗi nhiều nhất"]
+const SORTS = ["Mới nhất", "Cũ nhất", "Hạn nộp gần nhất", "Chờ lâu nhất", "AI có lỗi nhiều nhất"]
 
 export default function ReviewRequestsPage() {
   const { requests, evaluations } = useReviewStore()
@@ -48,7 +48,7 @@ export default function ReviewRequestsPage() {
       switch (sort) {
         case "Cũ nhất":
           return a.requestedTs - b.requestedTs
-        case "Deadline gần nhất":
+        case "Hạn nộp gần nhất":
           return deadline(a.projectId) - deadline(b.projectId)
         case "Chờ lâu nhất":
           return Number(isCompleted(a.supervisorStatus)) - Number(isCompleted(b.supervisorStatus)) || a.requestedTs - b.requestedTs
@@ -63,8 +63,7 @@ export default function ReviewRequestsPage() {
   return (
     <div className="phase-two flex min-w-0 flex-col gap-4">
       <PageHeading
-        eyebrow="KHÔNG GIAN REVIEW"
-        title="Yêu cầu review"
+        title="Yêu cầu đánh giá"
         
         aside={
           isDefault ? (
@@ -93,14 +92,14 @@ export default function ReviewRequestsPage() {
         onChange={handleFilterChange}
         facets={["semester", "course", "class", "lab", "labItem", "group", "project", "docType", "status", "documentStatus", "evaluationStatus", "ai", "legacyReviewStatus"]}
         primary={["class", "lab", "labItem"]}
-        statusTitle="Giảng viên review"
-        statusGroup="Trạng thái review"
+        statusTitle="Giảng viên đánh giá"
+        statusGroup="Trạng thái đánh giá"
         restoreView={restoreReviewView}
         time
         teaching
         statusLabels={reviewStatusLabels}
-        searchPlaceholder="Tìm project, tài liệu, sinh viên..."
-        noun="yêu cầu review"
+        searchPlaceholder="Tìm dự án, tài liệu, sinh viên..."
+        noun="yêu cầu đánh giá"
         sort={{ options: SORTS, value: sort, onChange: setSort }}
         viewKey="reviews"
       />
@@ -132,7 +131,7 @@ export default function ReviewRequestsPage() {
             <table className="w-full text-left text-[13px] leading-[1.45]">
               <thead className="border-b border-line bg-subtle text-[12px] text-muted">
                 <tr>
-                  {["Thời gian", "Môn · Lớp", "Nhóm", "Project", "Tài liệu", "Version", "AI Review", "Trạng thái", ""].map((h) => (
+                  {["Thời gian", "Môn · Lớp", "Nhóm", "Dự án", "Tài liệu", "Phiên bản", "Đánh giá AI", "Trạng thái", ""].map((h) => (
                     <th key={h} className="px-3 py-2.5 font-semibold">
                       {h}
                     </th>
@@ -171,7 +170,7 @@ export default function ReviewRequestsPage() {
                             : "border border-brand bg-brand text-white hover:bg-brand-hover"
                         }`}
                       >
-                        {isCompleted(r.supervisorStatus) ? "Xem" : "Review"}
+                        {isCompleted(r.supervisorStatus) ? "Xem" : "Đánh giá"}
                       </Link>
                     </td>
                   </tr>

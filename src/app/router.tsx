@@ -23,6 +23,7 @@ import GroupListPage from "@/pages/groups/GroupListPage"
 import SemesterListPage from "@/pages/semesters/SemesterListPage"
 import RuleSetListPage from "@/pages/semesters/RuleSetListPage"
 import CourseListPage from "@/pages/semesters/CourseListPage"
+import CourseDetailPage from "@/pages/semesters/CourseDetailPage"
 import CourseOfferingDetailPage from "@/pages/semesters/CourseOfferingDetailPage"
 import StudentListPage from "@/pages/students/StudentListPage"
 import StudentDashboardPage from "@/pages/student/StudentDashboardPage"
@@ -66,6 +67,7 @@ export const router = createBrowserRouter([
       { path: "semesters", element: <SemesterListPage /> },
       { path: "rule-sets", element: <RuleSetListPage /> },
       { path: "courses", element: <CourseListPage /> },
+      { path: "courses/:courseId", element: <CourseDetailPage /> },
       { path: "course-offerings/:offeringId", element: <CourseOfferingDetailPage /> },
       { path: "students", element: <StudentListPage /> },
       { path: "notifications", element: <NotificationsPage /> },

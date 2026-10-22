@@ -24,7 +24,7 @@ import {
 import { useStudentContext } from "./useStudentContext"
 
 const labels = {
-  pending: "Chờ Supervisor duyệt",
+  pending: "Chờ Giảng viên duyệt",
   changesRequested: "Cần chỉnh sửa",
   rejected: "Đã từ chối",
   approved: "Đã duyệt",
@@ -194,7 +194,7 @@ export default function StudentGroupsPage() {
               </div>
             ))}
             <p className="text-sm text-muted">
-              Chỉ trưởng nhóm được xóa thành viên trước khi project chờ duyệt hoặc hoạt động.
+              Chỉ trưởng nhóm được xóa thành viên trước khi dự án chờ duyệt hoặc hoạt động.
             </p>
           </Card></details>
           {group.memberIds.length > groupMemberLimit(cls) && <p role="status" className="text-[14px] text-amber">Nhóm có {group.memberIds.length}/{groupMemberLimit(cls)} thành viên. Không thể thêm người mới.</p>}
@@ -210,7 +210,7 @@ export default function StudentGroupsPage() {
           {project ? (
             <Card>
               <p className="font-semibold">{project.name}</p>
-              <Button to="/student/projects">Mở project</Button>
+              <Button to="/student/projects">Mở dự án</Button>
               <Button variant="secondary" to="/student/documents">
                 Nộp tài liệu
               </Button>
@@ -221,7 +221,7 @@ export default function StudentGroupsPage() {
               latest.status === "rejected" ||
               latest.status === "approved") ? (
             <Card>
-              <h2 className="font-semibold">Đăng ký project</h2>
+              <h2 className="font-semibold">Đăng ký dự án</h2>
               {latest?.status === "changesRequested" && (
                 <Button
                   variant="secondary"
@@ -233,7 +233,7 @@ export default function StudentGroupsPage() {
                   Điền lại nội dung cần sửa
                 </Button>
               )}
-              <Field label="Tên project">
+              <Field label="Tên dự án">
                 <TextInput
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -250,14 +250,14 @@ export default function StudentGroupsPage() {
                   run(() => registerProject(group.id, name, description))
                 }
               >
-                Gửi Supervisor duyệt
+                Gửi Giảng viên duyệt
               </Button>
             </Card>
           ) : (
             <Notice>
               {latest?.status === "pending"
-                ? "Chờ Supervisor duyệt trước khi kích hoạt và nộp tài liệu."
-                : "Chỉ trưởng nhóm được đăng ký project."}
+                ? "Chờ Giảng viên duyệt trước khi kích hoạt và nộp tài liệu."
+                : "Chỉ trưởng nhóm được đăng ký dự án."}
             </Notice>
           )}
         </>

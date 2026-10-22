@@ -14,9 +14,9 @@ import type { ProjectDocument } from "@/types"
 
 const filters: { label: string; match: (d: ProjectDocument) => boolean }[] = [
   { label: "Tất cả", match: () => true },
-  { label: "Chờ review", match: (d) => d.supervisorStatus === "waiting" || d.supervisorStatus === "inReview" },
+  { label: "Chờ đánh giá", match: (d) => d.supervisorStatus === "waiting" || d.supervisorStatus === "inReview" },
   { label: "Cần chỉnh sửa", match: (d) => d.supervisorStatus === "needsRevision" },
-  { label: "Khóa gửi review", match: (d) => Boolean(d.submissionLocked) },
+  { label: "Khóa gửi đánh giá", match: (d) => Boolean(d.submissionLocked) },
 ]
 
 export default function ProjectDocumentsPage() {
@@ -26,7 +26,7 @@ export default function ProjectDocumentsPage() {
   const { requests } = useReviewStore()
   const [active, setActive] = useState(0)
   const project = projects.find((p) => p.id === projectId)
-  if (!project) return <EmptyState title="Không tìm thấy project" />
+  if (!project) return <EmptyState title="Không tìm thấy dự án" />
 
   // Merge live supervisor decisions before filtering.
   const docs = documentsFor(project, requests, { classes, offerings, groups }).map((d) => ({ ...d, supervisorStatus: requests.find((r) => r.id === d.reviewId)?.supervisorStatus ?? d.supervisorStatus }))
@@ -38,7 +38,7 @@ export default function ProjectDocumentsPage() {
   return (
     <>
       <BackLink label={project.name} fallback={`/projects/${project.id}`} />
-      <PageHeading title="Tài liệu project"  />
+      <PageHeading title="Tài liệu dự án"  />
       <div className="flex flex-wrap items-center justify-between gap-2 text-[14px] text-muted">
         <span>{ctx.cls?.code ?? "—"} · {ctx.group?.name ?? "—"}</span><ProjectStateBadge state={project.state} />
       </div>

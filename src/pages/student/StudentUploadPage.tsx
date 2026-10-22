@@ -148,19 +148,19 @@ export default function StudentUploadPage() {
 
     if (!allowed.includes(ext)) {
       setError(
-        `Chỉ chấp nhận file ${allowed.join(", ").toUpperCase() || "theo cấu hình (hiện chưa có loại hợp lệ)"}.`,
+        `Chỉ chấp nhận tệp ${allowed.join(", ").toUpperCase() || "theo cấu hình (hiện chưa có loại hợp lệ)"}.`,
       )
 
       return
     }
 
     if (!f.size) {
-      setError("File rỗng. Vui lòng chọn tài liệu có nội dung.")
+      setError("Tệp rỗng. Vui lòng chọn tài liệu có nội dung.")
       return
     }
 
     if (f.size > maxBytes) {
-      setError(`File vượt quá dung lượng cho phép (${maxSizeMB} MB).`)
+      setError(`Tệp vượt quá dung lượng cho phép (${maxSizeMB} MB).`)
 
       return
     }
@@ -274,7 +274,7 @@ export default function StudentUploadPage() {
         }
 
         toast(
-          `Đã nộp ${file.name} (${nextVersion}). Đang chờ giảng viên review.`,
+          `Đã nộp ${file.name} (${nextVersion}). Đang chờ giảng viên đánh giá.`,
         )
 
         navigate(`/student/documents/${doc.id}`, { replace: true })
@@ -296,12 +296,12 @@ export default function StudentUploadPage() {
       <PageHeading
         eyebrow={`NỘP TÀI LIỆU · ${doc.labCode ?? ""}`}
         title={doc.title}
-        description={awaiting ? "Đang chờ review" : approved ? "Đã được giảng viên phê duyệt" : rejected ? "Không đạt" : locked ? "Chưa đủ điều kiện nộp" : request ? `Nộp ${nextVersion} · chỉnh sửa ${request.version}` : `Bản nộp đầu tiên · ${nextVersion}`}
+        description={awaiting ? "Đang chờ đánh giá" : approved ? "Đã được giảng viên phê duyệt" : rejected ? "Không đạt" : locked ? "Chưa đủ điều kiện nộp" : request ? `Nộp ${nextVersion} · chỉnh sửa ${request.version}` : `Bản nộp đầu tiên · ${nextVersion}`}
       />
 
       {awaiting && (
         <Notice>
-          Tài liệu đang chờ review. Không thể gửi thêm yêu cầu hoặc phiên bản
+          Tài liệu đang chờ đánh giá. Không thể gửi thêm yêu cầu hoặc phiên bản
           cho đến khi giảng viên yêu cầu chỉnh sửa.
         </Notice>
       )}
@@ -327,7 +327,7 @@ export default function StudentUploadPage() {
             headingLevel={2}
             icon={<ShieldCheck size={24} className="text-brand" />}
             title="Tài liệu đã được phê duyệt"
-            description="Không thể nộp lại lên một version đã đạt. Liên hệ giảng viên nếu cần thay đổi."
+            description="Không thể nộp lại lên một phiên bản đã đạt. Liên hệ giảng viên nếu cần thay đổi."
             action={
               <Button variant="secondary" to={`/student/documents/${doc.id}`}>
                 Quay lại tài liệu
@@ -352,7 +352,7 @@ export default function StudentUploadPage() {
         </Card>
       )}
       {!locked && !approved && !rejected && !awaiting && (
-        <p className="text-[14px] text-muted">{nextVersion} · {allowed.join("/").toUpperCase()} · Tối đa {maxSizeMB} MB{dl.ts ? ` · Deadline ${fmtDate(dl.ts)}` : ""}</p>
+        <p className="text-[14px] text-muted">{nextVersion} · {allowed.join("/").toUpperCase()} · Tối đa {maxSizeMB} MB{dl.ts ? ` · Hạn nộp ${fmtDate(dl.ts)}` : ""}</p>
       )}
 
       {!locked && !approved && !rejected && !awaiting && (
@@ -362,7 +362,7 @@ export default function StudentUploadPage() {
             <span className="break-all text-[14px] font-semibold text-ink">
               {file
                 ? file.name
-                : `Chọn file ${allowed.join("/").toUpperCase()} để nộp`}
+                : `Chọn tệp ${allowed.join("/").toUpperCase()} để nộp`}
             </span>
             {file && (
               <span className="text-[14px] text-muted">
@@ -382,12 +382,12 @@ export default function StudentUploadPage() {
                 input?.click()
               }}
             >
-              {file ? "Chọn file khác" : "Chọn file"}
+              {file ? "Chọn tệp khác" : "Chọn tệp"}
             </Button>
             <input
               tabIndex={-1}
               id="student-file"
-              aria-label="File tài liệu"
+              aria-label="Tệp tài liệu"
               type="file"
               accept={allowed.map((ext) => `.${ext}`).join(",")}
               disabled={submitting}
@@ -407,7 +407,7 @@ export default function StudentUploadPage() {
             documentTitle={doc.title}
             onReady={() => setChecked({ file, ruleKey })}
           />}
-          {file && !precheckEnabled && <p className="text-[14px] text-muted">AI Pre-check chưa được bật cho tài liệu này.</p>}
+          {file && !precheckEnabled && <p className="text-[14px] text-muted">AI kiểm tra trước khi nộp chưa được bật cho tài liệu này.</p>}
 
           <details><summary>Ghi chú (tùy chọn)</summary><Field label="Ghi chú">
             <TextArea
@@ -416,7 +416,7 @@ export default function StudentUploadPage() {
               onChange={(e) => setNote(e.target.value)}
               placeholder={
                 request
-                  ? `Đã sửa theo feedback của giảng viên cho ${request.version}...`
+                  ? `Đã sửa theo phản hồi của giảng viên cho ${request.version}...`
                   : "Mô tả ngắn về tài liệu nộp..."
               }
             />
@@ -444,18 +444,18 @@ export default function StudentUploadPage() {
               </p>
               {file && (
                 <p>
-                  File: <strong>{file.name}</strong> (
+                  Tệp: <strong>{file.name}</strong> (
                   {(file.size / 1024 / 1024).toFixed(2)} MB)
                 </p>
               )}
               <p>
-                Sau khi nộp, một version bất biến mới sẽ được tạo và gửi yêu cầu
-                review. Bạn không thể sửa hoặc xóa version này.
+                Sau khi nộp, một phiên bản bất biến mới sẽ được tạo và gửi yêu cầu
+                đánh giá. Bạn không thể sửa hoặc xóa phiên bản này.
               </p>
             </div>
           </>
         }
-        confirmLabel="Nộp và yêu cầu review"
+        confirmLabel="Nộp và yêu cầu đánh giá"
         onClose={() => setPending(false)}
         onConfirm={submit}
       />

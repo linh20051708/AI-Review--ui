@@ -1,4 +1,5 @@
 import { fmtRelative } from "@/lib/time"
+import uiLabel from "@/lib/uiLabels"
 /** Presentation only: remove stock implementation copy without changing stored records. */
 export function contentText(value: string | undefined): string {
   return (value ?? "")
@@ -9,9 +10,17 @@ export function contentText(value: string | undefined): string {
     .replace(/AI Review mô phỏng hoàn tất/g, "AI có kết quả đề xuất")
     .replace(/AI \(mô phỏng\)/g, "AI")
     .replace(/AI mô phỏng[^.]*chưa đọc file[^.]*\.?/gi, "Kết quả minh họa")
-    .replace(/AI mô phỏng/gi, "AI Review")
-    .replace(/AI Evaluation mô phỏng/gi, "AI Review")
+    .replace(/AI mô phỏng/gi, "Đánh giá AI")
+    .replace(/AI Evaluation mô phỏng/gi, "Đánh giá AI")
     .replace(/ — Demo\b/g, "")
+    .replace(/\bAI (?:Review|Evaluation)\b/gi, "Đánh giá AI")
+    .replace(/\breview\b/gi, "đánh giá")
+    .replace(/\bfeedback\b/gi, "phản hồi")
+    .replace(/\bversion\b/gi, "phiên bản")
+    .replace(/\bproject\b/gi, "dự án")
+    .replace(/\bSupervisor\b/gi, "giảng viên")
+    .replace(/\bdeadline\b/gi, "hạn nộp")
+    .replace(/\bfile\b/gi, "tệp")
     .replace(/\s{2,}/g, " ")
     .trim()
 }
@@ -47,7 +56,7 @@ export function shortCriterion(name: string) {
       "Quyết định & kiểm chứng",
   }
   return (
-    labels[name] ??
+    labels[name] ?? (uiLabel(name) !== name ? uiLabel(name) : undefined) ??
     (name.length > 64 ? name.slice(0, 61).replace(/\s+\S*$/, "") + "…" : name)
   )
 }

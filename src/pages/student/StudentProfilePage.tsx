@@ -45,7 +45,7 @@ export default function StudentProfilePage() {
               {student.email}
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
-              <Badge tone="brand">Student</Badge>
+              <Badge tone="brand">Sinh viên</Badge>
               <Badge>{student.studentCode}</Badge>
             </div>
           </div>
@@ -58,8 +58,8 @@ export default function StudentProfilePage() {
           meta={`${classes.length} lớp đã tham gia`}
         />
         <p className="text-[13px] leading-[1.45] text-muted">
-          Mỗi lớp có nhóm và project riêng. Chọn lớp để xem chi tiết trong My
-          Project.
+          Mỗi lớp có nhóm và dự án riêng. Chọn lớp để xem chi tiết trong My
+          Dự án.
         </p>
         {classes.length ? (
           <Card className="gap-0 py-1">
@@ -92,10 +92,10 @@ export default function StudentProfilePage() {
                         )}
                       </div>
                       <p className="break-words text-[13px] text-ink">
-                        {project?.name ?? "Chưa có project hoạt động"}
+                        {project?.name ?? "Chưa có dự án hoạt động"}
                       </p>
                       <p className="mt-1 break-words text-[12px] text-muted">
-                        Supervisor {project?.lecturer ?? cls.lecturer}
+                        Giảng viên {project?.lecturer ?? cls.lecturer}
                       </p>
                     </div>
                     <ChevronRight
@@ -110,8 +110,8 @@ export default function StudentProfilePage() {
         ) : (
           <EmptyState
             title="Chưa tham gia lớp"
-            description="Vào My Project để tham gia lớp của từng môn học."
-            action={<Button to="/student/projects">Mở My Project</Button>}
+            description="Vào Dự án của tôi để tham gia lớp của từng môn học."
+            action={<Button to="/student/projects">Mở dự án của tôi</Button>}
           />
         )}
       </section>

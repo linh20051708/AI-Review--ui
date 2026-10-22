@@ -5,8 +5,8 @@ import { classOfProject, groupOfProject, locateItem, offeringOf, resolveLabStruc
 import type { ClassRoom, CourseOffering, Project, ProjectDocument, ReviewRequest, StudentGroup, AIEvaluation } from "@/types"
 
 export const reviewStatusLabels: Record<string, string> = {
-  waiting: "Chờ review",
-  inReview: "Đang review",
+  waiting: "Chờ đánh giá",
+  inReview: "Đang đánh giá",
   needsRevision: "Cần chỉnh sửa",
   approved: "Đã phê duyệt",
   notAccepted: "Không đạt",
@@ -78,13 +78,13 @@ export const classRecords = (classes: ClassRoom[]): ClassRecord[] =>
 export const docStatusLabels: Record<string, string> = {
   submitted: "Đã nộp",
   resubmitted: "Đã nộp lại",
-  waiting: "Chờ review",
-  inReview: "Đang review",
+  waiting: "Chờ đánh giá",
+  inReview: "Đang đánh giá",
   needsRevision: "Cần chỉnh sửa",
   approved: "Đã phê duyệt",
   notAccepted: "Không đạt",
   draft: "Bản nháp",
-  locked: "Khóa gửi review",
+  locked: "Khóa gửi đánh giá",
   notStarted: "Chưa bắt đầu",
 }
 

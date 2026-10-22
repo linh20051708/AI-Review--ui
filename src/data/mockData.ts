@@ -31,7 +31,7 @@ import type {
 export const currentUser = {
   name: "Nguyễn Văn An",
   initials: "NA",
-  role: "Giảng viên / Supervisor",
+  role: "Giảng viên",
   email: "an.nguyen@university.edu.vn",
   semester: "Fall 2026",
 }
@@ -42,16 +42,16 @@ export const demoStudentId = "s1"
 export const statusMeta: Record<Status, { label: string; tone: Tone }> = {
   draft: { label: "Bản nháp", tone: "neutral" },
   submitted: { label: "Đã nộp", tone: "olive" },
-  reviewRequested: { label: "Đã gửi yêu cầu review", tone: "olive" },
-  aiReviewing: { label: "AI đang review", tone: "olive" },
-  aiReviewed: { label: "AI đã review", tone: "olive" },
-  waiting: { label: "Chờ giảng viên review", tone: "amber" },
-  inReview: { label: "Đang review", tone: "brand" },
+  reviewRequested: { label: "Đã gửi yêu cầu đánh giá", tone: "olive" },
+  aiReviewing: { label: "AI đang đánh giá", tone: "olive" },
+  aiReviewed: { label: "AI đã đánh giá", tone: "olive" },
+  waiting: { label: "Chờ giảng viên đánh giá", tone: "amber" },
+  inReview: { label: "Đang đánh giá", tone: "brand" },
   needsRevision: { label: "Cần chỉnh sửa", tone: "rust" },
   resubmitted: { label: "Đã nộp lại", tone: "olive" },
   approved: { label: "Đã phê duyệt", tone: "brand" },
   notAccepted: { label: "Không đạt", tone: "danger" },
-  submissionLocked: { label: "Khóa gửi review", tone: "neutral" },
+  submissionLocked: { label: "Khóa gửi đánh giá", tone: "neutral" },
   notStarted: { label: "Chưa bắt đầu", tone: "neutral" },
 }
 
@@ -62,7 +62,7 @@ export const groupHealthMeta: Record<GroupHealth, { label: string; tone: Tone }>
   dueSoon: { label: "Sắp đến hạn", tone: "amber" },
   notSubmitted: { label: "Chưa nộp tài liệu", tone: "neutral" },
   overdue: { label: "Quá hạn", tone: "danger" },
-  waitingLong: { label: "Chờ review lâu", tone: "rust" },
+  waitingLong: { label: "Chờ đánh giá lâu", tone: "rust" },
 }
 
 export const aiSummary = (ai?: AICounts) => {
@@ -75,7 +75,7 @@ export const ruleSets: RuleSet[] = [
   {
     id: "swp-standard-2026",
     name: "SWP Standard Review 2026",
-    description: "Quy trình review chuẩn cho môn Software Project.",
+    description: "Quy trình đánh giá chuẩn cho môn Dự án phần mềm.",
     aiReview: "auto",
     aiRequiredBeforeSupervisor: false,
     supervisorApproval: true,
@@ -119,8 +119,8 @@ export const semesters: Semester[] = [
 ]
 
 export const courses: Course[] = [
-  { id: "swp391", code: "SWP391", name: "Software Project", description: "Capstone-style software project course." },
-  { id: "swr302", code: "SWR302", name: "Software Requirements", description: "Elicitation, phân tích và đặc tả requirement." },
+  { id: "swp391", code: "SWP391", name: "Software Project", description: "Môn học dự án phát triển phần mềm tổng hợp." },
+  { id: "swr302", code: "SWR302", name: "Software Requirements", description: "Thu thập, phân tích và đặc tả yêu cầu phần mềm." },
   { id: "prn212", code: "PRN212", name: "Programming with .NET", description: "Lập trình ứng dụng với C# và .NET." },
 ]
 
@@ -335,7 +335,7 @@ export const projects: Project[] = studentGroups
       state: sampleProjectState(g.projectId!),
       hasHistory: g.health !== "notSubmitted",
       ...(g.projectId === "smart-campus-management" && {
-        nextStep: "Review Sequence Diagram v2. State Diagram đang chờ sinh viên nộp version mới; SRS vẫn khóa gửi review.",
+        nextStep: "Đánh giá Sequence Diagram v2. State Diagram đang chờ sinh viên nộp phiên bản mới; SRS vẫn khóa gửi đánh giá.",
       }),
     }
   })
@@ -358,14 +358,14 @@ export const directoryStudents = [
 export const documents: ProjectDocument[] = [
   { id: "use-case", projectId: "smart-campus-management", title: "Use Case Diagram", order: 1, latestVersion: "v3", versionCount: 3, documentStatus: "resubmitted", supervisorStatus: "approved", ai: { errors: 0, warnings: 0, suggestions: 1 }, submitter: "Nguyễn Minh Anh", updatedAt: "14/09/2026", reviewId: "review-003" },
   { id: "activity", projectId: "smart-campus-management", title: "Activity Diagram", order: 2, latestVersion: "v2", versionCount: 2, documentStatus: "resubmitted", supervisorStatus: "approved", ai: { errors: 0, warnings: 1, suggestions: 0 }, submitter: "Trần Hoàng Nam", updatedAt: "20/09/2026", dependsOn: "Use Case Diagram" },
-  { id: "sequence", projectId: "smart-campus-management", title: "Sequence Diagram", order: 3, latestVersion: "v2", versionCount: 2, documentStatus: "resubmitted", supervisorStatus: "waiting", ai: { errors: 2, warnings: 3, suggestions: 1 }, submitter: "Trần Hoàng Nam", updatedAt: "03/10/2026", dependsOn: "Activity Diagram", reviewId: "review-008", note: "Nộp lại sau feedback v1: sửa thứ tự message." },
-  { id: "state", projectId: "smart-campus-management", title: "State Diagram", order: 4, latestVersion: "v1", versionCount: 1, documentStatus: "submitted", supervisorStatus: "needsRevision", ai: { errors: 1, warnings: 2, suggestions: 0 }, submitter: "Lê Gia Huy", updatedAt: "02/10/2026", dependsOn: "Sequence Diagram", note: "Chờ sinh viên nộp version mới: bổ sung trạng thái sau khi bị trả lại." },
+  { id: "sequence", projectId: "smart-campus-management", title: "Sequence Diagram", order: 3, latestVersion: "v2", versionCount: 2, documentStatus: "resubmitted", supervisorStatus: "waiting", ai: { errors: 2, warnings: 3, suggestions: 1 }, submitter: "Trần Hoàng Nam", updatedAt: "03/10/2026", dependsOn: "Activity Diagram", reviewId: "review-008", note: "Nộp lại sau phản hồi v1: sửa thứ tự message." },
+  { id: "state", projectId: "smart-campus-management", title: "State Diagram", order: 4, latestVersion: "v1", versionCount: 1, documentStatus: "submitted", supervisorStatus: "needsRevision", ai: { errors: 1, warnings: 2, suggestions: 0 }, submitter: "Lê Gia Huy", updatedAt: "02/10/2026", dependsOn: "Sequence Diagram", note: "Chờ sinh viên nộp phiên bản mới: bổ sung trạng thái sau khi bị trả lại." },
   { id: "srs", projectId: "smart-campus-management", title: "SRS", order: 5, versionCount: 0, documentStatus: "draft", submitter: "Phạm Thảo My", updatedAt: "01/10/2026", dependsOn: "State Diagram", submissionLocked: true },
   { id: "sds", projectId: "smart-campus-management", title: "SDS", order: 6, versionCount: 0, documentStatus: "notStarted", dependsOn: "SRS", submissionLocked: true },
   { id: "detailed-design", projectId: "smart-campus-management", title: "Detailed Design", order: 7, versionCount: 0, documentStatus: "notStarted", dependsOn: "SDS", submissionLocked: true },
 ]
 
-export const lockReason = (dependsOn: string) => `Chưa thể gửi yêu cầu review vì ${dependsOn} chưa được phê duyệt.`
+export const lockReason = (dependsOn: string) => `Chưa thể gửi yêu cầu đánh giá vì ${dependsOn} chưa được phê duyệt.`
 
 export type ReqInput = Omit<ReviewRequest, "fileName" | "fileType" | "pageCount" | "semesterId" | "courseId" | "classId" | "groupId" | "classCode" | "groupName" | "projectName" | "requestedTs"> &
   Partial<Pick<ReviewRequest, "fileType" | "pageCount" | "classCode" | "groupName" | "projectName">>
@@ -398,13 +398,13 @@ const req = (r: ReqInput): ReviewRequest => {
 export const buildReviewRequest = req
 
 export const reviewRequests: ReviewRequest[] = [
-  req({ id: "review-001", projectId: "smart-attendance-system", classCode: "SE1701", groupName: "Group 04", projectName: "Smart Attendance System", documentTitle: "Use Case Diagram", version: "v2", submitter: "Nguyễn Minh Anh", submittedAt: "03/10/2026 · 08:15", requestedAt: "03/10/2026 · 08:20", documentStatus: "resubmitted", aiStatus: "aiReviewed", ai: { errors: 2, warnings: 3, suggestions: 4 }, supervisorStatus: "waiting", revisionRound: 1, note: "Nộp lại sau feedback v1 · 1 feedback cũ cần kiểm tra", pageCount: 12 }),
-  req({ id: "review-008", projectId: "smart-campus-management", classCode: "SE1701", groupName: "Group 01", projectName: "Smart Campus Management", documentTitle: "Sequence Diagram", version: "v2", submitter: "Trần Hoàng Nam", submittedAt: "03/10/2026 · 07:40", requestedAt: "03/10/2026 · 07:45", documentStatus: "resubmitted", aiStatus: "aiReviewed", ai: { errors: 2, warnings: 3, suggestions: 1 }, supervisorStatus: "waiting", revisionRound: 1, note: "Nộp lại sau feedback v1 · sửa thứ tự message" }),
+  req({ id: "review-001", projectId: "smart-attendance-system", classCode: "SE1701", groupName: "Group 04", projectName: "Smart Attendance System", documentTitle: "Use Case Diagram", version: "v2", submitter: "Nguyễn Minh Anh", submittedAt: "03/10/2026 · 08:15", requestedAt: "03/10/2026 · 08:20", documentStatus: "resubmitted", aiStatus: "aiReviewed", ai: { errors: 2, warnings: 3, suggestions: 4 }, supervisorStatus: "waiting", revisionRound: 1, note: "Nộp lại sau phản hồi v1 · 1 phản hồi cũ cần kiểm tra", pageCount: 12 }),
+  req({ id: "review-008", projectId: "smart-campus-management", classCode: "SE1701", groupName: "Group 01", projectName: "Smart Campus Management", documentTitle: "Sequence Diagram", version: "v2", submitter: "Trần Hoàng Nam", submittedAt: "03/10/2026 · 07:40", requestedAt: "03/10/2026 · 07:45", documentStatus: "resubmitted", aiStatus: "aiReviewed", ai: { errors: 2, warnings: 3, suggestions: 1 }, supervisorStatus: "waiting", revisionRound: 1, note: "Nộp lại sau phản hồi v1 · sửa thứ tự message" }),
   req({ id: "review-005", projectId: "dormitory-management-platform", classCode: "SE1701", groupName: "Group 05", projectName: "Dormitory Management Platform", documentTitle: "Activity Diagram", version: "v1", submitter: "Hoàng Thu Trang", submittedAt: "02/10/2026 · 08:55", requestedAt: "02/10/2026 · 09:00", documentStatus: "submitted", aiStatus: "aiReviewed", ai: { errors: 0, warnings: 1, suggestions: 2 }, supervisorStatus: "waiting", fileType: "DOCX", pageCount: 9 }),
   req({ id: "review-004", projectId: "campus-service-portal", classCode: "SE1701", groupName: "Group 08", projectName: "Campus Service Portal", documentTitle: "Sequence Diagram", version: "v2", submitter: "Võ Quốc Bảo", submittedAt: "29/09/2026 · 16:30", requestedAt: "29/09/2026 · 16:40", documentStatus: "resubmitted", aiStatus: "aiReviewed", ai: { errors: 1, warnings: 1, suggestions: 0 }, supervisorStatus: "waiting", revisionRound: 1, note: "Chờ giảng viên hơn 72 giờ" }),
-  req({ id: "review-002", projectId: "hospital-management-system", classCode: "SE1701", groupName: "Group 02", projectName: "Hospital Management System", documentTitle: "Sequence Diagram", version: "v3", submitter: "Đỗ Khánh Linh", submittedAt: "03/10/2026 · 07:05", requestedAt: "03/10/2026 · 07:10", documentStatus: "resubmitted", aiStatus: "aiReviewed", ai: { errors: 0, warnings: 2, suggestions: 1 }, supervisorStatus: "inReview", revisionRound: 2, note: "Bạn đã bắt đầu review lúc 09:40" }),
+  req({ id: "review-002", projectId: "hospital-management-system", classCode: "SE1701", groupName: "Group 02", projectName: "Hospital Management System", documentTitle: "Sequence Diagram", version: "v3", submitter: "Đỗ Khánh Linh", submittedAt: "03/10/2026 · 07:05", requestedAt: "03/10/2026 · 07:10", documentStatus: "resubmitted", aiStatus: "aiReviewed", ai: { errors: 0, warnings: 2, suggestions: 1 }, supervisorStatus: "inReview", revisionRound: 2, note: "Bạn đã bắt đầu đánh giá lúc 09:40" }),
   req({ id: "review-006", projectId: "student-services-portal", classCode: "SE1701", groupName: "Group 03", projectName: "Student Services Portal", documentTitle: "State Diagram", version: "v2", submitter: "Lê Gia Huy", submittedAt: "03/10/2026 · 09:50", requestedAt: "03/10/2026 · 09:55", documentStatus: "resubmitted", aiStatus: "aiReviewing", ai: { errors: 0, warnings: 0, suggestions: 0 }, supervisorStatus: "inReview", revisionRound: 1, fileType: "DOCX", pageCount: 8 }),
-  req({ id: "review-009", projectId: "student-services-portal", classCode: "SE1701", groupName: "Group 03", projectName: "Student Services Portal", documentTitle: "Activity Diagram", version: "v2", submitter: "Phạm Thảo My", submittedAt: "01/10/2026 · 10:00", requestedAt: "01/10/2026 · 10:05", documentStatus: "resubmitted", aiStatus: "aiReviewed", ai: { errors: 1, warnings: 2, suggestions: 0 }, supervisorStatus: "needsRevision", revisionRound: 1, note: "Đã yêu cầu chỉnh sửa lần 2 · chờ sinh viên tạo version mới" }),
+  req({ id: "review-009", projectId: "student-services-portal", classCode: "SE1701", groupName: "Group 03", projectName: "Student Services Portal", documentTitle: "Activity Diagram", version: "v2", submitter: "Phạm Thảo My", submittedAt: "01/10/2026 · 10:00", requestedAt: "01/10/2026 · 10:05", documentStatus: "resubmitted", aiStatus: "aiReviewed", ai: { errors: 1, warnings: 2, suggestions: 0 }, supervisorStatus: "needsRevision", revisionRound: 1, note: "Đã yêu cầu chỉnh sửa lần 2 · chờ sinh viên tạo phiên bản mới" }),
   req({ id: "review-003", projectId: "smart-campus-management", classCode: "SE1701", groupName: "Group 01", projectName: "Smart Campus Management", documentTitle: "Use Case Diagram", version: "v3", submitter: "Nguyễn Minh Anh", submittedAt: "14/09/2026 · 10:32", requestedAt: "14/09/2026 · 10:32", documentStatus: "resubmitted", aiStatus: "aiReviewed", ai: { errors: 0, warnings: 0, suggestions: 1 }, supervisorStatus: "approved", revisionRound: 2 }),
   req({ id: "review-010", projectId: "event-management-system", classCode: "SE1701", groupName: "Group 07", projectName: "Event Management System", documentTitle: "Activity Diagram", version: "v1", submitter: "Đặng Hải Yến", submittedAt: "28/09/2026 · 21:10", requestedAt: "28/09/2026 · 21:12", documentStatus: "submitted", aiStatus: "aiReviewed", ai: { errors: 0, warnings: 0, suggestions: 0 }, supervisorStatus: "notAccepted", note: "Không đạt · Sai loại tài liệu (nộp nhầm biên bản họp)" }),
 ]
@@ -417,72 +417,72 @@ reviewRequests.push(
 )
 
 export const aiFindings: AIFinding[] = [
-  { id: "f1", level: "error", category: "Incorrect Relationship", message: "Use Case Submit Document chưa có relationship phù hợp với Actor Student.", pageRef: "Trang 8" },
+  { id: "f1", level: "error", category: "Incorrect Relationship", message: "Use Case Submit Document chưa có relationship phù hợp với Actor Sinh viên.", pageRef: "Trang 8" },
   { id: "f2", level: "error", category: "Missing Element", message: "Use Case Login chưa được liên kết với Actor nào.", pageRef: "Trang 7" },
-  { id: "f3", level: "warning", category: "Naming Issue", message: "Use Case Manage Project có phạm vi quá rộng.", pageRef: "Trang 8" },
-  { id: "f4", level: "warning", category: "Requirement Mismatch", message: "FR-05 (Request Review) chưa được thể hiện bằng Use Case tương ứng.", pageRef: "Mục 2.3" },
-  { id: "f5", level: "warning", category: "UML Violation", message: "Quan hệ Include giữa Upload Document và Request Review đang ngược chiều.", pageRef: "Trang 9" },
-  { id: "f6", level: "suggestion", category: "Logic Issue", message: "Cân nhắc tách Manage Project thành Create Project, Update Project và Archive Project.", pageRef: "Trang 8" },
-  { id: "f7", level: "suggestion", category: "Naming Issue", message: "Dùng động từ thống nhất cho tên Use Case (Submit / Upload).", pageRef: "Mục 3.1" },
+  { id: "f3", level: "warning", category: "Naming Issue", message: "Use Case Manage Dự án có phạm vi quá rộng.", pageRef: "Trang 8" },
+  { id: "f4", level: "warning", category: "Requirement Mismatch", message: "FR-05 (Request Đánh giá) chưa được thể hiện bằng Use Case tương ứng.", pageRef: "Mục 2.3" },
+  { id: "f5", level: "warning", category: "UML Violation", message: "Quan hệ Include giữa Tải lên Document và Request Đánh giá đang ngược chiều.", pageRef: "Trang 9" },
+  { id: "f6", level: "suggestion", category: "Logic Issue", message: "Cân nhắc tách Manage Dự án thành Create Dự án, Update Dự án và Archive Dự án.", pageRef: "Trang 8" },
+  { id: "f7", level: "suggestion", category: "Naming Issue", message: "Dùng động từ thống nhất cho tên Use Case (Submit / Tải lên).", pageRef: "Mục 3.1" },
 ]
 
 export const aiChecks: AICheck[] = [
-  { title: "Định dạng file", result: "Hợp lệ", tone: "brand", detail: "File đọc được, 12 trang, không bị khóa mật khẩu." },
+  { title: "Định dạng tệp", result: "Hợp lệ", tone: "brand", detail: "Tệp đọc được, 12 trang, không bị khóa mật khẩu." },
   { title: "Cấu trúc tài liệu", result: "Hợp lệ", tone: "brand", detail: "Có đủ mục Giới thiệu, Actor, Use Case, Mô tả chi tiết." },
   { title: "Relationship", result: "2 lỗi", tone: "rust", detail: "Submit Document và Login thiếu Association phù hợp." },
-  { title: "Tính nhất quán tên", result: "2 cảnh báo", tone: "amber", detail: "Manage Project có phạm vi quá rộng." },
+  { title: "Tính nhất quán tên", result: "2 cảnh báo", tone: "amber", detail: "Manage Dự án có phạm vi quá rộng." },
   { title: "Đối chiếu requirement", result: "1 cảnh báo", tone: "amber", detail: "FR-05 chưa có Use Case tương ứng." },
 ]
 
 export const feedbackCategories = ["Missing Element", "Incorrect Relationship", "Naming Issue", "Logic Issue", "UML Violation", "Requirement Mismatch", "Other"]
 
 export const reviewFeedback: ReviewFeedback[] = [
-  { id: "fb1", reviewId: "review-001", version: "v1", author: "Nguyễn Văn An", createdAt: "30/09/2026 · 15:20", severity: "Major", category: "Missing Element", pageRef: "Trang 6", message: "Bổ sung Actor Student cho luồng nộp tài liệu.", official: true },
-  { id: "fb2", reviewId: "review-001", version: "v1", author: "Nguyễn Văn An", createdAt: "30/09/2026 · 15:24", severity: "Major", category: "Incorrect Relationship", pageRef: "Trang 8", message: "Relationship giữa Student và Submit Document chưa đúng.", official: true },
-  { id: "fb3", reviewId: "review-001", version: "v1", author: "Nguyễn Văn An", createdAt: "30/09/2026 · 15:30", severity: "Minor", category: "Naming Issue", pageRef: "Mục 3.2.1", message: "Đặt lại tên Use Case Manage Project cho cụ thể hơn.", official: true },
+  { id: "fb1", reviewId: "review-001", version: "v1", author: "Nguyễn Văn An", createdAt: "30/09/2026 · 15:20", severity: "Major", category: "Missing Element", pageRef: "Trang 6", message: "Bổ sung Actor Sinh viên cho luồng nộp tài liệu.", official: true },
+  { id: "fb2", reviewId: "review-001", version: "v1", author: "Nguyễn Văn An", createdAt: "30/09/2026 · 15:24", severity: "Major", category: "Incorrect Relationship", pageRef: "Trang 8", message: "Relationship giữa Sinh viên và Submit Document chưa đúng.", official: true },
+  { id: "fb3", reviewId: "review-001", version: "v1", author: "Nguyễn Văn An", createdAt: "30/09/2026 · 15:30", severity: "Minor", category: "Naming Issue", pageRef: "Mục 3.2.1", message: "Đặt lại tên Use Case Manage Dự án cho cụ thể hơn.", official: true },
 ]
 
 export const documentVersions: DocumentVersion[] = [
-  { id: "r1v1", reviewId: "review-001", version: "v1", fileName: "use-case-diagram-v1.pdf", submittedAt: "30/09/2026 · 10:05", submitter: "Nguyễn Minh Anh", documentStatus: "submitted", ai: { errors: 3, warnings: 2, suggestions: 2 }, supervisorStatus: "needsRevision", feedbackCount: 3, summary: "Thiếu Actor Student, relationship Submit Document chưa đúng." },
+  { id: "r1v1", reviewId: "review-001", version: "v1", fileName: "use-case-diagram-v1.pdf", submittedAt: "30/09/2026 · 10:05", submitter: "Nguyễn Minh Anh", documentStatus: "submitted", ai: { errors: 3, warnings: 2, suggestions: 2 }, supervisorStatus: "needsRevision", feedbackCount: 3, summary: "Thiếu Actor Sinh viên, relationship Submit Document chưa đúng." },
   { id: "r1v2", reviewId: "review-001", version: "v2", fileName: "use-case-diagram-v2.pdf", submittedAt: "03/10/2026 · 08:15", submitter: "Nguyễn Minh Anh", documentStatus: "resubmitted", ai: { errors: 2, warnings: 3, suggestions: 4 }, supervisorStatus: "waiting", feedbackCount: 0, isCurrent: true },
-  { id: "r3v1", reviewId: "review-003", version: "v1", fileName: "use-case-diagram-v1.pdf", submittedAt: "10/09/2026 · 09:20", submitter: "Nguyễn Minh Anh", documentStatus: "submitted", ai: { errors: 3, warnings: 1, suggestions: 2 }, supervisorStatus: "needsRevision", feedbackCount: 3, summary: "Thiếu Actor Student, Association của Login và điều kiện gửi review." },
-  { id: "r3v2", reviewId: "review-003", version: "v2", fileName: "use-case-diagram-v2.pdf", submittedAt: "12/09/2026 · 14:05", submitter: "Nguyễn Minh Anh", documentStatus: "resubmitted", ai: { errors: 1, warnings: 1, suggestions: 1 }, supervisorStatus: "needsRevision", feedbackCount: 1, summary: "Login vẫn chưa liên kết với Supervisor." },
+  { id: "r3v1", reviewId: "review-003", version: "v1", fileName: "use-case-diagram-v1.pdf", submittedAt: "10/09/2026 · 09:20", submitter: "Nguyễn Minh Anh", documentStatus: "submitted", ai: { errors: 3, warnings: 1, suggestions: 2 }, supervisorStatus: "needsRevision", feedbackCount: 3, summary: "Thiếu Actor Sinh viên, Association của Login và điều kiện gửi đánh giá." },
+  { id: "r3v2", reviewId: "review-003", version: "v2", fileName: "use-case-diagram-v2.pdf", submittedAt: "12/09/2026 · 14:05", submitter: "Nguyễn Minh Anh", documentStatus: "resubmitted", ai: { errors: 1, warnings: 1, suggestions: 1 }, supervisorStatus: "needsRevision", feedbackCount: 1, summary: "Login vẫn chưa liên kết với Giảng viên." },
   { id: "r3v3", reviewId: "review-003", version: "v3", fileName: "use-case-diagram-v3.pdf", submittedAt: "14/09/2026 · 10:32", submitter: "Nguyễn Minh Anh", documentStatus: "resubmitted", ai: { errors: 0, warnings: 0, suggestions: 1 }, supervisorStatus: "approved", feedbackCount: 1, summary: "Phê duyệt bởi Nguyễn Văn An lúc 11:20.", isCurrent: true },
 ]
 
 export const versionChanges = [
-  { title: "Association của Login", before: "Login chỉ liên kết với Student.", after: "Bổ sung Association Supervisor — Login." },
-  { title: "Điều kiện gửi review", after: "Bổ sung Business Rule: chỉ cho phép Request Review sau khi Upload Document thành công." },
+  { title: "Association của Login", before: "Login chỉ liên kết với Sinh viên.", after: "Bổ sung Association Giảng viên — Login." },
+  { title: "Điều kiện gửi đánh giá", after: "Bổ sung Business Rule: chỉ cho phép Request Đánh giá sau khi Tải lên Document thành công." },
 ]
 
 export const auditEvents: AuditEvent[] = [
-  { id: "e1", reviewId: "review-001", time: "30/09/2026 · 10:05", title: "Nguyễn Minh Anh đã upload v1.", actor: "Sinh viên", tone: "neutral" },
-  { id: "e2", reviewId: "review-001", time: "30/09/2026 · 15:30", title: "Giảng viên yêu cầu chỉnh sửa v1.", actor: "Nguyễn Văn An", quote: "“Bổ sung Actor Student và sửa relationship Submit Document.”", tone: "rust" },
-  { id: "e3", reviewId: "review-001", time: "03/10/2026 · 08:15", title: "Nguyễn Minh Anh đã upload v2.", actor: "Sinh viên", tone: "neutral" },
-  { id: "e4", reviewId: "review-001", time: "03/10/2026 · 08:20", title: "Sinh viên gửi yêu cầu review.", actor: "Nguyễn Minh Anh", tone: "neutral" },
-  { id: "e5", reviewId: "review-001", time: "03/10/2026 · 08:21", title: "AI Review bắt đầu.", actor: "Hệ thống", tone: "olive" },
-  { id: "e6", reviewId: "review-001", time: "03/10/2026 · 08:22", title: "AI Review hoàn tất.", actor: "Hệ thống · 2 lỗi · 3 cảnh báo · 4 gợi ý", tone: "olive" },
-  { id: "e7", reviewId: "review-003", time: "14/09/2026 · 10:32", title: "Nguyễn Minh Anh đã upload v3.", actor: "Sinh viên", tone: "neutral" },
-  { id: "e8", reviewId: "review-003", time: "14/09/2026 · 10:32", title: "Sinh viên gửi yêu cầu review.", actor: "Nguyễn Minh Anh", tone: "neutral" },
-  { id: "e9", reviewId: "review-003", time: "14/09/2026 · 10:34", title: "AI Review hoàn tất.", actor: "Hệ thống · 1 gợi ý", tone: "olive" },
-  { id: "e10", reviewId: "review-003", time: "14/09/2026 · 11:05", title: "Nguyễn Văn An bắt đầu review.", actor: "Giảng viên", tone: "brand" },
-  { id: "e11", reviewId: "review-003", time: "14/09/2026 · 11:12", title: "Giảng viên thêm feedback.", actor: "Nguyễn Văn An", quote: "“Association giữa Supervisor và Login đã chính xác.”", tone: "amber" },
-  { id: "e12", reviewId: "review-003", time: "14/09/2026 · 11:20", title: "Giảng viên phê duyệt v3.", actor: "Nguyễn Văn An · Activity Diagram được mở gửi review", tone: "brand" },
+  { id: "e1", reviewId: "review-001", time: "30/09/2026 · 10:05", title: "Nguyễn Minh Anh đã tải lên v1.", actor: "Sinh viên", tone: "neutral" },
+  { id: "e2", reviewId: "review-001", time: "30/09/2026 · 15:30", title: "Giảng viên yêu cầu chỉnh sửa v1.", actor: "Nguyễn Văn An", quote: "“Bổ sung Actor Sinh viên và sửa relationship Submit Document.”", tone: "rust" },
+  { id: "e3", reviewId: "review-001", time: "03/10/2026 · 08:15", title: "Nguyễn Minh Anh đã tải lên v2.", actor: "Sinh viên", tone: "neutral" },
+  { id: "e4", reviewId: "review-001", time: "03/10/2026 · 08:20", title: "Sinh viên gửi yêu cầu đánh giá.", actor: "Nguyễn Minh Anh", tone: "neutral" },
+  { id: "e5", reviewId: "review-001", time: "03/10/2026 · 08:21", title: "Đánh giá AI bắt đầu.", actor: "Hệ thống", tone: "olive" },
+  { id: "e6", reviewId: "review-001", time: "03/10/2026 · 08:22", title: "Đánh giá AI hoàn tất.", actor: "Hệ thống · 2 lỗi · 3 cảnh báo · 4 gợi ý", tone: "olive" },
+  { id: "e7", reviewId: "review-003", time: "14/09/2026 · 10:32", title: "Nguyễn Minh Anh đã tải lên v3.", actor: "Sinh viên", tone: "neutral" },
+  { id: "e8", reviewId: "review-003", time: "14/09/2026 · 10:32", title: "Sinh viên gửi yêu cầu đánh giá.", actor: "Nguyễn Minh Anh", tone: "neutral" },
+  { id: "e9", reviewId: "review-003", time: "14/09/2026 · 10:34", title: "Đánh giá AI hoàn tất.", actor: "Hệ thống · 1 gợi ý", tone: "olive" },
+  { id: "e10", reviewId: "review-003", time: "14/09/2026 · 11:05", title: "Nguyễn Văn An bắt đầu đánh giá.", actor: "Giảng viên", tone: "brand" },
+  { id: "e11", reviewId: "review-003", time: "14/09/2026 · 11:12", title: "Giảng viên thêm phản hồi.", actor: "Nguyễn Văn An", quote: "“Association giữa Giảng viên và Login đã chính xác.”", tone: "amber" },
+  { id: "e12", reviewId: "review-003", time: "14/09/2026 · 11:20", title: "Giảng viên phê duyệt v3.", actor: "Nguyễn Văn An · Activity Diagram được mở gửi đánh giá", tone: "brand" },
 ]
 
 export const attentionItems: AttentionItem[] = [
   { label: "Quá hạn", tone: "danger", title: "Group 07 · Event Management System", detail: "Quá hạn nộp lại Activity Diagram 2 ngày", projectId: "event-management-system" },
-  { label: "Chờ quá lâu", tone: "rust", title: "Group 08 · Campus Service Portal", detail: "Sequence Diagram v2 chờ review 4 ngày", projectId: "campus-service-portal" },
-  { label: "Vừa nộp lại", tone: "olive", title: "Group 01 · Smart Campus Management", detail: "Sequence Diagram v2 đã nộp lại sau feedback", projectId: "smart-campus-management" },
-  { label: "Chỉnh sửa nhiều lần", tone: "rust", title: "Group 03 · Student Services Portal", detail: "Activity Diagram đã yêu cầu chỉnh sửa 2 lần", projectId: "student-services-portal" },
-  { label: "Sắp đến hạn", tone: "amber", title: "Group 05 · Dormitory Management Platform", detail: "Deadline SRS 08/10 · còn 4 ngày", projectId: "dormitory-management-platform" },
+  { label: "Chờ quá lâu", tone: "rust", title: "Group 08 · Campus Service Portal", detail: "Sequence Diagram v2 chờ đánh giá 4 ngày", projectId: "campus-service-portal" },
+  { label: "Vừa nộp lại", tone: "olive", title: "Group 01 · Smart Campus Management", detail: "Sequence Diagram v2 đã nộp lại sau phản hồi", projectId: "smart-campus-management" },
+  { label: "Chỉnh sửa nhiều lần", tone: "rust", title: "Group 03 · Sinh viên Services Portal", detail: "Activity Diagram đã yêu cầu chỉnh sửa 2 lần", projectId: "student-services-portal" },
+  { label: "Sắp đến hạn", tone: "amber", title: "Group 05 · Dormitory Management Platform", detail: "Hạn nộp SRS 08/10 · còn 4 ngày", projectId: "dormitory-management-platform" },
 ]
 
 export type NotificationKind = "file-up" | "badge-check" | "clock" | "bell"
 
 export const notifications: (Notification & { kind: NotificationKind; section: string })[] = [
-  { id: "n1", title: "Group 03 vừa gửi yêu cầu review State Diagram v2", meta: "SE1701 · 20 phút trước", unread: true, link: "/reviews/review-006", kind: "file-up", section: "Cập nhật review" },
-  { id: "n2", title: "Group 04 gửi yêu cầu review Use Case Diagram v2", meta: "SE1701 · 2 giờ trước", unread: true, link: "/reviews/review-001", kind: "file-up", section: "Cập nhật review" },
-  { id: "n3", title: "AI Review hoàn tất cho Sequence Diagram v2 · Group 01", meta: "SE1701 · 3 giờ trước", unread: false, link: "/reviews/review-008", kind: "badge-check", section: "Cập nhật review" },
-  { id: "n4", title: "Sequence Diagram v2 của Group 08 đã chờ review 4 ngày", meta: "SE1701 · Nhắc việc", unread: false, link: "/reviews/review-004", kind: "clock", section: "Cập nhật review" },
+  { id: "n1", title: "Group 03 vừa gửi yêu cầu đánh giá State Diagram v2", meta: "SE1701 · 20 phút trước", unread: true, link: "/reviews/review-006", kind: "file-up", section: "Cập nhật đánh giá" },
+  { id: "n2", title: "Group 04 gửi yêu cầu đánh giá Use Case Diagram v2", meta: "SE1701 · 2 giờ trước", unread: true, link: "/reviews/review-001", kind: "file-up", section: "Cập nhật đánh giá" },
+  { id: "n3", title: "Đánh giá AI hoàn tất cho Sequence Diagram v2 · Group 01", meta: "SE1701 · 3 giờ trước", unread: false, link: "/reviews/review-008", kind: "badge-check", section: "Cập nhật đánh giá" },
+  { id: "n4", title: "Sequence Diagram v2 của Group 08 đã chờ đánh giá 4 ngày", meta: "SE1701 · Nhắc việc", unread: false, link: "/reviews/review-004", kind: "clock", section: "Cập nhật đánh giá" },
 ]

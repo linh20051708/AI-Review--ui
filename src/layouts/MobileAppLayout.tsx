@@ -30,7 +30,7 @@ export default function MobileAppLayout() {
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <MobileHeader />
         <main ref={contentRef} className="mobile-content">
-          <div className={`mx-auto flex w-full max-w-[480px] flex-col gap-6 px-5 pt-5 ${wide ? "pb-0 lg:max-w-[1440px] lg:px-6" : "pb-8 sm:max-w-[720px] lg:max-w-[880px] lg:px-8 lg:pt-8"}`}>
+          <div className={`mx-auto flex w-full max-w-[480px] flex-col gap-4 px-5 pt-3 ${wide ? "pb-0 lg:max-w-[1440px] lg:px-6" : "pb-8 sm:max-w-[720px] lg:max-w-[880px] lg:px-8 lg:pt-5"}`}>
             <Outlet />
           </div>
         </main>

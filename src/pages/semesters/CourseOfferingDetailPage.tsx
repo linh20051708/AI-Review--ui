@@ -1,5 +1,6 @@
 import PhaseTwoTabs from "@/components/ui/PhaseTwoTabs"
 import "@/styles/phase-two.css"
+import uiLabel from "@/lib/uiLabels"
 import {
   BookOpen,
   Calendar,
@@ -74,7 +75,7 @@ export default function CourseOfferingDetailPage() {
 
   const handleSaveConfig = () => {
     if (!ruleSets.some((r) => r.id === ruleSetId && r.status !== "draft")) {
-      toast("Chọn bộ quy tắc Active trước khi lưu.")
+      toast("Chọn bộ quy tắc Đang áp dụng trước khi lưu.")
       return
     }
     updateManagement((s) => ({
@@ -112,7 +113,7 @@ export default function CourseOfferingDetailPage() {
 
   return (
     <div className="phase-two flex min-w-0 flex-col gap-4">
-      <BackLink label="Danh sách môn học" fallback="/courses" />
+      <BackLink label="Chi tiết môn học" fallback={`/courses/${offering.courseId}`} />
       <PageHeading
         eyebrow={`HỌC KỲ ${semester?.name?.toUpperCase() ?? "KHÔNG XÁC ĐỊNH"}`}
         title={`${course?.code ?? offering.courseId} · ${course?.name ?? "Chưa đặt tên"}`}
@@ -153,14 +154,14 @@ export default function CourseOfferingDetailPage() {
             >
               {teachingMethodsList.map((m) => (
                 <option key={m} value={m}>
-                  {m}
+                  {uiLabel(m)}
                 </option>
               ))}
             </select>
           </Field>
 
           <Field
-            label="Bộ quy tắc đánh giá (Rule Set)"
+            label="Bộ quy tắc mặc định"
             
           >
             <select
@@ -178,7 +179,7 @@ export default function CourseOfferingDetailPage() {
 
           <Field
             label="Hạn chót mặc định đợt học"
-            hint="Deadline dự phòng khi một Lab không đặt deadline riêng."
+            hint="Hạn nộp dự phòng khi một Lab không đặt hạn riêng."
           >
             <TextInput
               type="datetime-local"
@@ -187,6 +188,7 @@ export default function CourseOfferingDetailPage() {
             />
           </Field>
         </div>
+        <Button variant="secondary" to={`/courses/${offering.courseId}`}>Quản lý bộ quy tắc môn học</Button>
       </Card>
 
       </section>

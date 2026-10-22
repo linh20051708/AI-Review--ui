@@ -7,9 +7,9 @@ export const facetTitles: Record<FacetKey, string> = {
   course: "Môn học",
   class: "Lớp",
   lab: "Lab",
-  labItem: "Tài liệu / Lab Item",
+  labItem: "Tài liệu / mục bài thực hành",
   group: "Nhóm",
-  project: "Project",
+  project: "Dự án",
   docType: "Loại tài liệu",
   status: "Trạng thái",
   ai: "Kết quả AI",
@@ -18,7 +18,7 @@ export const facetTitles: Record<FacetKey, string> = {
   legacyReviewStatus: "Bộ lọc đã lưu",
 }
 
-export const aiLabels: Record<string, string> = { hasErrors: "Có lỗi", clean: "Không có lỗi", running: "AI đang review", notRun: "Chưa có kết quả" }
+export const aiLabels: Record<string, string> = { hasErrors: "Có lỗi", clean: "Không có lỗi", running: "AI đang đánh giá", notRun: "Chưa có kết quả" }
 
 export interface LabeledOption extends FacetOption {
   label: string
@@ -49,7 +49,7 @@ export default function useFacetLabels(statusLabels: Record<string, string> = {}
       case "labItem": return v.split("::").at(-1) ?? v
       case "documentStatus": return ({draft:"Bản nháp",submitted:"Đã nộp",resubmitted:"Đã nộp lại",notStarted:"Chưa bắt đầu"} as Record<string,string>)[v] ?? v
       case "evaluationStatus": return ({loading:"Đang đánh giá",completed:"Đã có kết quả",error:"Lỗi đánh giá",notRun:"Chưa chạy AI",aiReviewing:"Đang đánh giá",aiReviewed:"Đã có kết quả"} as Record<string,string>)[v] ?? v
-      case "legacyReviewStatus": return ({waiting:"Chờ review · lần nộp đầu",resubmitted:"Chờ review · nộp lại",done:"Đã hoàn tất",inReview:"Đang review",needsRevision:"Cần chỉnh sửa"} as Record<string,string>)[v] ?? v
+      case "legacyReviewStatus": return ({waiting:"Chờ đánh giá · lần nộp đầu",resubmitted:"Chờ đánh giá · nộp lại",done:"Đã hoàn tất",inReview:"Đang đánh giá",needsRevision:"Cần chỉnh sửa"} as Record<string,string>)[v] ?? v
       case "status":
         return statusLabels[v] ?? v
       case "ai":

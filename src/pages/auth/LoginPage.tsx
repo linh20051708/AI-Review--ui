@@ -10,8 +10,8 @@ import { useManagement } from "@/data/managementStore"
 import { currentUser, demoStudentId } from "@/data/mockData"
 
 const roleOptions: { value: Role; label: string; icon: ReactNode; hint: string }[] = [
-  { value: "supervisor", label: "Giảng viên", icon: <UserRound size={18} strokeWidth={1.75} />, hint: "Review tài liệu, quản lý lớp & project" },
-  { value: "student", label: "Sinh viên", icon: <GraduationCap size={18} strokeWidth={1.75} />, hint: "Nộp tài liệu và theo dõi kết quả review" },
+  { value: "supervisor", label: "Giảng viên", icon: <UserRound size={18} strokeWidth={1.75} />, hint: "Đánh giá tài liệu, quản lý lớp & dự án" },
+  { value: "student", label: "Sinh viên", icon: <GraduationCap size={18} strokeWidth={1.75} />, hint: "Nộp tài liệu và theo dõi kết quả đánh giá" },
 ]
 
 export default function LoginPage() {
@@ -47,7 +47,7 @@ export default function LoginPage() {
     <div className="mx-auto flex min-h-full w-full max-w-[480px] flex-col justify-center gap-8 px-5 py-10">
       <div className="flex items-center gap-2.5">
         <Files size={28} strokeWidth={1.75} className="text-brand" />
-        <span className="text-[19px] font-semibold text-ink">Project Review</span>
+        <span className="text-[19px] font-semibold text-ink">SRS Review AI</span>
         <Badge tone="olive">AI</Badge>
       </div>
       <div className="flex flex-col gap-2">
@@ -80,7 +80,7 @@ export default function LoginPage() {
         </div>
       </fieldset>
 
-      {role === "student" && <label className="flex flex-col gap-2 text-sm font-semibold">Tài khoản<select className="min-h-12 rounded-lg border border-line p-3" value={studentId} onChange={e => { setStudentId(e.target.value); setEmail(students.find(s => s.id === e.target.value)?.email ?? "") }}>{students.filter(s => [demoStudentId,"self-create","self-join","self-leader"].includes(s.id)).map(s => <option key={s.id} value={s.id}>{s.name} · {s.id === "self-create" ? "Tạo nhóm" : s.id === "self-join" ? "Tham gia nhóm" : s.id === "self-leader" ? "Trưởng nhóm có sẵn" : "Review hiện tại"}</option>)}</select></label>}
+      {role === "student" && <label className="flex flex-col gap-2 text-sm font-semibold">Tài khoản<select className="min-h-12 rounded-lg border border-line p-3" value={studentId} onChange={e => { setStudentId(e.target.value); setEmail(students.find(s => s.id === e.target.value)?.email ?? "") }}>{students.filter(s => [demoStudentId,"self-create","self-join","self-leader"].includes(s.id)).map(s => <option key={s.id} value={s.id}>{s.name} · {s.id === "self-create" ? "Tạo nhóm" : s.id === "self-join" ? "Tham gia nhóm" : s.id === "self-leader" ? "Trưởng nhóm có sẵn" : "Đánh giá hiện tại"}</option>)}</select></label>}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <Input
           id="email"

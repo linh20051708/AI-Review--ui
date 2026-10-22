@@ -79,24 +79,24 @@ export default function GroupDetailPage() {
           <Badge tone={groupHealthMeta[group.health].tone}>{groupHealthMeta[group.health].label}</Badge>
         </div>
         <ProgressBar value={group.progress} label="Tiến độ nhóm (ghi nhận)" />
-        <p className="text-[12px] text-muted">Chờ review: <span className="font-semibold text-ink">{group.pendingReviews} tài liệu</span></p>
+        <p className="text-[12px] text-muted">Chờ đánh giá: <span className="font-semibold text-ink">{group.pendingReviews} tài liệu</span></p>
       </Card>
 
       {members.length > limit && <p role="status" className="text-[14px] text-amber">Nhóm có {members.length}/{limit} thành viên. Giữ nguyên thành viên; không thể thêm người mới.</p>}
       <section className="flex flex-col gap-3">
-        <SectionHeader title="Project" />
+        <SectionHeader title="Dự án" />
         {project ? (
           <Card tinted>
             <p className="text-[16px] font-semibold text-ink">{project.name}</p>
             <p className="text-[12px] leading-[1.45] text-muted">{project.description}</p>
-            <Button variant="secondary" to={`/projects/${project.id}`}>Xem project</Button>
+            <Button variant="secondary" to={`/projects/${project.id}`}>Xem dự án</Button>
           </Card>
         ) : (
           <Card>
-            <p className="text-[13px] text-muted">Nhóm chưa được gán project.</p>
+            <p className="text-[13px] text-muted">Nhóm chưa được gán dự án.</p>
             <div className="grid grid-cols-2 gap-2">
-              <Button variant="secondary" onClick={() => setAssigning(true)} disabled={!unassigned.length} className="disabled:opacity-50">Gán project</Button>
-              <Button icon={<FolderPlus size={16} strokeWidth={1.75} />} onClick={() => setCreatingProject(true)}>Tạo project</Button>
+              <Button variant="secondary" onClick={() => setAssigning(true)} disabled={!unassigned.length} className="disabled:opacity-50">Gán dự án</Button>
+              <Button icon={<FolderPlus size={16} strokeWidth={1.75} />} onClick={() => setCreatingProject(true)}>Tạo dự án</Button>
             </div>
           </Card>
         )}
@@ -125,7 +125,7 @@ export default function GroupDetailPage() {
           <EmptyState title="Nhóm chưa có thành viên" />
         )}
         <Button variant="secondary" icon={<UserPlus size={16} strokeWidth={1.75} />} onClick={() => setAdding(true)}>Thêm thành viên</Button>
-        <Notice>Xóa sinh viên khỏi nhóm không xóa tài liệu hay lịch sử review mà sinh viên đó đã nộp.</Notice>
+        <Notice>Xóa sinh viên khỏi nhóm không xóa tài liệu hay lịch sử đánh giá mà sinh viên đó đã nộp.</Notice>
       </section>
 
       <GroupFormModal open={renaming} classId={group.classId} group={group} onClose={() => setRenaming(false)} />
@@ -161,14 +161,14 @@ export default function GroupDetailPage() {
         {available.length ? (
           <Field label="Sinh viên"><Select options={available.map((s) => s.name)} value={pick || available[0].name} onChange={(e) => setPick(e.target.value)} /></Field>
         ) : (
-          <EmptyState title="Không còn sinh viên chưa có nhóm" description="Import thêm sinh viên vào lớp hoặc xóa sinh viên khỏi nhóm khác." />
+          <EmptyState title="Không còn sinh viên chưa có nhóm" description="Nhập thêm sinh viên vào lớp hoặc xóa sinh viên khỏi nhóm khác." />
         )}
       </Modal>
 
       <Modal
         open={assigning}
         onClose={() => setAssigning(false)}
-        title="Gán project"
+        title="Gán dự án"
         footer={
           <>
             <Button variant="secondary" onClick={() => setAssigning(false)}>Hủy</Button>
@@ -180,12 +180,12 @@ export default function GroupDetailPage() {
                 setAssigning(false)
               }}
             >
-              Gán project
+              Gán dự án
             </Button>
           </>
         }
       >
-        {unassigned.length > 0 && <Field label="Project chưa có nhóm"><Select options={unassigned.map((p) => p.name)} onChange={(e) => setPick(e.target.value)} /></Field>}
+        {unassigned.length > 0 && <Field label="Dự án chưa có nhóm"><Select options={unassigned.map((p) => p.name)} onChange={(e) => setPick(e.target.value)} /></Field>}
       </Modal>
 
       <ConfirmModal
@@ -200,13 +200,13 @@ export default function GroupDetailPage() {
         }}
         onClose={() => setRemoving(null)}
       >
-        <Notice>Tài liệu, version và lịch sử review sinh viên đã tham gia vẫn được giữ nguyên.</Notice>
+        <Notice>Tài liệu, phiên bản và lịch sử đánh giá sinh viên đã tham gia vẫn được giữ nguyên.</Notice>
       </ConfirmModal>
       <ConfirmModal
         open={deleting}
         danger
         title="Xóa nhóm"
-        description="Nhóm chưa có thành viên và chưa có lịch sử review."
+        description="Nhóm chưa có thành viên và chưa có lịch sử đánh giá."
         confirmLabel="Xóa nhóm"
         onConfirm={() => {
           updateManagement((s) => ({ groups: s.groups.filter((g) => g.id !== group.id) }))

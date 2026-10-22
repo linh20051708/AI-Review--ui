@@ -1,14 +1,13 @@
 import { Bell, BookOpen, CalendarRange, FileCheck2, Files, Folder, GraduationCap, History, LayoutDashboard, Library, ListChecks, School, Settings, Users, Users2 } from "lucide-react"
 import { NavLink } from "react-router-dom"
-import Badge from "@/components/ui/Badge"
 import { useReviewStore } from "@/data/reviewStore"
 
 const workspace = [
   { to: "/dashboard", label: "Tổng quan", icon: LayoutDashboard },
-  { to: "/projects", label: "Project", icon: Folder },
-  { to: "/reviews", label: "Yêu cầu review", icon: FileCheck2, count: true },
+  { to: "/projects", label: "Dự án", icon: Folder },
+  { to: "/reviews", label: "Yêu cầu đánh giá", icon: FileCheck2, count: true },
   { to: "/documents", label: "Tài liệu", icon: BookOpen },
-  { to: "/review-history", label: "Lịch sử review", icon: History },
+  { to: "/review-history", label: "Lịch sử đánh giá", icon: History },
   { to: "/notifications", label: "Thông báo", icon: Bell },
 ]
 const manage = [
@@ -42,8 +41,7 @@ export default function SideNavigation() {
     <aside className="hidden w-[248px] shrink-0 flex-col border-r border-line bg-white lg:flex">
       <div className="flex h-[64px] items-center gap-2.5 border-b border-line px-5">
         <Files size={22} strokeWidth={1.75} className="text-brand" />
-        <span className="text-[16px] font-semibold text-ink">Project Review</span>
-        <Badge tone="olive">AI</Badge>
+        <span className="text-[16px] font-semibold text-ink">SRS Review AI</span>
       </div>
       <nav aria-label="Điều hướng giảng viên" className="flex flex-1 flex-col gap-6 overflow-y-auto px-3 py-5">
         <Section title="KHÔNG GIAN LÀM VIỆC" items={workspace} />

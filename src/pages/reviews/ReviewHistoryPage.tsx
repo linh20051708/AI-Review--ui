@@ -14,19 +14,19 @@ import useReviewFromParams from "./useReviewFromParams"
 export default function ReviewHistoryPage() {
   const { review } = useReviewFromParams()
   const { audit, feedback } = useReviewStore()
-  if (!review) return <EmptyState title="Không tìm thấy yêu cầu review" />
+  if (!review) return <EmptyState title="Không tìm thấy yêu cầu đánh giá" />
   const events = audit.filter((e) => e.reviewId === review.id)
 
   return (
     <>
-      <BackLink label="Không gian review" fallback={`/reviews/${review.id}`} />
+      <BackLink label="Không gian đánh giá" fallback={`/reviews/${review.id}`} />
       <PageHeading
-        title="Lịch sử review"
-        description="Nhật ký đầy đủ: upload, yêu cầu review, AI Review, feedback và quyết định của giảng viên."
+        title="Lịch sử đánh giá"
+        description="Nhật ký đầy đủ: tải lên, yêu cầu đánh giá, Đánh giá AI, phản hồi và quyết định của giảng viên."
       />
       <ReviewContextCard review={review} />
       <section className="flex flex-col gap-3">
-        <SectionHeader title="Audit trail" meta={`${events.length} sự kiện`} />
+        <SectionHeader title="Nhật ký hoạt động" meta={`${events.length} sự kiện`} />
         {events.length ? (
           <Card>
             <ol>
@@ -42,7 +42,7 @@ export default function ReviewHistoryPage() {
         ) : (
           <EmptyState
             title="Chưa có sự kiện"
-            description="Các sự kiện sẽ được ghi lại khi sinh viên nộp và giảng viên review."
+            description="Các sự kiện sẽ được ghi lại khi sinh viên nộp và giảng viên đánh giá."
           />
         )}
         <p className="inline-flex items-center gap-1.5 text-[12px] text-muted">
@@ -50,7 +50,7 @@ export default function ReviewHistoryPage() {
           Chỉ đọc · Sự kiện không thể chỉnh sửa hoặc xóa.
         </p>
         <Notice>
-          AI Review không đưa ra quyết định phê duyệt. Mọi quyết định được ghi
+          Đánh giá AI không đưa ra quyết định phê duyệt. Mọi quyết định được ghi
           nhận từ giảng viên.
         </Notice>
         {events
@@ -58,17 +58,17 @@ export default function ReviewHistoryPage() {
           .map((e) => (
             <Card key={e.id}>
               <h3 className="text-[14px] font-semibold">
-                Feedback chính thức · {e.documentVersion}
+                Phản hồi chính thức · {e.documentVersion}
               </h3>
               {e.selectedFeedbackIds!.length ? (
                 e.selectedFeedbackIds!.map((id) => (
                   <p key={id} className="text-[14px]">
                     {feedback.find((f) => f.id === id)?.message ??
-                      "Feedback không còn khả dụng"}
+                      "Phản hồi không còn khả dụng"}
                   </p>
                 ))
               ) : (
-                <p>Không đính kèm feedback.</p>
+                <p>Không đính kèm phản hồi.</p>
               )}
             </Card>
           ))}
@@ -77,7 +77,7 @@ export default function ReviewHistoryPage() {
         to={`/reviews/${review.id}/versions`}
         className="-my-2 self-start px-2 py-2 text-[13px] font-semibold text-brand"
       >
-        Xem lịch sử version →
+        Xem lịch sử phiên bản →
       </Link>
       <Link
         to={`/reviews/${review.id}/ai-result`}

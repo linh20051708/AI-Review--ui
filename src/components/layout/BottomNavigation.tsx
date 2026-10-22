@@ -1,11 +1,11 @@
-import { Bell, FileCheck2, Folder, LayoutDashboard, UserRound } from "lucide-react"
+import { Inbox, FileCheck2, Folder, LayoutDashboard, UserRound } from "lucide-react"
 import { NavLink } from "react-router-dom"
 
 const tabs = [
   { to: "/dashboard", label: "Tổng quan", icon: LayoutDashboard, extra: [] as string[] },
-  { to: "/projects", label: "Project", icon: Folder, extra: ["/classes", "/groups", "/semesters", "/documents", "/rule-sets", "/courses"] },
-  { to: "/reviews", label: "Review", icon: FileCheck2, extra: ["/review-history"] },
-  { to: "/notifications", label: "Thông báo", icon: Bell, extra: [] },
+  { to: "/projects", label: "Dự án", icon: Folder, extra: ["/classes", "/groups", "/semesters", "/documents", "/rule-sets", "/courses"] },
+  { to: "/reviews", label: "Đánh giá", icon: FileCheck2, extra: ["/review-history"] },
+  { to: "/notifications", label: "Thông báo", icon: Inbox, extra: [] },
   { to: "/profile", label: "Tài khoản", icon: UserRound, extra: [] },
 ]
 

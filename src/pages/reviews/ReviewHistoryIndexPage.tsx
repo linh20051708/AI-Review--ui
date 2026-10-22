@@ -28,19 +28,19 @@ export default function ReviewHistoryIndexPage() {
 
   return (
     <>
-      <PageHeading eyebrow="AUDIT TRAIL" title="Lịch sử review" description="Nhật ký chỉ đọc của mọi lần nộp, AI Review, feedback và quyết định." />
+      <PageHeading eyebrow="NHẬT KÝ" title="Lịch sử đánh giá" description="Nhật ký chỉ đọc của mọi lần nộp, Đánh giá AI, phản hồi và quyết định." />
       <SmartFilterBar
         records={records}
         state={filter}
         onChange={setFilter}
         facets={["semester", "course", "class", "lab", "labItem", "group", "project", "docType", "status", "documentStatus", "evaluationStatus", "ai", "legacyReviewStatus"]}
         primary={["class", "lab", "labItem"]}
-        statusTitle="Giảng viên review"
-        statusGroup="Trạng thái review"
+        statusTitle="Giảng viên đánh giá"
+        statusGroup="Trạng thái đánh giá"
         restoreView={restoreReviewView}
         time
         statusLabels={reviewStatusLabels}
-        searchPlaceholder="Tìm project, tài liệu..."
+        searchPlaceholder="Tìm dự án, tài liệu..."
         noun="tài liệu có lịch sử"
         viewKey="history"
       />

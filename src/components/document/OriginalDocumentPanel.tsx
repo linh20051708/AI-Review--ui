@@ -36,12 +36,12 @@ export default function OriginalDocumentPanel({
   return (
     <Card>
       <h2 className="text-[14px] font-semibold">
-        Đối chiếu file gốc{!compact && ` · ${review.fileName}`}
+        Đối chiếu tệp gốc{!compact && ` · ${review.fileName}`}
       </h2>
       <label className="flex min-h-12 flex-col gap-2 text-[14px]">
-        {compact ? "Chọn PDF/DOCX · tối đa 50 MB" : "Chọn file gốc PDF/DOCX"}
+        {compact ? "Chọn PDF/DOCX · tối đa 50 MB" : "Chọn tệp gốc PDF/DOCX"}
         <input
-          aria-label="File gốc để đối chiếu evidence"
+          aria-label="Tệp gốc để đối chiếu bằng chứng"
           type="file"
           accept=".pdf,.docx"
           className="min-h-12 max-w-full text-[14px]"
@@ -79,13 +79,13 @@ export default function OriginalDocumentPanel({
         <p className="break-all text-[14px]">
           Đã chọn {file.name}.{" "}
           {file.name !== review.fileName
-            ? "Tên file khác bản nộp. Kiểm tra đúng phiên bản."
+            ? "Tên tệp khác bản nộp. Kiểm tra đúng phiên bản."
             : "Chưa xác minh nội dung."}
         </p>
       )}
       {url && file?.name.toLowerCase().endsWith(".pdf") && (
         <iframe
-          title="File PDF gốc do Supervisor chọn"
+          title="Tệp PDF gốc do Giảng viên chọn"
           src={url}
           className="h-[60dvh] w-full rounded-lg border border-line"
         />
@@ -96,11 +96,11 @@ export default function OriginalDocumentPanel({
           href={url}
           download={file?.name}
         >
-          Tải file đã chọn
+          Tải tệp đã chọn
         </a>
       )}
       {file?.name.toLowerCase().endsWith(".docx") && (
-        <p className="text-[14px] text-muted">Mở file DOCX bằng Word để xem nội dung.</p>
+        <p className="text-[14px] text-muted">Mở tệp DOCX bằng Word để xem nội dung.</p>
       )}
     </Card>
   )

@@ -47,15 +47,15 @@ export default function StudentVersionsPage() {
   return (
     <div className="student-refine phase-two flex min-w-0 flex-col gap-4">
       <BackLink label={doc.title} fallback={`/student/documents/${doc.id}`} />
-      <PageHeading title="Lịch sử version" description={doc.title} />
+      <PageHeading title="Lịch sử phiên bản" description={doc.title} />
       <p className="text-[14px] text-muted">Phiên bản mới nhất ở đầu · Bản đã nộp không thể sửa/xóa.</p>
       <section className="flex flex-col gap-3">
-        <SectionHeader title="Các version" meta={`${list.length} version`} />
+        <SectionHeader title="Các phiên bản" meta={`${list.length} phiên bản`} />
         <div className="rounded-xl border border-line bg-white px-4">{list.map((v,i)=>({v,i})).reverse().map(({v,i})=>(
           <article key={v.id} className="flex flex-col gap-3 border-b border-line py-4 last:border-b-0">
             <div className="flex flex-wrap items-center justify-between gap-2"><h2 className="text-[17px] font-semibold">{v.version}{v.isCurrent && <Badge tone="brand">Mới nhất</Badge>}</h2><StatusBadge status={v.supervisorStatus}/></div>
             <p className="break-all text-[14px]">{v.fileName}</p><p className="text-[14px] text-muted">{v.submittedAt}</p>
-            <details><summary>Chi tiết bản nộp</summary><p>AI đề xuất · Chưa xác minh: {aiSummary(v.ai)}</p><p>{v.submitter} · {v.feedbackCount} feedback</p><StatusBadge status={v.documentStatus}/>{v.summary && <p>Ghi chú phiên bản: {v.summary}</p>}</details>
+            <details><summary>Chi tiết bản nộp</summary><p>AI đề xuất · Chưa xác minh: {aiSummary(v.ai)}</p><p>{v.submitter} · {v.feedbackCount} phản hồi</p><StatusBadge status={v.documentStatus}/>{v.summary && <p>Ghi chú phiên bản: {v.summary}</p>}</details>
             <div className="flex flex-wrap gap-3"><Button variant={v.isCurrent ? "primary" : "secondary"} onClick={()=>setViewing(v)}>Xem tài liệu</Button>{i>0 && <Button variant="secondary" aria-pressed={cmp===i} className={cmp===i ? "border-brand" : ""} onClick={()=>setCompareIndex(i)}>So sánh bản trước</Button>}</div>
           </article>
         ))}</div>
@@ -67,13 +67,13 @@ export default function StudentVersionsPage() {
           <p className="break-all text-[14px]">Sau: {list[cmp].fileName} · {list[cmp].submittedAt}</p>
         </Card>
       )}
-      <details><summary>Feedback &amp; lịch sử review</summary><section className="flex flex-col gap-3">
-        <SectionHeader title="Lịch sử feedback" />
+      <details><summary>Phản hồi &amp; lịch sử đánh giá</summary><section className="flex flex-col gap-3">
+        <SectionHeader title="Lịch sử phản hồi" />
         {feedback.filter((f) => f.reviewId === request.id && f.official).map((f) => (
           <Card key={f.id}><p className="text-[14px] font-semibold">{f.version} · {f.author} · {f.createdAt}</p><p className="text-[14px]">{f.message}</p></Card>
         ))}
-        <SectionHeader title="Lịch sử review" />
-        <ol>{audit.filter((e) => e.reviewId === request.id && e.title !== "Giảng viên thêm feedback.").map((e) => <TimelineItem key={e.id} event={e} />)}</ol>
+        <SectionHeader title="Lịch sử đánh giá" />
+        <ol>{audit.filter((e) => e.reviewId === request.id && e.title !== "Giảng viên thêm phản hồi.").map((e) => <TimelineItem key={e.id} event={e} />)}</ol>
       </section></details>
       <Button variant="secondary" to={`/student/documents/${doc.id}`}>Quay lại tài liệu</Button>
 

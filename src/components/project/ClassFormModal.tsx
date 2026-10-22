@@ -1,3 +1,4 @@
+import uiLabel from "@/lib/uiLabels"
 import { DEFAULT_MAX_GROUP_MEMBERS, groupMemberLimit } from "@/data/selfServicePolicy"
 import { useEffect, useState } from "react"
 import Button from "@/components/ui/Button"
@@ -131,7 +132,7 @@ export default function ClassFormModal({ open, classRoom, onClose }: { open: boo
       </Field>
       {offering && (
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-          <Inherited label="Phương pháp dạy" value={method.value ?? "—"} hint={method.source} />
+          <Inherited label="Phương pháp dạy" value={uiLabel(method.value)} hint={method.source} />
           <Inherited label="Bộ quy tắc" value={rule.value?.name ?? "—"} hint={rule.source} />
           <Inherited label="Cấu trúc Lab" value={`${labs.length} Lab · ${labs.reduce((n, l) => n + l.items.length, 0)} mục`} hint={classRoom?.labOverride ? `Tùy chỉnh cho lớp ${classRoom.code}` : `Kế thừa từ ${label}`} />
         </div>

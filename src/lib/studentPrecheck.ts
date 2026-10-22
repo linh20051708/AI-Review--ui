@@ -7,7 +7,7 @@ export async function studentPrecheck(rule: RuleSet, signal: AbortSignal, docume
   const invalid = validateRule(snapshot)
   if (invalid) throw new Error(invalid)
   if (snapshot.status !== "active" || !snapshot.aiEnabled)
-    throw new Error("Rule Set chưa bật AI.")
+    throw new Error("Bộ quy tắc chưa bật AI.")
   await new Promise<void>((resolve, reject) => {
     if (signal.aborted) return reject(new DOMException("Cancelled", "AbortError"))
     const cancel = () => { clearTimeout(timer); reject(new DOMException("Cancelled", "AbortError")) }

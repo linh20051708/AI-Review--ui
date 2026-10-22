@@ -68,7 +68,7 @@ export default function CourseListPage() {
         (r) => r.id === offeringForm.ruleSetId && r.status !== "draft",
       )
     ) {
-      toast("Chọn bộ quy tắc Active trước khi tạo đợt môn học.")
+      toast("Chọn bộ quy tắc Đang áp dụng trước khi tạo đợt môn học.")
       return
     }
 
@@ -130,9 +130,9 @@ export default function CourseListPage() {
                   </div>
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-[17px] font-bold text-ink">
+                      <Link to={`/courses/${c.id}`} className="text-[17px] font-bold text-brand">
                         {c.code}
-                      </span>
+                      </Link>
                       <span className="text-[15px] text-muted">— {c.name}</span>
                     </div>
 
@@ -150,6 +150,7 @@ export default function CourseListPage() {
               </div>
 
               {/* Offerings list */}
+              <Button variant="secondary" to={`/courses/${c.id}`}>Chi tiết môn học · Bộ quy tắc</Button>
               <details><summary>Đợt giảng dạy ({courseOfferingsList.length})</summary>                    {c.description && (
                       <p className="text-[12px] text-muted mt-0.5">
                         {c.description}
@@ -322,17 +323,17 @@ export default function CourseListPage() {
               }
             >
               <option value="Project-based Learning">
-                Project-based Learning
+                Học qua dự án
               </option>
               <option value="Trực tiếp">Trực tiếp</option>
               <option value="Trực tuyến">Trực tuyến</option>
-              <option value="Hybrid">Hybrid</option>
-              <option value="Flipped Classroom">Flipped Classroom</option>
-              <option value="Blended Learning">Blended Learning</option>
+              <option value="Hybrid">Kết hợp trực tiếp và trực tuyến</option>
+              <option value="Flipped Classroom">Lớp học đảo ngược</option>
+              <option value="Blended Learning">Học tập kết hợp</option>
             </select>
           </Field>
 
-          <Field label="Bộ quy tắc đánh giá (Rule Set)" required>
+          <Field label="Bộ quy tắc đánh giá (Bộ quy tắc)" required>
             <select
               className="w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand min-h-12"
               value={offeringForm.ruleSetId}

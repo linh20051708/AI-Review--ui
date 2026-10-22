@@ -15,7 +15,7 @@ import { useStudentContext } from "./useStudentContext"
 const filters: { label: string; match: (d: ProjectDocument) => boolean }[] = [
   { label: "Tất cả", match: () => true },
   { label: "Chưa nộp", match: (d) => !d.latestVersion && !d.submissionLocked },
-  { label: "Chờ review", match: (d) => d.supervisorStatus === "waiting" || d.supervisorStatus === "inReview" },
+  { label: "Chờ đánh giá", match: (d) => d.supervisorStatus === "waiting" || d.supervisorStatus === "inReview" },
   { label: "Cần chỉnh sửa", match: (d) => d.supervisorStatus === "needsRevision" },
   { label: "Đã phê duyệt", match: (d) => d.supervisorStatus === "approved" },
   { label: "Không đạt", match: (d) => d.supervisorStatus === "notAccepted" },
@@ -56,14 +56,14 @@ export default function StudentDocumentsPage() {
                   <div className="flex flex-wrap items-center gap-1.5 pt-1">
                     <StatusBadge status={d.supervisorStatus ?? d.documentStatus} />
 
-                    {d.submissionLocked && <Badge tone="neutral">Khóa gửi review</Badge>}
+                    {d.submissionLocked && <Badge tone="neutral">Khóa gửi đánh giá</Badge>}
                   </div>
                 </div><span className="text-[14px] font-semibold text-brand">{d.supervisorStatus==="needsRevision" ? "Xem feedback" : !d.latestVersion && !d.submissionLocked ? "Nộp bài" : "Xem"}</span>
               </Link>
             )
           })}</div></Fragment>)
         ) : (
-          <EmptyState title={ctx.project ? "Không có tài liệu phù hợp" : "Chưa có project hoạt động"} description={ctx.project ? "Thử chọn bộ lọc khác." : "Kiểm tra đăng ký project của lớp đang xem."} action={!ctx.project ? <Button to="/student/groups">Xem đăng ký project</Button> : undefined} />
+          <EmptyState title={ctx.project ? "Không có tài liệu phù hợp" : "Chưa có dự án hoạt động"} description={ctx.project ? "Thử chọn bộ lọc khác." : "Kiểm tra đăng ký dự án của lớp đang xem."} action={!ctx.project ? <Button to="/student/groups">Xem đăng ký dự án</Button> : undefined} />
         )}
       </section>
     </div>

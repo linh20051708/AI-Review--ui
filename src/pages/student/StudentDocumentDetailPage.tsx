@@ -1,4 +1,5 @@
 import { currentIllustration } from "@/lib/rubric"
+import uiLabel from "@/lib/uiLabels"
 import "@/styles/student-refinement.css"
 import PhaseTwoTabs from "@/components/ui/PhaseTwoTabs"
 import SampleDocumentPreview from "@/components/document/SampleDocumentPreview"
@@ -28,10 +29,10 @@ export default function StudentDocumentDetailPage() {
   const { documentId } = useParams()
   const ctx = useStudentContext()
   const { versions, feedback, audit, evaluations } = useReviewStore()
-  const [tab, setTab] = useState("Feedback")
+  const [tab, setTab] = useState("Phản hồi")
 
   const doc = ctx.docById(documentId)
-  if (!doc) return <EmptyState title="Không tìm thấy tài liệu" description={`Tài liệu “${documentId}” không thuộc project của bạn.`} />
+  if (!doc) return <EmptyState title="Không tìm thấy tài liệu" description={`Tài liệu “${documentId}” không thuộc dự án của bạn.`} />
 
   const request = ctx.requestFor(doc.reviewId)
   const status = doc.supervisorStatus
@@ -83,10 +84,10 @@ export default function StudentDocumentDetailPage() {
         {!locked && needsRev && (
           <>
             <div className="flex gap-2.5 rounded-[8px] bg-amber-soft p-3 text-[14px] leading-[1.45] text-amber">
-              Giảng viên đã yêu cầu chỉnh sửa {request?.version ?? doc.latestVersion}. Hãy đọc feedback bên dưới rồi nộp version mới.
+              Giảng viên đã yêu cầu chỉnh sửa {request?.version ?? doc.latestVersion}. Hãy đọc phản hồi bên dưới rồi nộp phiên bản mới.
             </div>
             <Button to={`/student/documents/${doc.id}/upload`} icon={<Upload size={18} strokeWidth={1.75} />}>
-              Nộp version mới
+              Nộp phiên bản mới
             </Button>
           </>
         )}
@@ -113,26 +114,26 @@ export default function StudentDocumentDetailPage() {
         )}
         {request && (
           <Button variant="secondary" className="justify-start border-0 bg-transparent px-0 text-brand" to={`/student/documents/${doc.id}/versions`} icon={<History size={18} strokeWidth={1.75} />}>
-            Lịch sử version ({versionsList.length})
+            Lịch sử phiên bản ({versionsList.length})
           </Button>
         )}
       </section>
 
-      <p className="text-[14px] text-muted">{doc.latestVersion ?? "Chưa nộp"}{dl.ts ? ` · Deadline ${fmtDate(dl.ts)}` : ""}</p>
-      <PhaseTwoTabs id="student-result" tabs={["Feedback","AI đề xuất","Tài liệu"]} active={tab} onChange={setTab}/>
-      <section role="tabpanel" id="student-result-panel-0" aria-labelledby="student-result-0" hidden={tab!=="Feedback"} className="flex flex-col gap-3">
-      {!currentFeedback.length && <EmptyState title="Chưa có feedback của giảng viên"/>}
+      <p className="text-[14px] text-muted">{doc.latestVersion ?? "Chưa nộp"}{dl.ts ? ` · Hạn nộp ${fmtDate(dl.ts)}` : ""}</p>
+      <PhaseTwoTabs id="student-result" tabs={["Phản hồi","AI đề xuất","Tài liệu"]} active={tab} onChange={setTab}/>
+      <section role="tabpanel" id="student-result-panel-0" aria-labelledby="student-result-0" hidden={tab!=="Phản hồi"} className="flex flex-col gap-3">
+      {!currentFeedback.length && <EmptyState title="Chưa có phản hồi của giảng viên"/>}
       {/* SUPERVISOR FEEDBACK */}
       {currentFeedback.length > 0 && (
         <section className="flex flex-col gap-3">
-          <SectionHeader title="Feedback của giảng viên" meta={`${currentFeedback.length} feedback · ${request?.version}`} />
+          <SectionHeader title="Phản hồi của giảng viên" meta={`${currentFeedback.length} phản hồi · ${request?.version}`} />
           <Card className="gap-0 py-1">
             <ul className="divide-y divide-line">
               {currentFeedback.map((f) => (
                 <li key={f.id} className="flex flex-col gap-1.5 px-3 py-3">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <Badge tone={severityTone[f.severity]}>{f.severity}</Badge>
-                    <Badge>{f.category}</Badge>
+                    <Badge tone={severityTone[f.severity]}>{uiLabel(f.severity)}</Badge>
+                    <Badge>{uiLabel(f.category)}</Badge>
                     {f.pageRef && <Badge tone="brand">{f.pageRef}</Badge>}
                   </div>
                   <p className="text-[14px] leading-[1.45] text-ink">“{f.message}”</p>
@@ -169,10 +170,10 @@ export default function StudentDocumentDetailPage() {
           items={[
             { label: "Lab", value: doc.labTitle ?? "—" },
             { label: "Mục Lab", value: `${doc.itemCode ?? ""} · ${doc.title}` },
-            { label: "Version mới nhất", value: doc.latestVersion ?? "Chưa nộp" },
+            { label: "Phiên bản mới nhất", value: doc.latestVersion ?? "Chưa nộp" },
             { label: "Người nộp", value: doc.submitter ?? "—" },
             { label: "Cập nhật", value: doc.updatedAt ?? "—" },
-            { label: "Deadline", value: dl.ts ? fmtDate(dl.ts) : "—" },
+            { label: "Hạn nộp", value: dl.ts ? fmtDate(dl.ts) : "—" },
           ]}
         />
         {request && (
@@ -189,7 +190,7 @@ export default function StudentDocumentDetailPage() {
       {/* VERSIONS PREVIEW */}
       {versionsList.length > 0 && (
         <section className="flex flex-col gap-3">
-          <details><summary>Phiên bản đã nộp ({versionsList.length})</summary><SectionHeader title="Phiên bản đã nộp" meta={`${versionsList.length} version`} />
+          <details><summary>Phiên bản đã nộp ({versionsList.length})</summary><SectionHeader title="Phiên bản đã nộp" meta={`${versionsList.length} phiên bản`} />
           <Card className="gap-0 py-1">
             <ul>
               {[...versionsList].sort((a,b)=>Number(b.version.slice(1))-Number(a.version.slice(1))).map((v) => (
@@ -197,7 +198,7 @@ export default function StudentDocumentDetailPage() {
                   <div className="min-w-0 flex-1 leading-[1.45]">
                     <p className="flex flex-wrap items-center gap-2 text-[14px] font-semibold text-ink">
                       {v.version}
-                      {v.isCurrent && <Badge tone="brand">Version mới nhất</Badge>}
+                      {v.isCurrent && <Badge tone="brand">Phiên bản mới nhất</Badge>}
                     </p>
                     <p className="truncate text-[14px] text-muted">{v.fileName}</p>
                   </div>

@@ -1,5 +1,6 @@
 import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from "react"
 import { Check } from "lucide-react"
+import uiLabel from "@/lib/uiLabels"
 
 const field =
   "w-full rounded-[8px] border border-muted bg-white p-3 text-[16px] leading-[1.45] text-ink outline-none transition focus:border-brand focus:ring-1 focus:ring-brand disabled:bg-subtle disabled:text-muted disabled:cursor-not-allowed"
@@ -59,7 +60,7 @@ export function Select({
       className={`${field} min-h-12 ${error ? "border-danger focus:border-danger focus:ring-danger" : ""} ${className}`}
     >
       {options.map((o) => (
-        <option key={o}>{o}</option>
+        <option key={o} value={o}>{uiLabel(o)}</option>
       ))}
     </select>
   )
@@ -102,7 +103,7 @@ export function ChoiceChips<T extends string>({
           }`}
         >
             {o === value && <Check size={16} aria-hidden="true" className="mr-1 inline-block" />}
-          {o}
+          {uiLabel(o)}
         </button>
       ))}
     </div>

@@ -1,3 +1,4 @@
+import uiLabel from "@/lib/uiLabels"
 import { ArrowDown, ArrowUp, Copy, GitBranch, Lock, Pencil, Plus, Save, Trash2 } from "lucide-react"
 import { useState } from "react"
 import Badge from "@/components/ui/Badge"
@@ -83,7 +84,7 @@ export default function LabStructureEditor({ compact = false, labs, onChange, us
               <p className="text-[15px] font-semibold text-ink">{lab.title}</p>
               {lab.description && <p className="text-[12px] text-muted">{lab.description}</p>}
               <p className="mt-0.5 text-[11px] text-muted">
-                Deadline: {lab.deadline ? <span className="font-semibold text-ink">{fmtDateTime(parseISO(lab.deadline))}</span> : <>{inheritedDeadline ?? "—"} <span>(kế thừa)</span></>}
+                Hạn nộp: {lab.deadline ? <span className="font-semibold text-ink">{fmtDateTime(parseISO(lab.deadline))}</span> : <>{inheritedDeadline ?? "—"} <span>(kế thừa)</span></>}
               </p>
             </div>
             {!readOnly && (
@@ -119,7 +120,7 @@ export default function LabStructureEditor({ compact = false, labs, onChange, us
                     {it.dependsOn.length > 0 && (
                       <p className="inline-flex items-center gap-1 text-[11px] text-muted"><GitBranch size={12} strokeWidth={1.75} />Phụ thuộc: {it.dependsOn.map(codeOf).join(", ")}</p>
                     )}
-                    {it.deadline && <p className="text-[11px] text-muted">Deadline riêng: <span className="font-semibold text-ink">{fmtDateTime(parseISO(it.deadline))}</span></p>}
+                    {it.deadline && <p className="text-[11px] text-muted">Hạn nộp riêng: <span className="font-semibold text-ink">{fmtDateTime(parseISO(it.deadline))}</span></p>}
                     {used && <p className="inline-flex items-center gap-1 text-[11px] text-muted"><Lock size={11} strokeWidth={2} />Đã có bài nộp · không thể xóa</p>}
                   </div>
                   {!readOnly && (
@@ -197,7 +198,7 @@ export default function LabStructureEditor({ compact = false, labs, onChange, us
 
 function LabItemMeta({item:it,compact=false}:{item:LabItem;compact?:boolean}) {
   return <div className="flex flex-wrap gap-1">
-    <Badge>{it.deliverableType}</Badge>
+    <Badge>{uiLabel(it.deliverableType)}</Badge>
     {!compact && <><Badge tone={it.required ? "brand" : "neutral"}>{it.required ? "Bắt buộc" : "Tùy chọn"}</Badge>
     <Badge tone={it.aiReview === "disabled" ? "neutral" : "olive"}>{aiLabel[it.aiReview]}</Badge></>}
     <Badge>{it.allowedFiles === "Both" ? "PDF, DOCX" : it.allowedFiles}</Badge>
@@ -213,7 +214,7 @@ function LabFormModal({ lab, suggestedCode, onSave, onClose }: { lab?: Lab; sugg
       open
       onClose={onClose}
       title={lab ? "Sửa Lab" : "Tạo Lab"}
-      description="Tên Lab có thể tùy ý: Lab 3, Milestone 1, Proposal, Sprint Review…"
+      description="Tên Lab có thể tùy ý: Lab 3, Milestone 1, Proposal, Sprint Đánh giá…"
       footer={
         <>
           <Button variant="secondary" onClick={onClose}>Hủy</Button>
@@ -228,7 +229,7 @@ function LabFormModal({ lab, suggestedCode, onSave, onClose }: { lab?: Lab; sugg
         <Field label="Tên Lab" required><TextInput value={d.title} onChange={(e) => setD({ ...d, title: e.target.value })} placeholder="Requirements & Analysis" /></Field>
       </div>
       <Field label="Mô tả"><TextArea rows={2} value={d.description} onChange={(e) => setD({ ...d, description: e.target.value })} /></Field>
-      <Field label="Deadline mặc định" hint="Để trống để kế thừa deadline của lớp / môn học. Mục Lab có thể ghi đè.">
+      <Field label="Hạn nộp mặc định" hint="Để trống để kế thừa hạn nộp của lớp / môn học. Mục Lab có thể ghi đè.">
         <TextInput type="datetime-local" value={d.deadline ?? ""} onChange={(e) => setD({ ...d, deadline: e.target.value })} />
       </Field>
       <p className="text-[12px] text-muted">Thứ tự hiển thị: dùng “Di chuyển lên / xuống” trong menu của Lab.</p>
@@ -268,18 +269,18 @@ function LabItemFormModal({ lab, item, allLabs, onSave, onClose }: { lab: Lab; i
         <Field label="Mã mục" required hint="Gợi ý tự động, có thể sửa"><TextInput value={d.code} onChange={(e) => set("code", e.target.value)} /></Field>
         <Field label="Tên nội dung" required><TextInput value={d.title} onChange={(e) => set("title", e.target.value)} placeholder="Use Case Diagram" /></Field>
       </div>
-      <Field label="Loại deliverable" required><ChoiceChips<DeliverableType> options={deliverableTypes} value={d.deliverableType} onChange={(v) => set("deliverableType", v)} /></Field>
-      <Field label="Document Type">
+      <Field label="Loại sản phẩm" required><ChoiceChips<DeliverableType> options={deliverableTypes} value={d.deliverableType} onChange={(v) => set("deliverableType", v)} /></Field>
+      <Field label="Loại tài liệu">
         <Select options={[...knownTypes, "Custom"]} value={custom ? "Custom" : d.documentType || d.title || knownTypes[0]} onChange={(e) => { const v = e.target.value; setCustom(v === "Custom"); set("documentType", v === "Custom" ? "" : v); if (!d.title && v !== "Custom") set("title", v) }} />
       </Field>
-      {custom && <Field label="Document Type tùy chỉnh"><TextInput value={d.documentType} onChange={(e) => set("documentType", e.target.value)} placeholder="Deployment Diagram" /></Field>}
+      {custom && <Field label="Loại tài liệu tùy chỉnh"><TextInput value={d.documentType} onChange={(e) => set("documentType", e.target.value)} placeholder="Deployment Diagram" /></Field>}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Field label="Bắt buộc"><ChoiceChips options={["Có", "Không"]} value={d.required ? "Có" : "Không"} onChange={(v) => set("required", v === "Có")} /></Field>
-        <Field label="File cho phép"><ChoiceChips<AllowedFiles> options={["PDF", "DOCX", "Both"]} value={d.allowedFiles} onChange={(v) => set("allowedFiles", v)} /></Field>
-        <Field label="AI Review"><ChoiceChips options={["Bắt buộc", "Tùy chọn", "Tắt"]} value={{ required: "Bắt buộc", optional: "Tùy chọn", disabled: "Tắt" }[d.aiReview]} onChange={(v) => set("aiReview", v === "Bắt buộc" ? "required" : v === "Tùy chọn" ? "optional" : "disabled")} /></Field>
-        <Field label="Supervisor Review"><ChoiceChips options={["Bắt buộc", "Tùy chọn"]} value={d.supervisorReview === "required" ? "Bắt buộc" : "Tùy chọn"} onChange={(v) => set("supervisorReview", v === "Bắt buộc" ? "required" : "optional")} /></Field>
+        <Field label="Tệp cho phép"><ChoiceChips<AllowedFiles> options={["PDF", "DOCX", "Both"]} value={d.allowedFiles} onChange={(v) => set("allowedFiles", v)} /></Field>
+        <Field label="Đánh giá AI"><ChoiceChips options={["Bắt buộc", "Tùy chọn", "Tắt"]} value={{ required: "Bắt buộc", optional: "Tùy chọn", disabled: "Tắt" }[d.aiReview]} onChange={(v) => set("aiReview", v === "Bắt buộc" ? "required" : v === "Tùy chọn" ? "optional" : "disabled")} /></Field>
+        <Field label="Giảng viên đánh giá"><ChoiceChips options={["Bắt buộc", "Tùy chọn"]} value={d.supervisorReview === "required" ? "Bắt buộc" : "Tùy chọn"} onChange={(v) => set("supervisorReview", v === "Bắt buộc" ? "required" : "optional")} /></Field>
       </div>
-      <Field label="Deadline riêng" hint="Không bắt buộc · ghi đè deadline của Lab.">
+      <Field label="Hạn nộp riêng" hint="Không bắt buộc · ghi đè hạn nộp của Lab.">
         <TextInput type="datetime-local" value={d.deadline ?? ""} onChange={(e) => set("deadline", e.target.value)} />
       </Field>
       <fieldset className="flex flex-col gap-1.5">

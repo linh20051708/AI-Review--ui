@@ -22,8 +22,8 @@ export default function StudentPrecheck({ rule, documentTitle, onReady }: { rule
       if (!current.signal.aborted) setError(e instanceof Error ? e.message : "Không thể kiểm tra. Vui lòng thử lại.")
     } finally { if (!current.signal.aborted) setBusy(false) }
   }
-  return <section className="flex min-w-0 flex-col gap-3 text-[14px]" aria-label="AI Pre-check" aria-busy={busy}>
-    <h2 className="font-semibold">AI Pre-check</h2>
+  return <section className="flex min-w-0 flex-col gap-3 text-[14px]" aria-label="AI kiểm tra trước khi nộp" aria-busy={busy}>
+    <h2 className="font-semibold">AI kiểm tra trước khi nộp</h2>
     <p className="text-muted">Kết quả minh họa</p>
     <p className="break-words text-muted">{rule.name} · v{rule.version ?? 1}</p>
     {busy && <p role="status">Đang kiểm tra…</p>}
