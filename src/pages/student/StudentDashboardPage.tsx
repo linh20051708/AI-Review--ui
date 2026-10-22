@@ -52,11 +52,11 @@ export default function StudentDashboardPage() {
   if (!student) {
     return (
       <section className="flex min-w-0 flex-col gap-3">
-        <SectionHeader title="Project của tôi" />
+        <SectionHeader title="Dự án của tôi" />
         <EmptyState
-          title="Chưa có project hoạt động"
-          description="Vào My Project để tham gia lớp, tạo hoặc tham gia nhóm và theo dõi đăng ký project."
-          action={<Button to="/student/projects">Mở My Project</Button>}
+          title="Chưa có dự án hoạt động"
+          description="Vào Dự án của tôi để tham gia lớp, tạo hoặc tham gia nhóm và theo dõi đăng ký dự án."
+          action={<Button to="/student/projects">Mở dự án của tôi</Button>}
         />
       </section>
     )
@@ -72,7 +72,7 @@ export default function StudentDashboardPage() {
   })
 
   const registration = state.registrations?.filter(r => r.groupId === ctx.group?.id).at(-1)
-  const setupLabel = ctx.group ? registration ? "Xem đăng ký project" : "Đăng ký project" : classes.length ? "Tạo / tham gia nhóm" : "Tham gia lớp"
+  const setupLabel = ctx.group ? registration ? "Xem đăng ký dự án" : "Đăng ký dự án" : classes.length ? "Tạo / tham gia nhóm" : "Tham gia lớp"
 
   const reviewIds = new Set(docs.map((d) => d.reviewId).filter(Boolean) as string[])
   const activity = audit.filter((e) => reviewIds.has(e.reviewId)).slice(-6).reverse()
@@ -85,13 +85,13 @@ export default function StudentDashboardPage() {
         
         <StudentClassPicker />
 
-        {!project && <EmptyState title={registration?.status === "pending" ? "Project đang chờ duyệt" : "Chưa có project hoạt động"} action={<Button to="/student/groups">{setupLabel}</Button>} />}
+        {!project && <EmptyState title={registration?.status === "pending" ? "Dự án đang chờ duyệt" : "Chưa có dự án hoạt động"} action={<Button to="/student/groups">{setupLabel}</Button>} />}
         {project && <Button to={!project ? "/student/groups" : needsRevision[0] ? `/student/documents/${needsRevision[0].id}` : notSubmitted[0] ? `/student/documents/${notSubmitted[0].id}/upload` : "/student/documents"}>{!project ? "Thiết lập lớp & nhóm" : needsRevision.length ? "Xem yêu cầu chỉnh sửa" : notSubmitted.length ? "Nộp tài liệu" : "Xem tài liệu"}</Button>}
         <div className="flex flex-col gap-3">
           {[
             { title: "Cần chỉnh sửa", items: needsRevision, accent: "bg-rust" },
             { title: "Tài liệu cần nộp", items: notSubmitted, accent: "bg-brand" },
-            { title: "Đang chờ review", items: waiting, accent: "bg-amber" },
+            { title: "Đang chờ đánh giá", items: waiting, accent: "bg-amber" },
 
           ].filter(({ items }) => items.length > 0).map(({ title, items, accent }) => (
             <section key={title} className="flex flex-col gap-2 border-b border-line pb-3">
@@ -113,8 +113,8 @@ export default function StudentDashboardPage() {
       {approved.length > 0 && <details><summary>Đã phê duyệt ({approved.length})</summary><ul>{approved.map(d=><li key={d.id}><DocRow doc={d}/></li>)}</ul></details>}
       {/* DEADLINES */}
       {dueSoon.length > 0 && (
-        <details><summary>Deadline sắp tới ({dueSoon.length})</summary><section className="flex flex-col gap-3">
-          <SectionHeader title="Deadline sắp tới" meta={`${dueSoon.length} tài liệu`} />
+        <details><summary>Hạn nộp sắp tới ({dueSoon.length})</summary><section className="flex flex-col gap-3">
+          <SectionHeader title="Hạn nộp sắp tới" meta={`${dueSoon.length} tài liệu`} />
           <Card className="gap-0 py-1">
             <ul>
               {dueSoon.map((d) => {
@@ -127,7 +127,7 @@ export default function StudentDashboardPage() {
       )}
 
 <details><summary>Lớp của tôi ({classes.length})</summary>      <section className="flex min-w-0 flex-col gap-3">
-        <SectionHeader title="Các lớp của tôi" meta={`${classes.length} lớp`} linkTo="/student/projects" linkLabel="My Project" />
+        <SectionHeader title="Các lớp của tôi" meta={`${classes.length} lớp`} linkTo="/student/projects" linkLabel="Dự án của tôi" />
         {classes.map(({cls,course,semester,group,project,registration}) => (
           <Link key={cls.id} to="/student/projects" onClick={() => selectStudentClass(cls.id)} className="min-w-0 rounded-[12px] text-left focus-visible:outline-2 focus-visible:outline-brand">
             <Card className="hover:border-brand/40">
@@ -136,12 +136,12 @@ export default function StudentDashboardPage() {
                 <div className="min-w-0 flex-1"><p className="text-[14px] font-semibold text-ink break-words">{course?.code} · {course?.name}</p><p className="text-[13px] text-muted">{cls.code} · {semester?.name}</p></div>
                 <ArrowRight size={18} className="shrink-0 text-muted" />
               </div>
-              <div className="flex flex-wrap items-center gap-2"><Badge>{group?.name ?? "Chưa có nhóm"}</Badge><Badge tone={project ? "brand" : "amber"}>{project ? "Đang thực hiện" : registration?.status === "pending" ? "Chờ duyệt project" : registration?.status === "changesRequested" ? "Cần sửa đăng ký" : registration?.status === "rejected" ? "Đăng ký bị từ chối" : "Chưa có project"}</Badge></div>
-              {project && <><p className="text-[15px] font-semibold text-ink break-words">{project.name}</p><ProgressBar value={progressFor(project)} label="Tiến độ tài liệu" /><p className="text-[13px] text-muted">Supervisor {project.lecturer} · Deadline {fmtDate(parseISO(project.deadline))}</p></>}
+              <div className="flex flex-wrap items-center gap-2"><Badge>{group?.name ?? "Chưa có nhóm"}</Badge><Badge tone={project ? "brand" : "amber"}>{project ? "Đang thực hiện" : registration?.status === "pending" ? "Chờ duyệt dự án" : registration?.status === "changesRequested" ? "Cần sửa đăng ký" : registration?.status === "rejected" ? "Đăng ký bị từ chối" : "Chưa có dự án"}</Badge></div>
+              {project && <><p className="text-[15px] font-semibold text-ink break-words">{project.name}</p><ProgressBar value={progressFor(project)} label="Tiến độ tài liệu" /><p className="text-[13px] text-muted">Giảng viên {project.lecturer} · Hạn nộp {fmtDate(parseISO(project.deadline))}</p></>}
             </Card>
           </Link>
         ))}
-        {!classes.length && <EmptyState title="Bạn chưa tham gia lớp nào" description="Mỗi môn học có mã lớp riêng. Vào My Project để tham gia lớp và đăng ký nhóm." action={<Button to="/student/projects">Mở My Project</Button>} />}
+        {!classes.length && <EmptyState title="Bạn chưa tham gia lớp nào" description="Mỗi môn học có mã lớp riêng. Vào Dự án của tôi để tham gia lớp và đăng ký nhóm." action={<Button to="/student/projects">Mở dự án của tôi</Button>} />}
       </section>
 
 </details>      {/* RECENT ACTIVITY */}

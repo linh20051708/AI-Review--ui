@@ -44,7 +44,7 @@ export const resolveLabStructure = (cls: ClassRoom | undefined, offering: Course
 
 /** Teaching method: Project override → Class override → Course Offering. */
 export function resolveTeachingMethod(project: Project | undefined, cls: ClassRoom | undefined, offering: CourseOffering | undefined, label = "môn học trong học kỳ"): Resolved<TeachingMethod> {
-  if (project?.teachingMethodOverride) return { value: project.teachingMethodOverride, layer: "project", source: "Tùy chỉnh cho project" }
+  if (project?.teachingMethodOverride) return { value: project.teachingMethodOverride, layer: "project", source: "Tùy chỉnh cho dự án" }
   if (cls?.teachingMethodOverride) return { value: cls.teachingMethodOverride, layer: "class", source: `Tùy chỉnh cho lớp ${cls.code}` }
   if (offering) return { value: offering.teachingMethod, layer: "offering", source: `Kế thừa từ ${label}` }
   return { value: undefined, layer: "missing", source: "Chưa cấu hình" }

@@ -85,7 +85,7 @@ export default function ClassListPage() {
         }}
         onClose={() => setArchiving(null)}
       >
-        <Notice>Lớp sẽ chuyển sang chỉ đọc. Nhóm, project, tài liệu và lịch sử review được giữ nguyên.</Notice>
+        <Notice>Lớp sẽ chuyển sang chỉ đọc. Nhóm, dự án, tài liệu và lịch sử đánh giá được giữ nguyên.</Notice>
       </ConfirmModal>
     </>
   )

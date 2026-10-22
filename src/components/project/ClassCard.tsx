@@ -44,9 +44,9 @@ export default function ClassCard({ classRoom, onEdit, onArchive, onRestore, onD
       <div className="grid grid-cols-3 gap-2 text-[12px] text-muted">
         <span>{classRoom.studentCount} sinh viên</span>
         <span>{classRoom.groupCount} nhóm</span>
-        <span>{classRoom.projectCount} project</span>
+        <span>{classRoom.projectCount} dự án</span>
       </div>
-      <Badge tone={classRoom.pendingReviews > 0 ? "amber" : "neutral"}>{classRoom.pendingReviews} tài liệu chờ review</Badge>
+      <Badge tone={classRoom.pendingReviews > 0 ? "amber" : "neutral"}>{classRoom.pendingReviews} tài liệu chờ đánh giá</Badge>
       <div className="grid grid-cols-2 gap-2">
         <Button variant="secondary" onClick={onEdit} icon={<Pencil size={16} strokeWidth={1.75} />}>Chỉnh sửa</Button>
         <Button to={`/classes/${classRoom.id}`} className="flex-row-reverse" icon={<ChevronRight size={18} strokeWidth={1.75} />}>Xem lớp</Button>

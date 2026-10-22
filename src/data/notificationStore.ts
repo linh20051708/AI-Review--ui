@@ -22,9 +22,9 @@ const KEY = "project-review:notifications:v1"
 const seed = (): State => ({
   notifications: [
     { id: "sn1", title: "Giảng viên yêu cầu chỉnh sửa State Diagram v1", meta: "Smart Campus Management · 2 ngày trước", unread: true, projectId: "smart-campus-management", documentTitle: "State Diagram" },
-    { id: "sn2", title: "AI Review hoàn tất cho Sequence Diagram v2", meta: "Smart Campus Management · 3 giờ trước", unread: true, projectId: "smart-campus-management", documentTitle: "Sequence Diagram" },
+    { id: "sn2", title: "Đánh giá AI hoàn tất cho Sequence Diagram v2", meta: "Smart Campus Management · 3 giờ trước", unread: true, projectId: "smart-campus-management", documentTitle: "Sequence Diagram" },
     { id: "sn3", title: "Use Case Diagram v3 đã được phê duyệt", meta: "Smart Campus Management · 1 tháng trước", unread: false, projectId: "smart-campus-management", documentTitle: "Use Case Diagram" },
-    { id: "sn4", title: "Deadline nộp Activity Diagram sắp đến", meta: "Smart Campus Management · 5 ngày trước", unread: false, projectId: "smart-campus-management", documentTitle: "Activity Diagram" },
+    { id: "sn4", title: "Hạn nộp nộp Activity Diagram sắp đến", meta: "Smart Campus Management · 5 ngày trước", unread: false, projectId: "smart-campus-management", documentTitle: "Activity Diagram" },
   ],
 })
 

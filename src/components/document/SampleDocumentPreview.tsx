@@ -96,7 +96,7 @@ function PageContent({ index, review }: { index: number; review: ReviewRequest }
           <p className="text-[14px] font-semibold tracking-wide text-muted">{review.classCode} · {review.groupName.toUpperCase()}</p>
           <h2 className="text-[18px] font-semibold sm:text-[24px]">{title}</h2>
           <p className="text-[14px] sm:text-[14px]">{review.projectName}</p>
-          <p className="mt-4 text-[14px] text-muted">Version {review.version} · Người nộp: {review.submitter}</p>
+          <p className="mt-4 text-[14px] text-muted">Phiên bản {review.version} · Người nộp: {review.submitter}</p>
           <p className="text-[14px] text-muted">{review.submittedAt}</p>
         </div>
       )

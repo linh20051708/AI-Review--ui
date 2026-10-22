@@ -1,4 +1,5 @@
 import ProjectStateBadge from "@/components/project/ProjectStateBadge"
+import uiLabel from "@/lib/uiLabels"
 import PhaseTwoTabs from "@/components/ui/PhaseTwoTabs"
 import "@/styles/phase-two.css"
 import { Archive, CalendarClock, ChevronRight, Pencil, Trash2 } from "lucide-react"
@@ -31,7 +32,7 @@ import { resolveProjectAcademicContext } from "@/lib/config"
 import { courseLabel } from "@/lib/academic"
 import { fmtDate, fmtDateTime, parseISO } from "@/lib/time"
 
-const TABS = ["Tổng quan", "Tài liệu", "Thành viên", "Lịch sử review", "Thông tin"]
+const TABS = ["Tổng quan", "Tài liệu", "Thành viên", "Lịch sử đánh giá", "Thông tin"]
 
 export default function ProjectDetailPage() {
   const { projectId } = useParams()
@@ -44,7 +45,7 @@ export default function ProjectDetailPage() {
   const { requests, audit } = useReviewStore()
   const project = projects.find((p) => p.id === projectId)
 
-  if (!project) return <EmptyState title="Không tìm thấy project" description={`“${projectId}” không tồn tại.`} />
+  if (!project) return <EmptyState title="Không tìm thấy dự án" description={`“${projectId}” không tồn tại.`} />
 
   const ctx = resolveProjectAcademicContext(project, mgmt)
   const { semester, course, teachingMethod: method, ruleSet: rule } = ctx
@@ -57,7 +58,7 @@ export default function ProjectDetailPage() {
   const nextDocument = docs.find(d => d.supervisorStatus === "needsRevision") ?? docs.find(d => ["waiting", "inReview"].includes(d.supervisorStatus ?? "")) ?? docs.find(d => !d.latestVersion && !d.submissionLocked)
   const suggestedNextStep = nextDocument
     ? nextDocument.supervisorStatus === "needsRevision" ? `${nextDocument.title}: chờ nhóm nộp bản chỉnh sửa.`
-      : ["waiting", "inReview"].includes(nextDocument.supervisorStatus ?? "") ? `Review ${nextDocument.title} ${nextDocument.latestVersion ?? ""}.`
+      : ["waiting", "inReview"].includes(nextDocument.supervisorStatus ?? "") ? `Đánh giá ${nextDocument.title} ${nextDocument.latestVersion ?? ""}.`
       : `${nextDocument.title}: chờ nhóm nộp tài liệu.`
     : docs.length && docs.every(d => d.supervisorStatus === "approved") ? "Tất cả tài liệu đã được giảng viên phê duyệt." : "Đối chiếu trạng thái tài liệu trước khi tiếp tục."
   const nextStep = project.nextStep === sampleProjects.find(p => p.id === project.id)?.nextStep ? suggestedNextStep : project.nextStep
@@ -77,10 +78,10 @@ export default function ProjectDetailPage() {
             items={[
               { label: "Chỉnh sửa thông tin", icon: <Pencil size={16} strokeWidth={1.75} />, onSelect: () => setEditing(true) },
               archived
-                ? { label: "Khôi phục project", icon: <Archive size={16} strokeWidth={1.75} />, onSelect: () => { setState("active"); toast("Đã khôi phục project") } }
-                : { label: "Lưu trữ project", icon: <Archive size={16} strokeWidth={1.75} />, onSelect: () => setConfirm("archive") },
+                ? { label: "Khôi phục dự án", icon: <Archive size={16} strokeWidth={1.75} />, onSelect: () => { setState("active"); toast("Đã khôi phục dự án") } }
+                : { label: "Lưu trữ dự án", icon: <Archive size={16} strokeWidth={1.75} />, onSelect: () => setConfirm("archive") },
               // Hard delete only exists when nothing was ever submitted or reviewed.
-              ...(!project.hasHistory ? [{ label: "Xóa project", danger: true, icon: <Trash2 size={16} strokeWidth={1.75} />, onSelect: () => setConfirm("delete") }] : []),
+              ...(!project.hasHistory ? [{ label: "Xóa dự án", danger: true, icon: <Trash2 size={16} strokeWidth={1.75} />, onSelect: () => setConfirm("delete") }] : []),
             ]}
           />
         }
@@ -90,10 +91,10 @@ export default function ProjectDetailPage() {
           <ProjectStateBadge state={project.state} />
           <CalendarClock size={18} strokeWidth={1.75} className="text-muted" />
         </div>
-        <ProgressBar value={project.progress} label="Tiến độ project (ghi nhận)" />
+        <ProgressBar value={project.progress} label="Tiến độ dự án (ghi nhận)" />
         <p className="text-[14px] text-muted">Tài liệu được duyệt: {docs.filter(d => d.supervisorStatus === "approved").length}/{docs.length}</p>
       </Card>
-      {archived && <Notice>Project đã được lưu trữ. Toàn bộ tài liệu, version và lịch sử review vẫn được giữ nguyên ở chế độ chỉ đọc.</Notice>}
+      {archived && <Notice>Dự án đã được lưu trữ. Toàn bộ tài liệu, phiên bản và lịch sử đánh giá vẫn được giữ nguyên ở chế độ chỉ đọc.</Notice>}
 
       <Button to={`/projects/${project.id}/documents`}>Mở tài liệu</Button>
       <PhaseTwoTabs id="project" tabs={TABS} active={tab} onChange={setTab} />
@@ -103,11 +104,11 @@ export default function ProjectDetailPage() {
             { label: "Môn học", value: courseLabel(course) },
             { label: "Lớp", value: classCode },
             { label: "Nhóm", value: groupName },
-            { label: "Supervisor", value: project.lecturer },
-            { label: "Phương pháp dạy", value: method.value ?? "—" },
+            { label: "Giảng viên", value: project.lecturer },
+            { label: "Phương pháp dạy", value: uiLabel(method.value) },
             { label: "Ngày bắt đầu", value: fmtDate(parseISO(project.startDate)) },
-            { label: "Deadline", value: fmtDateTime(parseISO(project.deadline)) },
-            ...(project.reviewCutoff ? [{ label: "Hạn cuối gửi review", value: fmtDateTime(parseISO(project.reviewCutoff)) }] : []),
+            { label: "Hạn nộp", value: fmtDateTime(parseISO(project.deadline)) },
+            ...(project.reviewCutoff ? [{ label: "Hạn cuối gửi đánh giá", value: fmtDateTime(parseISO(project.reviewCutoff)) }] : []),
           ]}
         />
         <Link to={`/rule-sets#${rule.value?.id ?? ""}`} className="flex items-center justify-between gap-2 rounded-[8px] border border-line px-3 py-2.5">
@@ -158,9 +159,9 @@ export default function ProjectDetailPage() {
         </section>
       )}
 
-      {tab === "Lịch sử review" && (
+      {tab === "Lịch sử đánh giá" && (
         <section role="tabpanel" id="project-panel-3" aria-labelledby="project-3" className="flex flex-col gap-3">
-          <SectionHeader title="Lịch sử review" meta={`${events.length} sự kiện`} />
+          <SectionHeader title="Lịch sử đánh giá" meta={`${events.length} sự kiện`} />
           {projectReviews.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {projectReviews.map((r) => (
@@ -175,40 +176,40 @@ export default function ProjectDetailPage() {
               <ol>{events.map((e, i) => <TimelineItem key={e.id} event={e} last={i === events.length - 1} />)}</ol>
             </Card>
           ) : (
-            <EmptyState title="Chưa có lịch sử review" />
+            <EmptyState title="Chưa có lịch sử đánh giá" />
           )}
         </section>
       )}
 
       {!archived && tab === "Thông tin" && (
         <Button variant="secondary" icon={<Pencil size={16} strokeWidth={1.75} />} onClick={() => setEditing(true)}>
-          Chỉnh sửa thông tin project
+          Chỉnh sửa thông tin dự án
         </Button>
       )}
 
       <ProjectFormModal open={editing} project={project} onClose={() => setEditing(false)} />
       <ConfirmModal
         open={confirm === "archive"}
-        title="Lưu trữ project"
+        title="Lưu trữ dự án"
         description={`${project.name} · ${classCode} · ${groupName}`}
-        confirmLabel="Lưu trữ project"
+        confirmLabel="Lưu trữ dự án"
         onConfirm={() => {
           setState("archived")
-          toast("Đã lưu trữ project")
+          toast("Đã lưu trữ dự án")
         }}
         onClose={() => setConfirm(null)}
       >
-        <Notice>Project sẽ ngừng hoạt động. Tài liệu, version, feedback và lịch sử review được giữ nguyên và vẫn có thể xem.</Notice>
+        <Notice>Dự án sẽ ngừng hoạt động. Tài liệu, phiên bản, phản hồi và lịch sử đánh giá được giữ nguyên và vẫn có thể xem.</Notice>
       </ConfirmModal>
       <ConfirmModal
         open={confirm === "delete"}
-        title="Xóa project"
-        description="Project chưa có tài liệu nộp hay lịch sử review nên có thể xóa."
-        confirmLabel="Xóa project"
+        title="Xóa dự án"
+        description="Dự án chưa có tài liệu nộp hay lịch sử đánh giá nên có thể xóa."
+        confirmLabel="Xóa dự án"
         danger
         onConfirm={() => {
           updateManagement((s) => ({ projects: s.projects.filter((p) => p.id !== project.id), groups: s.groups.map((g) => (g.projectId === project.id ? { ...g, projectId: undefined } : g)) }))
-          toast("Đã xóa project")
+          toast("Đã xóa dự án")
           navigate("/projects")
         }}
         onClose={() => setConfirm(null)}

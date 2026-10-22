@@ -1,5 +1,6 @@
 import SampleDocumentPreview from "@/components/document/SampleDocumentPreview"
 import Modal from "@/components/ui/Modal"
+import uiLabel from "@/lib/uiLabels"
 
 import "@/styles/review-refinement.css"
 
@@ -93,7 +94,7 @@ export default function ReviewWorkspacePage() {
 
   const panelRef = useRef<HTMLDivElement>(null)
 
-  if (!review) return <EmptyState title="Không tìm thấy yêu cầu review" />
+  if (!review) return <EmptyState title="Không tìm thấy yêu cầu đánh giá" />
 
   const status = review.supervisorStatus
 
@@ -149,7 +150,7 @@ export default function ReviewWorkspacePage() {
       message: d.message,
     })
 
-    toast("Đã thêm feedback")
+    toast("Đã thêm phản hồi")
   }
 
   const addFinding = (f: AIFinding) => {
@@ -178,7 +179,7 @@ export default function ReviewWorkspacePage() {
 
     setAdded((a) => [...a, f.id])
 
-    toast("Đã thêm vào feedback · có thể sửa trước khi ra quyết định")
+    toast("Đã thêm vào phản hồi · có thể sửa trước khi ra quyết định")
   }
 
   const openPanel = (p: Panel) => {
@@ -206,7 +207,7 @@ export default function ReviewWorkspacePage() {
 
     { label: "Nhóm", value: ctx?.group?.name ?? "—" },
 
-    { label: "Project", value: project?.name ?? "—" },
+    { label: "Dự án", value: project?.name ?? "—" },
 
     {
       label: "Lab",
@@ -224,27 +225,27 @@ export default function ReviewWorkspacePage() {
 
     { label: "Tài liệu", value: review.documentTitle },
 
-    { label: "Tên file", value: review.fileName },
+    { label: "Tên tệp", value: review.fileName },
 
     {
-      label: "Loại file",
+      label: "Loại tệp",
 
       value: review.fileType === "PDF" ? "PDF" : "Word (DOCX)",
     },
 
-    { label: "Version", value: review.version },
+    { label: "Phiên bản", value: review.version },
 
     { label: "Người nộp", value: review.submitter },
 
     { label: "Ngày nộp", value: review.submittedAt },
 
     {
-      label: "Yêu cầu review",
+      label: "Yêu cầu đánh giá",
 
       value: `${review.requestedAt} · ${fmtRelative(review.requestedTs)}`,
     },
 
-    { label: "Phương pháp dạy", value: ctx?.teachingMethod.value ?? "—" },
+    { label: "Phương pháp dạy", value: uiLabel(ctx?.teachingMethod.value) },
 
     {
       label: "Bộ quy tắc",
@@ -259,14 +260,17 @@ export default function ReviewWorkspacePage() {
   }[] = [
     { id: "document", label: "Tài liệu" },
     { id: "ai", label: "AI" },
-    { id: "feedback", label: `Góp ý (${current.length})` },
+    { id: "feedback", label: "Phản hồi" },
     { id: "history", label: "Lịch sử" },
   ]
 
   return (
-    <div className="phase-one mx-auto flex w-full min-w-0 max-w-[960px] flex-col gap-4 text-[14px]">
-      <BackLink label="Yêu cầu review" fallback="/reviews" />
-      <header className="flex flex-col gap-3">
+    <div className="phase-one mx-auto flex w-full min-w-0 max-w-[960px] flex-col gap-2 text-[14px]">
+      <div className="flex items-center justify-between gap-2">
+        <BackLink label="Yêu cầu đánh giá" fallback="/reviews" />
+        <button type="button" onClick={() => setContextOpen(true)} className="min-h-12 px-2 font-semibold text-brand">Thông tin</button>
+      </div>
+      <header className="flex flex-col gap-1">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-[26px] font-semibold leading-tight">
             {review.documentTitle}
@@ -278,15 +282,6 @@ export default function ReviewWorkspacePage() {
             {ctx?.cls?.code ?? review.classCode} ·{" "}
             {ctx?.group?.name ?? review.groupName}
           </p>
-          <button
-            type="button"
-            onClick={() => setContextOpen(true)}
-            className="min-h-12 px-2 font-semibold text-brand"
-          >
-            Thông tin
-          </button>
-        </div>
-        <div>
           <StatusBadge status={status} />
         </div>
       </header>
@@ -294,7 +289,7 @@ export default function ReviewWorkspacePage() {
       <div ref={panelRef} className="scroll-mt-3">
         <div
           role="tablist"
-          aria-label="Tác vụ review"
+          aria-label="Tác vụ đánh giá"
           className="grid grid-cols-4 gap-1 rounded-lg bg-subtle p-1"
         >
           {tabs.map((t, index) => (
@@ -370,16 +365,16 @@ export default function ReviewWorkspacePage() {
         className="flex min-w-0 flex-col gap-4"
       >
         <h2 className="text-[16px] font-semibold">
-          Feedback · {review.version}
+          Phản hồi · {review.version}
         </h2>
         {current.length ? (
           current.map((f) => <FeedbackItem key={f.id} feedback={f} />)
         ) : (
-          <EmptyState title="Chưa có feedback" />
+          <EmptyState title="Chưa có phản hồi" />
         )}
         {completed ? (
           <Notice>
-            Review đã hoàn tất. Feedback được chọn đã khóa; feedback bỏ chọn vẫn
+            Đánh giá đã hoàn tất. Phản hồi được chọn đã khóa; phản hồi bỏ chọn vẫn
             là nháp riêng.
           </Notice>
         ) : (
@@ -387,7 +382,7 @@ export default function ReviewWorkspacePage() {
         )}
         {previous.length > 0 && (
           <details className="refinement-details">
-            <summary>Phiên bản trước ({previous.length} feedback)</summary>
+            <summary>Phiên bản trước ({previous.length} phản hồi)</summary>
             <div className="flex flex-col gap-3 py-3">
               {previous.map((f) => (
                 <FeedbackItem key={f.id} feedback={f} />
@@ -404,7 +399,7 @@ export default function ReviewWorkspacePage() {
         hidden={panel !== "history"}
         className="flex min-w-0 flex-col gap-4"
       >
-        <h2 className="text-[16px] font-semibold">Lịch sử review</h2>
+        <h2 className="text-[16px] font-semibold">Lịch sử đánh giá</h2>
         {audit.length ? (
           <ol>
             {audit.map((e, i) => (
@@ -416,7 +411,7 @@ export default function ReviewWorkspacePage() {
             ))}
           </ol>
         ) : (
-          <EmptyState title="Chưa có hoạt động review" />
+          <EmptyState title="Chưa có hoạt động đánh giá" />
         )}
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <Button variant="secondary" to={`/reviews/${review.id}/versions`}>
@@ -488,11 +483,11 @@ function DecisionBar({
           icon={<Play size={16} strokeWidth={1.75} />}
           onClick={() => reviewActions.startReview(review.id)}
         >
-          Bắt đầu review
+          Bắt đầu đánh giá
         </Button>
         {!mobile && (
           <p className="text-center text-[11px] text-muted">
-            Bắt đầu review để ghi nhận quyết định cho {review.documentTitle}{" "}
+            Bắt đầu đánh giá để ghi nhận quyết định cho {review.documentTitle}{" "}
             {review.version}.
           </p>
         )}
@@ -515,7 +510,7 @@ function DecisionBar({
           to={`/reviews/${review.id}/history`}
           className="shrink-0 text-[12px] font-semibold text-brand"
         >
-          Lịch sử review
+          Lịch sử đánh giá
         </Link>
       </div>
     )

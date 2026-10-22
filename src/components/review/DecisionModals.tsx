@@ -76,7 +76,7 @@ export default function DecisionModals({
         note || undefined,
         selected,
       )
-      toast("Đã ghi nhận quyết định và feedback được chọn")
+      toast("Đã ghi nhận quyết định và phản hồi được chọn")
       close()
     } catch (e) {
       setError((e as Error).message)
@@ -101,10 +101,10 @@ export default function DecisionModals({
     >
       <MetaGrid
         items={[
-          { label: "Project", value: review.projectName },
+          { label: "Dự án", value: review.projectName },
           { label: "Nhóm", value: review.groupName },
           { label: "Tài liệu", value: review.documentTitle },
-          { label: "Version", value: review.version },
+          { label: "Phiên bản", value: review.version },
         ]}
       />
       {open === "reject" && (
@@ -113,9 +113,9 @@ export default function DecisionModals({
             options={[
               "",
               "Sai loại tài liệu",
-              "File không hợp lệ",
+              "Tệp không hợp lệ",
               "Nội dung không đúng yêu cầu",
-              "Không thể review",
+              "Không thể đánh giá",
               "Khác",
             ]}
             value={reason}
@@ -124,7 +124,7 @@ export default function DecisionModals({
         </Field>
       )}
       <Field
-        label={open === "revise" ? "Feedback tổng quan" : "Ghi chú"}
+        label={open === "revise" ? "Phản hồi tổng quan" : "Ghi chú"}
         required={open === "revise" || reason === "Khác"}
       >
         <TextArea
@@ -141,7 +141,7 @@ export default function DecisionModals({
               onChange={(e) => setSeverity(e.target.value as FeedbackSeverity)}
             />
           </Field>
-          <Field label="Category">
+          <Field label="Phân loại">
             <Select
               options={feedbackCategories}
               value={category}
@@ -152,7 +152,7 @@ export default function DecisionModals({
       )}
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-2 text-[14px] font-semibold">
-          Feedback đưa vào quyết định ({ids.length})
+          Phản hồi đưa vào quyết định ({ids.length})
         </legend>
         {currentFeedback
           .filter((f) => !f.official)
@@ -178,9 +178,9 @@ export default function DecisionModals({
           ))}
       </fieldset>
       <Notice>
-        Chỉ feedback được chọn và feedback tổng quan của yêu cầu chỉnh sửa được
-        công bố. Feedback bỏ chọn vẫn là bản nháp, không hiển thị cho Student.
-        AI không thay Supervisor xác nhận.
+        Chỉ phản hồi được chọn và phản hồi tổng quan của yêu cầu chỉnh sửa được
+        công bố. Phản hồi bỏ chọn vẫn là bản nháp, không hiển thị cho Sinh viên.
+        AI không thay Giảng viên xác nhận.
       </Notice>
       {(error || blocked) && (
         <p role="alert" className="text-[14px] text-danger">

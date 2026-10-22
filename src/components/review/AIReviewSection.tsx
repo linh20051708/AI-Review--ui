@@ -1,3 +1,4 @@
+import uiLabel from "@/lib/uiLabels"
 import { contentText, ruleDescription, shortCriterion } from "@/components/ui/contentText"
 import { useId, useState } from "react"
 import { ChevronDown } from "lucide-react"
@@ -122,7 +123,7 @@ export default function AIReviewSection({
               <div className="divide-y divide-line">
                 {additionalFindings.map((f) => (
                   <div key={f.id} className="flex flex-col gap-2 py-3">
-                    <strong>{f.category}</strong>
+                    <strong>{uiLabel(f.category)}</strong>
                     <p>{f.issue ?? contentText(f.message)}</p>
                     {onAddFinding && (
                       <Button
@@ -132,7 +133,7 @@ export default function AIReviewSection({
                       >
                         {added.includes(f.id)
                           ? "Đã thêm"
-                          : "Thêm vào feedback nháp"}
+                          : "Thêm vào phản hồi nháp"}
                       </Button>
                     )}
                   </div>
@@ -177,8 +178,8 @@ export default function AIReviewSection({
                 onClick={() => start()}
               >
                 {state === "error"
-                  ? "Thử lại AI Evaluation"
-                  : "Bắt đầu AI Evaluation"}
+                  ? "Thử lại Đánh giá AI"
+                  : "Bắt đầu Đánh giá AI"}
               </Button>
             )}
             {completedReview && !current && (
@@ -228,7 +229,7 @@ export default function AIReviewSection({
           </p>
           {rule && (
             <p>
-              AI {rule.aiEnabled ? "bật" : "tắt"} · Supervisor{" "}
+              AI {rule.aiEnabled ? "bật" : "tắt"} · Giảng viên{" "}
               {rule.supervisorApproval
                 ? "bắt buộc"
                 : "tùy chọn, vẫn quyết định thủ công"}{" "}
@@ -255,7 +256,7 @@ export default function AIReviewSection({
                 <p>
                   {c.maxScore} điểm · {c.enabled ? "Bật" : "Tắt"} ·{" "}
                   {c.critical
-                    ? "Critical"
+                    ? "Nghiêm trọng"
                     : c.required
                       ? "Bắt buộc"
                       : "Thông thường"}{" "}
@@ -264,7 +265,7 @@ export default function AIReviewSection({
                 <p>{c.description}</p>
                 <p>Hướng dẫn: {c.instruction || "Chưa cấu hình"}</p>
                 <p>
-                  Evidence: {c.evidenceRequirement || "Supervisor xác minh"}
+                  Bằng chứng: {c.evidenceRequirement || "Giảng viên xác minh"}
                 </p>
               </div>
             ))}
@@ -272,17 +273,14 @@ export default function AIReviewSection({
           {!criteria.length && (
             <>
               <EmptyState
-                title="Chưa có checklist"
-                description="Cấu hình tiêu chí trong Bộ quy tắc."
+                title="Chưa có bảng tiêu chí"
+                description="Bản nộp này chưa có tiêu chí đánh giá được cấu hình."
               />
-              <Button variant="secondary" to="/rule-sets">
-                Cấu hình Bộ quy tắc
-              </Button>
             </>
           )}
         </div>
       </details>
-      {canRun && state === "completed" && <Button variant="secondary" onClick={() => start()}>Chạy lại AI Evaluation</Button>}
+      {canRun && state === "completed" && <Button variant="secondary" onClick={() => start()}>Chạy lại Đánh giá AI</Button>}
       {!detailed && (
         <Button variant="secondary" to={"/reviews/" + review.id + "/ai-result"}>
           Kết quả & lịch sử AI
@@ -354,7 +352,7 @@ function CriterionAccordionList({
   return (
     <section
       className="flex min-w-0 flex-col gap-3"
-      aria-label="Kết quả checklist AI"
+      aria-label="Kết quả bảng tiêu chí AI"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-[16px] font-semibold">Tiêu chí</h2>
@@ -442,7 +440,7 @@ function CriterionAccordionList({
                         : `${c.score}/${c.maxScore}`}{" "}
 
                       {config?.critical
-                        ? " · Critical"
+                        ? " · Nghiêm trọng"
                         : config?.required
                           ? " · Bắt buộc"
                           : ""}
@@ -476,7 +474,7 @@ function CriterionAccordionList({
                         >
                           {added.includes(f.id)
                             ? "Đã thêm"
-                            : "Thêm vào feedback nháp"}
+                            : "Thêm vào phản hồi nháp"}
                         </Button>
                       )}
                     </div>

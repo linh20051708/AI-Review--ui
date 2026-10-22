@@ -51,12 +51,12 @@ export default function FeedbackComposer({
         setDraft((d) => ({ ...d, message: "", pageRef: "" }))
       }}
     >
-      <Field label="Nội dung feedback" required>
+      <Field label="Nội dung phản hồi" required>
         <TextArea
           rows={3}
           value={draft.message}
           onChange={(e) => set("message", e.target.value)}
-          placeholder="Relationship giữa Student và Submit Document chưa đúng."
+          placeholder="Quan hệ giữa sinh viên và tác vụ nộp tài liệu chưa đúng."
         />
       </Field>
       <details open={!compact || undefined} className="refinement-details">
@@ -69,7 +69,7 @@ export default function FeedbackComposer({
               placeholder="Trang 8 / Mục 3.2.1"
             />
           </Field>
-          <Field label="Category">
+          <Field label="Phân loại">
             <Select
               options={feedbackCategories}
               value={draft.category}
@@ -90,7 +90,7 @@ export default function FeedbackComposer({
         disabled={!draft.message.trim()}
         className="disabled:opacity-50"
       >
-        Thêm feedback
+        Thêm phản hồi
       </Button>
     </form>
   )

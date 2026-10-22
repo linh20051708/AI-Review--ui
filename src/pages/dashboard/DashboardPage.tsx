@@ -8,7 +8,9 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import EmptyState from "@/components/ui/EmptyState";
-import { attentionItems } from "@/data/mockData";
+import StatCard from "@/components/ui/StatCard";
+import { attentionItems, currentUser } from "@/data/mockData";
+import { useSession } from "@/app/auth";
 import { useManagement } from "@/data/managementStore";
 import { useReviewStore } from "@/data/reviewStore";
 import { requestRecords } from "@/data/filterRecords";
@@ -55,6 +57,10 @@ function ReviewRow({ review }: { review: ReviewRequest }) {
 }
 
 export default function DashboardPage() {
+  const session = useSession();
+  const user = session?.role === "supervisor" ? currentUser : undefined;
+  const displayName = user?.name?.trim() || "Giảng viên";
+  const roleLabel = user?.role?.trim() || "Giảng viên";
   const { requests: allRequests, evaluations } = useReviewStore();
   const {
     classes: allClasses,
@@ -97,8 +103,22 @@ export default function DashboardPage() {
   const waiting = requests.filter((r) => r.supervisorStatus === "waiting");
   const inReview = requests.filter((r) => r.supervisorStatus === "inReview");
   const pendingRegistrations = registrations.filter(
-    (r) => r.status === "pending",
+    (r) => r.status === "pending" && classes.some(c => c.id === groups.find(g => g.id === r.groupId)?.classId),
   ).length;
+  const trackedClasses = classes.filter(c => c.state === "active");
+  const projectsToHandle = new Set([
+    ...waiting.map(r => r.projectId),
+    ...inReview.map(r => r.projectId),
+    ...attention.map(a => a.projectId),
+  ].filter(id => projects.some(p => p.id === id && p.state === "active"))).size;
+  const stats = [
+    { label: "Môn học quản lý", value: new Set(trackedClasses.map(c => c.courseId)).size },
+    { label: "Lớp đang theo dõi", value: trackedClasses.length },
+    { label: "Tài liệu chờ đánh giá", value: waiting.length },
+    { label: "Tài liệu đang đánh giá", value: inReview.length },
+    { label: "Đăng ký chờ phản hồi", value: pendingRegistrations },
+    { label: "Dự án cần xử lý", value: projectsToHandle },
+  ];
   const needsRevision = requests.filter(r => r.supervisorStatus === "needsRevision").length;
   const academicLinks = [
     { label: "Học kỳ", count: semesters.length, to: "/semesters" },
@@ -109,11 +129,17 @@ export default function DashboardPage() {
     { label: "Bộ quy tắc", to: "/rule-sets" },
   ];
   return (
-    <div className="phase-one flex min-w-0 flex-col gap-5 text-[14px]">
+    <div className="phase-one flex min-w-0 flex-col gap-4 text-[14px]">
       <header className="flex flex-col gap-3">
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <p className="break-words text-[16px] font-medium leading-snug text-ink">
+            Xin chào, {displayName}
+          </p>
+          <p className="text-[14px] leading-snug text-muted">{roleLabel}</p>
+        </div>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h1 className="text-[26px] font-semibold leading-tight">
-            Việc cần làm
+            Tổng quan
           </h1>
           <label className="min-w-0">
             <span className="sr-only">Học kỳ đang xem</span>
@@ -139,15 +165,14 @@ export default function DashboardPage() {
             </select>
           </label>
         </div>
-        <p className="text-muted">
-          <strong className="text-ink">{waiting.length}</strong> chờ review ·{" "}
-          <strong className="text-ink">{inReview.length}</strong> đang review
-        </p>
-        <Button to="/reviews">Mở Review</Button>
       </header>
+      <section aria-label="Thống kê tổng quan" className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+        {stats.map(stat => <StatCard key={stat.label} {...stat} />)}
+      </section>
+      <Button to="/reviews">Mở đánh giá</Button>
       <section aria-labelledby="priority-title" className="flex flex-col gap-2">
         <h2 id="priority-title" className="text-[16px] font-semibold">
-          Cần review
+          Việc cần làm
         </h2>
         {waiting.length ? (
           <>
@@ -177,14 +202,14 @@ export default function DashboardPage() {
             )}
           </>
         ) : (
-          <EmptyState title="Không còn tài liệu chờ review" />
+          <EmptyState title="Không còn tài liệu chờ đánh giá" />
         )}
       </section>
       <Link
         to="/project-registrations"
         className="flex min-h-12 items-center justify-between gap-3 border-y border-line py-3 font-semibold"
       >
-        <span>Đăng ký project</span>
+        <span>Đăng ký dự án</span>
         <span className="flex items-center gap-2">
           <Badge tone={pendingRegistrations ? "amber" : "neutral"}>
             {pendingRegistrations} chờ duyệt
@@ -193,7 +218,7 @@ export default function DashboardPage() {
         </span>
       </Link>
       <details className="refinement-details">
-        <summary>Đang review ({inReview.length})</summary>
+        <summary>Đang đánh giá ({inReview.length})</summary>
         {inReview.length ? (
           <ul>
             {inReview.map((r) => (
@@ -201,11 +226,11 @@ export default function DashboardPage() {
             ))}
           </ul>
         ) : (
-          <p className="py-3 text-muted">Không có tài liệu đang review.</p>
+          <p className="py-3 text-muted">Không có tài liệu đang đánh giá.</p>
         )}
       </details>
       <details className="refinement-details">
-        <summary>Học vụ</summary>
+        <summary>Truy cập nhanh</summary>
         <dl className="grid grid-cols-2 gap-3 border-b border-line py-4">
           <div>
             <dt className="text-muted">Lớp phụ trách</dt>
@@ -225,7 +250,7 @@ export default function DashboardPage() {
             <dd className="font-semibold">{needsRevision}</dd>
           </div>
           <div>
-            <dt className="text-muted">Sắp đến deadline</dt>
+            <dt className="text-muted">Sắp đến hạn nộp</dt>
             <dd className="font-semibold">
               {
                 attention.filter(
@@ -252,7 +277,7 @@ export default function DashboardPage() {
         </nav>
       </details>
       <details className="refinement-details">
-        <summary>Project cần chú ý ({attention.length})</summary>
+        <summary>Dự án cần chú ý ({attention.length})</summary>
         <ul className="divide-y divide-line">
           {attention.map((item) => (
             <li key={item.title}>
@@ -286,8 +311,8 @@ export default function DashboardPage() {
             onChange={setFilter}
             facets={["semester", "course", "class"]}
             primary={["course", "class"]}
-            searchPlaceholder="Tìm project, tài liệu..."
-            noun="yêu cầu review trong phạm vi"
+            searchPlaceholder="Tìm dự án, tài liệu..."
+            noun="yêu cầu đánh giá trong phạm vi"
             viewKey="dashboard"
           />
         </div>

@@ -14,7 +14,7 @@ export const leaderOf = (g: StudentGroup) => g.leaderId ?? g.memberIds[0]
 const id = () => crypto.randomUUID()
 function actor() {
   if (currentRole() !== "student" || !getSession())
-    throw Error("Chỉ Student được thực hiện thao tác này.")
+    throw Error("Chỉ Sinh viên được thực hiện thao tác này.")
   const student = getManagementState().students.find(
     (s) => s.id === (getSession()?.studentId ?? demoStudentId),
   )
@@ -142,7 +142,7 @@ export function addMember(groupId: string, memberId: string) {
   appendGroupMember(s, group, candidate)
 }
 export function addMemberBySupervisor(groupId: string, memberId: string) {
-  if (!getSession() || currentRole() !== "supervisor") throw Error("Chỉ Supervisor được thực hiện thao tác này.")
+  if (!getSession() || currentRole() !== "supervisor") throw Error("Chỉ Giảng viên được thực hiện thao tác này.")
   const s = getManagementState(), group = s.groups.find(g => g.id === groupId), candidate = s.students.find(st => st.id === memberId)
   if (!group || !candidate) throw Error("Không tìm thấy nhóm hoặc sinh viên.")
   appendGroupMember(s, group, candidate)
@@ -162,7 +162,7 @@ export function removeMember(groupId: string, memberId: string) {
     )
   )
     throw Error(
-      "Không xóa thành viên khi project đang chờ duyệt/hoạt động hoặc có lịch sử; liên hệ Supervisor.",
+      "Không xóa thành viên khi dự án đang chờ duyệt/hoạt động hoặc có lịch sử; liên hệ Giảng viên.",
     )
   const next = {
     ...group,
@@ -184,16 +184,16 @@ export function registerProject(
 ) {
   const { s, group, student } = ownedGroup(groupId)
   if (!name.trim() || !description.trim())
-    throw Error("Nhập tên và mô tả project.")
+    throw Error("Nhập tên và mô tả dự án.")
   if (s.projects.some((p) => p.groupId === groupId && p.state === "active"))
-    throw Error("Nhóm đã có project hoạt động.")
+    throw Error("Nhóm đã có dự án hoạt động.")
   const existing = s.registrations?.find(
     (r) =>
       r.groupId === groupId &&
       ["pending", "changesRequested"].includes(r.status),
   )
   if (existing && existing.status !== "changesRequested")
-    throw Error("Nhóm đã có đăng ký project đang xử lý.")
+    throw Error("Nhóm đã có đăng ký dự án đang xử lý.")
   const next = {
     id: existing?.id ?? id(),
     groupId,
@@ -217,7 +217,7 @@ export function decideRegistration(
   feedback: string,
 ) {
   if (!getSession() || currentRole() !== "supervisor")
-    throw Error("Chỉ Supervisor được duyệt project.")
+    throw Error("Chỉ Giảng viên được duyệt dự án.")
   const s = getManagementState(),
     r = s.registrations?.find((r) => r.id === registrationId)
   if (!r || r.status !== "pending") throw Error("Yêu cầu không còn chờ duyệt.")
@@ -238,13 +238,13 @@ export function decideRegistration(
     )
   )
     throw Error(
-      "Cần cấu hình Lab Structure và Rule Set Active trước khi duyệt.",
+      "Cần cấu hình Lab Structure và Bộ quy tắc Đang áp dụng trước khi duyệt.",
     )
   if (
     status === "approved" &&
     s.projects.some((p) => p.groupId === group.id && p.state === "active")
   )
-    throw Error("Nhóm đã có project hoạt động.")
+    throw Error("Nhóm đã có dự án hoạt động.")
   const projectId = status === "approved" ? id() : undefined
   updateManagement((s) => ({
     registrations: (s.registrations ?? []).map((x) =>

@@ -66,7 +66,7 @@ function GroupManagementEntry() {
         <Users2 size={20} strokeWidth={1.75} />
       </span>
       <span className="min-w-0 flex-1 leading-[1.45]">
-        <span className="block text-[14px] font-semibold text-ink">Lớp, nhóm & đăng ký project</span>
+        <span className="block text-[14px] font-semibold text-ink">Lớp, nhóm & đăng ký dự án</span>
 
       </span>
       <ChevronRight size={18} className="shrink-0 text-muted" />
@@ -84,13 +84,13 @@ export default function StudentProjectDetailPage() {
   if (!project || !group || (projectId && projectId !== project.id)) return (
     <div className="student-refine phase-two flex min-w-0 flex-col gap-4">
       <BackLink label="Tổng quan" fallback="/student/dashboard" />
-      <PageHeading eyebrow="PROJECT CỦA TÔI" title="My Project"  />
+      <PageHeading eyebrow="DỰ ÁN CỦA TÔI" title="Dự án của tôi"  />
       <section className="flex min-w-0 flex-col gap-3">
         <SectionHeader title="Lớp & nhóm" />
         <StudentClassPicker destination="/student/projects" />
         <GroupManagementEntry />
       </section>
-      <EmptyState title="Chưa có project hoạt động" description="Xem trạng thái đăng ký tại Lớp & nhóm." />
+      <EmptyState title="Chưa có dự án hoạt động" description="Xem trạng thái đăng ký tại Lớp & nhóm." />
     </div>
   )
 
@@ -113,7 +113,7 @@ export default function StudentProjectDetailPage() {
 
         <ProgressBar value={docs.length ? Math.round(docs.filter((d) => d.supervisorStatus === "approved").length / docs.length * 100) : 0} label="Tỷ lệ tài liệu được duyệt" />
         <p className="text-[14px] text-muted">{docs.filter(d => d.supervisorStatus === "approved").length}/{docs.length} tài liệu được giảng viên duyệt</p>
-        <p className="text-[14px] text-muted">Deadline {fmtDate(parseISO(project.deadline))}</p>
+        <p className="text-[14px] text-muted">Hạn nộp {fmtDate(parseISO(project.deadline))}</p>
       </section>
 
       <PhaseTwoTabs id="student-project" tabs={["Tài liệu","Nhóm","Thông tin"]} active={tab} onChange={setTab}/>
@@ -142,8 +142,8 @@ export default function StudentProjectDetailPage() {
             { label: "Học kỳ", value: semester?.name ?? "—" },
             { label: "Môn học", value: `${course?.code ?? "—"} · ${course?.name ?? ""}` },
             { label: "Lớp", value: cls?.code ?? "—" },
-            { label: "Supervisor", value: project.lecturer },
-            { label: "Deadline", value: fmtDate(parseISO(project.deadline)) },
+            { label: "Giảng viên", value: project.lecturer },
+            { label: "Hạn nộp", value: fmtDate(parseISO(project.deadline)) },
             { label: "Thành viên", value: `${members.filter(Boolean).length} sinh viên` },
           ]}
         /></section>
@@ -185,7 +185,7 @@ export default function StudentProjectDetailPage() {
           )
         })}
         <Notice>
-          Tài liệu phụ thuộc cần được phê duyệt trước khi nộp. Mỗi lần nộp tạo một version bất biến mới (v1, v2, v3…).
+          Tài liệu phụ thuộc cần được phê duyệt trước khi nộp. Mỗi lần nộp tạo một phiên bản bất biến mới (v1, v2, v3…).
         </Notice>
       </section>
     </div>

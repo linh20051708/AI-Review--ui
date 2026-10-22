@@ -36,8 +36,8 @@ export default function ProjectRegistrationsPage() {
     <>
       <BackLink label="Tổng quan" fallback="/dashboard" />
       <PageHeading
-        title="Đăng ký project"
-        description="Duyệt project trước khi Student được nộp tài liệu."
+        title="Đăng ký dự án"
+        description="Duyệt dự án trước khi Sinh viên được nộp tài liệu."
       />
       {message && (
         <div role={error ? "alert" : "status"}>
@@ -48,7 +48,7 @@ export default function ProjectRegistrationsPage() {
         {showHistory ? "Chỉ xem chờ duyệt" : "Xem cả lịch sử"}
       </Button>
       {!rows.length && (
-        <Notice>Không có yêu cầu đăng ký project trong danh sách này.</Notice>
+        <Notice>Không có yêu cầu đăng ký dự án trong danh sách này.</Notice>
       )}
       {rows.map((r) => {
         const group = groups.find((g) => g.id === r.groupId),
@@ -80,7 +80,7 @@ export default function ProjectRegistrationsPage() {
                   />
                 </Field>
                 <Button onClick={() => decide(r.id, "approved")}>
-                  Duyệt project
+                  Duyệt dự án
                 </Button>
                 <Button
                   variant="secondary"
@@ -98,7 +98,7 @@ export default function ProjectRegistrationsPage() {
             )}
             {r.projectId && (
               <Button variant="secondary" to={`/projects/${r.projectId}`}>
-                Xem project
+                Xem dự án
               </Button>
             )}
           </Card>

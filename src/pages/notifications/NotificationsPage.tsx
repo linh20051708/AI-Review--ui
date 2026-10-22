@@ -8,7 +8,7 @@ import SegmentedTabs from "@/components/ui/SegmentedTabs"
 import type { NotificationKind } from "@/data/mockData"
 import { notifications } from "@/data/mockData"
 
-const FILTERS = ["Tất cả", "Chưa đọc", "Review", "Deadline", "AI Review"]
+const FILTERS = ["Tất cả", "Chưa đọc", "Đánh giá", "Hạn nộp", "Đánh giá AI"]
 
 const ICONS: Record<NotificationKind, typeof FileUp> = {
   "file-up": FileUp,
@@ -26,9 +26,9 @@ export default function NotificationsPage() {
   const matches = (n: (typeof notifications)[number]) => {
     if (filter === "Tất cả") return true
     if (filter === "Chưa đọc") return n.unread
-    if (filter === "Review") return n.kind === "file-up" || n.kind === "badge-check"
-    if (filter === "AI Review") return n.title.includes("AI Review")
-    if (filter === "Deadline") return n.kind === "clock"
+    if (filter === "Đánh giá") return n.kind === "file-up" || n.kind === "badge-check"
+    if (filter === "Đánh giá AI") return n.title.includes("Đánh giá AI")
+    if (filter === "Hạn nộp") return n.kind === "clock"
     return true
   }
 

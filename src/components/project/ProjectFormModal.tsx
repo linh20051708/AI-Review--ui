@@ -10,6 +10,7 @@ import { slugify, updateManagement, useManagement } from "@/data/managementStore
 import { courseLabel, semesterPhase } from "@/lib/academic"
 import { resolveProjectAcademicContext } from "@/lib/config"
 import { teachingMethods, type Project, type TeachingMethod } from "@/types"
+import uiLabel from "@/lib/uiLabels"
 
 interface Props {
   open: boolean
@@ -64,7 +65,7 @@ export default function ProjectFormModal({ open, project, defaultGroupId, onClos
             .filter((g) => g.classId === c.id)
             .map((g) => {
               const owner = projects.find((p) => p.groupId === g.id && p.id !== project?.id)
-              return { id: g.id, label: owner ? `${g.name} · đã có project` : g.name, disabled: Boolean(owner) }
+              return { id: g.id, label: owner ? `${g.name} · đã có dự án` : g.name, disabled: Boolean(owner) }
             }),
         }))
         .filter((x) => x.groups.length),
@@ -117,7 +118,7 @@ export default function ProjectFormModal({ open, project, defaultGroupId, onClos
   const ctx = draft ? resolveProjectAcademicContext(draft, mgmt) : undefined
 
   const conflict = projects.find((p) => p.groupId === f.groupId && p.id !== project?.id)
-  const dateError = f.startDate && f.deadline && f.deadline < f.startDate ? "Deadline phải sau ngày bắt đầu." : undefined
+  const dateError = f.startDate && f.deadline && f.deadline < f.startDate ? "Hạn nộp phải sau ngày bắt đầu." : undefined
   const canSave = Boolean(f.name.trim() && draft && ctx?.offering && f.startDate && f.deadline && !dateError && !conflict)
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setF((x) => ({ ...x, [k]: v }))
 
@@ -129,12 +130,12 @@ export default function ProjectFormModal({ open, project, defaultGroupId, onClos
         projects: s.projects.map((p) => (p.id === project.id ? { ...data, id: project.id } : p)),
         groups: s.groups.map((g) => (g.id === project.groupId && g.id !== data.groupId ? { ...g, projectId: undefined } : g.id === data.groupId ? { ...g, projectId: project.id } : g)),
       }))
-      toast("Đã cập nhật thông tin project")
+      toast("Đã cập nhật thông tin dự án")
     } else {
       const id = slugify(data.name)
       const created: Project = { ...data, id }
       updateManagement((s) => ({ projects: [...s.projects, created], groups: s.groups.map((g) => (g.id === data.groupId ? { ...g, projectId: id } : g)) }))
-      toast(`Đã tạo project ${created.name}`)
+      toast(`Đã tạo dự án ${created.name}`)
     }
     onClose()
   }
@@ -143,12 +144,12 @@ export default function ProjectFormModal({ open, project, defaultGroupId, onClos
     <Modal
       open={open}
       onClose={onClose}
-      title={project ? "Chỉnh sửa project" : "Tạo project"}
-      description="Project được tạo từ một nhóm có sẵn và kế thừa cấu hình của lớp. Tài liệu và version không bị ảnh hưởng."
+      title={project ? "Chỉnh sửa dự án" : "Tạo dự án"}
+      description="Dự án được tạo từ một nhóm có sẵn và kế thừa cấu hình của lớp. Tài liệu và phiên bản không bị ảnh hưởng."
       footer={
         <>
           <Button variant="secondary" onClick={onClose}>Hủy</Button>
-          <Button onClick={save} disabled={!canSave} className="disabled:opacity-50">{project ? "Lưu thay đổi" : "Tạo project"}</Button>
+          <Button onClick={save} disabled={!canSave} className="disabled:opacity-50">{project ? "Lưu thay đổi" : "Tạo dự án"}</Button>
         </>
       }
     >
@@ -174,9 +175,9 @@ export default function ProjectFormModal({ open, project, defaultGroupId, onClos
           <div className="flex items-start gap-2.5 rounded-[8px] bg-rust-soft p-3 text-[12px] leading-[1.45] text-rust">
             <AlertCircle size={16} strokeWidth={1.75} className="mt-px shrink-0" />
             <p className="flex-1">
-              {group?.name} đã có project <span className="font-semibold">{conflict.name}</span>. Mỗi nhóm chỉ có một project.
+              {group?.name} đã có dự án <span className="font-semibold">{conflict.name}</span>. Mỗi nhóm chỉ có một dự án.
             </p>
-            <Link to={`/projects/${conflict.id}`} onClick={onClose} className="shrink-0 font-semibold underline">Xem project</Link>
+            <Link to={`/projects/${conflict.id}`} onClick={onClose} className="shrink-0 font-semibold underline">Xem dự án</Link>
           </div>
         )}
         {ctx && (
@@ -188,29 +189,29 @@ export default function ProjectFormModal({ open, project, defaultGroupId, onClos
           </div>
         )}
         {ctx && !ctx.offering && (
-          <p className="text-[12px] text-danger">Lớp này chưa gắn với môn học trong học kỳ nên chưa thể tạo project.</p>
+          <p className="text-[12px] text-danger">Lớp này chưa gắn với môn học trong học kỳ nên chưa thể tạo dự án.</p>
         )}
       </Section>
 
-      <Section title="THÔNG TIN PROJECT">
-        <Field label="Tên project" required><TextInput value={f.name} onChange={(e) => set("name", e.target.value)} placeholder="Smart Campus Management" /></Field>
+      <Section title="THÔNG TIN DỰ ÁN">
+        <Field label="Tên dự án" required><TextInput value={f.name} onChange={(e) => set("name", e.target.value)} placeholder="Smart Campus Management" /></Field>
         <Field label="Mô tả"><TextArea rows={3} value={f.description} onChange={(e) => set("description", e.target.value)} /></Field>
-        <Field label="Supervisor"><TextInput value={project?.lecturer ?? currentUser.name} readOnly className="bg-subtle text-muted" /></Field>
+        <Field label="Giảng viên"><TextInput value={project?.lecturer ?? currentUser.name} readOnly className="bg-subtle text-muted" /></Field>
       </Section>
 
       <Section title="PHƯƠNG PHÁP DẠY">
         <div className="flex flex-col gap-2 rounded-[8px] border border-line p-3">
           <div className="leading-[1.45]">
-            <p className="text-[13px] font-semibold text-ink">{ctx?.teachingMethod.value ?? "—"}</p>
+            <p className="text-[13px] font-semibold text-ink">{uiLabel(ctx?.teachingMethod.value)}</p>
             <p className="text-[11px] text-muted">{ctx?.teachingMethod.source ?? "Chọn nhóm để xem cấu hình kế thừa"}</p>
           </div>
           <label className="flex items-center gap-2 text-[12px] text-ink">
             <input type="checkbox" checked={f.overrideMethod} onChange={(e) => set("overrideMethod", e.target.checked)} className="size-4 accent-[#146b55]" />
-            Dùng phương pháp dạy riêng cho project
+            Dùng phương pháp dạy riêng cho dự án
           </label>
           {f.overrideMethod && (
             <select value={f.teachingMethod} onChange={(e) => set("teachingMethod", teachingMethods.find((m) => m === e.target.value) ?? f.teachingMethod)} className="min-h-12 w-full rounded-[8px] border border-line bg-white p-3 text-[13px] text-ink outline-none focus:border-brand">
-              {teachingMethods.map((m) => <option key={m}>{m}</option>)}
+              {teachingMethods.map((m) => <option key={m} value={m}>{uiLabel(m)}</option>)}
             </select>
           )}
         </div>
@@ -219,9 +220,9 @@ export default function ProjectFormModal({ open, project, defaultGroupId, onClos
       <Section title="THỜI GIAN">
         <div className="grid grid-cols-2 gap-2">
           <Field label="Ngày bắt đầu" required><TextInput type="date" value={f.startDate} onChange={(e) => set("startDate", e.target.value)} /></Field>
-          <Field label="Deadline" required hint={dateError}><TextInput type="date" value={f.deadline} onChange={(e) => set("deadline", e.target.value)} /></Field>
+          <Field label="Hạn nộp" required hint={dateError}><TextInput type="date" value={f.deadline} onChange={(e) => set("deadline", e.target.value)} /></Field>
         </div>
-        <Field label="Hạn cuối gửi review" hint="Không bắt buộc · lưu cả ngày và giờ.">
+        <Field label="Hạn cuối gửi đánh giá" hint="Không bắt buộc · lưu cả ngày và giờ.">
           <TextInput type="datetime-local" value={f.reviewCutoff} onChange={(e) => set("reviewCutoff", e.target.value)} />
         </Field>
       </Section>

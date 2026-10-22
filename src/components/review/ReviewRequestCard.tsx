@@ -14,7 +14,7 @@ import ReviewAIStatus from "./ReviewAIStatus"
 export default function ReviewRequestCard({ review, compact = false }: { review: ReviewRequest; compact?: boolean }) {
   const { courses } = useManagement()
   const done = isCompleted(review.supervisorStatus)
-  const cta = review.supervisorStatus === "inReview" ? "Tiếp tục review" : "Review ngay"
+  const cta = review.supervisorStatus === "inReview" ? "Tiếp tục đánh giá" : "Đánh giá ngay"
   if (compact) return <Card>
     <div className="flex items-start gap-2">
       <h2 className="min-w-0 flex-1 text-[17px] font-semibold leading-snug">{review.documentTitle}</h2><Badge>{review.version}</Badge>

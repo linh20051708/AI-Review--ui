@@ -45,7 +45,7 @@ export default function DocumentListPage() {
         statusTitle="Tiến độ tài liệu"
         statusGroup="Tài liệu"
         statusLabels={docStatusLabels}
-        searchPlaceholder="Tìm tài liệu hoặc project..."
+        searchPlaceholder="Tìm tài liệu hoặc dự án..."
         noun="tài liệu"
         viewKey="documents"
       />

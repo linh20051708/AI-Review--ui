@@ -22,9 +22,9 @@ export default function ProjectCard({ group, compact = false }: { group: Student
       {project && <ProjectStateBadge state={project.state} />}
     </div>
     <Link to={project ? `/projects/${project.id}` : `/groups/${group.id}`} className="flex min-h-12 items-center justify-between gap-3 text-[14px] font-medium">
-      <span className="min-w-0 break-words">{project?.name ?? "Gán project"}</span><span aria-hidden="true">›</span>
+      <span className="min-w-0 break-words">{project?.name ?? "Gán dự án"}</span><span aria-hidden="true">›</span>
     </Link>
-    <p className="text-[14px] text-muted">{group.memberIds.length}/{limit} thành viên · {group.pendingReviews} chờ review</p>
+    <p className="text-[14px] text-muted">{group.memberIds.length}/{limit} thành viên · {group.pendingReviews} chờ đánh giá</p>
     {group.memberIds.length > limit && <p className="text-[14px] text-amber">Vượt giới hạn · Không thể thêm thành viên</p>}
     <details>
       <summary className="flex min-h-12 cursor-pointer items-center text-[14px] font-medium text-muted">Thông tin nhóm</summary>
@@ -42,19 +42,19 @@ export default function ProjectCard({ group, compact = false }: { group: Student
         <span className="text-[12px] text-muted">{group.name}</span>
         <span className="flex max-w-full flex-wrap gap-1">{project && <ProjectStateBadge state={project.state} />}{project?.state !== "archived" && <Badge tone={health.tone}>{health.label}</Badge>}</span>
       </div>
-      <p className="text-[17px] leading-[1.45] font-semibold text-ink">{project?.name ?? "Chưa gán project"}</p>
+      <p className="text-[17px] leading-[1.45] font-semibold text-ink">{project?.name ?? "Chưa gán dự án"}</p>
       <ProgressBar value={group.progress} label="Tiến độ nhóm (ghi nhận)" />
       {group.memberIds.length > limit && <p className="text-[14px] text-amber">Vượt giới hạn · Không thể thêm thành viên</p>}
       <MetaGrid
         items={[
           { label: "Thành viên", value: `${group.memberIds.length}/${limit}` },
-          { label: "Chờ review", value: `${group.pendingReviews} tài liệu` },
+          { label: "Chờ đánh giá", value: `${group.pendingReviews} tài liệu` },
           { label: "Hoạt động mới", value: activityText(group.lastActivity) },
         ]}
       />
       <div className="grid grid-cols-2 gap-2">
         <Button variant="secondary" to={`/groups/${group.id}`}>Quản lý nhóm</Button>
-        {project ? <Button variant="secondary" to={`/projects/${project.id}`}>Xem project</Button> : <Button variant="secondary" to={`/groups/${group.id}`}>Gán project</Button>}
+        {project ? <Button variant="secondary" to={`/projects/${project.id}`}>Xem dự án</Button> : <Button variant="secondary" to={`/groups/${group.id}`}>Gán dự án</Button>}
       </div>
     </Card>
   )

@@ -25,8 +25,8 @@
 
 @layer base {
   :root {
-    /* Real iOS reports the inset; desktop/Figma device previews report 0, so keep the header clear of the Dynamic Island. */
-    --app-safe-top: max(env(safe-area-inset-top), 54px);
+    /* Use the device inset without adding a second status bar in browser previews. */
+    --app-safe-top: env(safe-area-inset-top, 0px);
   }
 
   html,
@@ -76,7 +76,7 @@
   }
 
   .mobile-header-inner {
-    min-height: 64px;
+    min-height: 56px;
     display: flex;
     align-items: center;
   }

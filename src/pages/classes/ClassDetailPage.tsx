@@ -26,7 +26,7 @@ import { updateManagement, useManagement } from "@/data/managementStore"
 import { useReviewStore } from "@/data/reviewStore"
 import { isCompleted } from "@/data/selectors"
 
-const TABS = ["Tổng quan", "Nhóm", "Sinh viên", "Project", "Yêu cầu review"]
+const TABS = ["Tổng quan", "Nhóm", "Sinh viên", "Dự án", "Yêu cầu đánh giá"]
 
 export default function ClassDetailPage() {
   const { classId } = useParams()
@@ -74,8 +74,8 @@ export default function ClassDetailPage() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <StatCard value={students.length || classRoom.studentCount} label="Sinh viên" />
             <StatCard value={groups.length} label="Nhóm" />
-            <StatCard value={projects.length} label="Project" />
-            <StatCard value={reviews.length} label="Chờ / đang review" />
+            <StatCard value={projects.length} label="Dự án" />
+            <StatCard value={reviews.length} label="Chờ / đang đánh giá" />
           </div>
           <section className="flex flex-col gap-3">
             <SectionHeader title="Tình trạng nhóm" />
@@ -99,7 +99,7 @@ export default function ClassDetailPage() {
       {tab === "Nhóm" && (
         <section className="flex flex-col gap-3">
           <SectionHeader title="Nhóm sinh viên" meta={`${groups.length} nhóm`} />
-          {groups.length ? groups.map((g) => <ProjectCard key={g.id} group={g} />) : <EmptyState title="Chưa có nhóm nào" description="Tạo nhóm để xếp sinh viên và gán project." />}
+          {groups.length ? groups.map((g) => <ProjectCard key={g.id} group={g} />) : <EmptyState title="Chưa có nhóm nào" description="Tạo nhóm để xếp sinh viên và gán dự án." />}
         </section>
       )}
 
@@ -122,30 +122,30 @@ export default function ClassDetailPage() {
               </ul>
             </Card>
           ) : (
-            <EmptyState title="Chưa có sinh viên" description="Import danh sách sinh viên để bắt đầu." />
+            <EmptyState title="Chưa có sinh viên" description="Nhập danh sách sinh viên để bắt đầu." />
           )}
         </section>
       )}
 
-      {tab === "Project" && (
+      {tab === "Dự án" && (
         <section className="flex flex-col gap-3">
-          <SectionHeader title="Project" meta={`${projects.length} project`} />
+          <SectionHeader title="Dự án" meta={`${projects.length} dự án`} />
           {projects.map((p) => (
             <Link key={p.id} to={`/projects/${p.id}`}>
               <Card className="hover:border-brand/40">
-                <div className="flex justify-between gap-2 text-[12px] text-muted"><span>{groups.find((g) => g.id === p.groupId)?.name ?? "—"}</span><span>Deadline {fmtDate(parseISO(p.deadline))}</span></div>
+                <div className="flex justify-between gap-2 text-[12px] text-muted"><span>{groups.find((g) => g.id === p.groupId)?.name ?? "—"}</span><span>Hạn nộp {fmtDate(parseISO(p.deadline))}</span></div>
                 <p className="text-[15px] font-semibold text-ink">{p.name}</p>
                 <ProgressBar value={p.progress} />
               </Card>
             </Link>
           ))}
-          {!projects.length && <EmptyState title="Chưa có project" />}
+          {!projects.length && <EmptyState title="Chưa có dự án" />}
         </section>
       )}
 
-      {tab === "Yêu cầu review" && (
+      {tab === "Yêu cầu đánh giá" && (
         <section className="flex flex-col gap-3">
-          <SectionHeader title="Yêu cầu review đang mở" meta={`${reviews.length} yêu cầu`} linkTo="/reviews" />
+          <SectionHeader title="Yêu cầu đánh giá đang mở" meta={`${reviews.length} yêu cầu`} linkTo="/reviews" />
           {reviews.length ? reviews.map((r) => <ReviewRequestCard key={r.id} review={r} />) : <EmptyState title="Không có yêu cầu đang mở" />}
         </section>
       )}

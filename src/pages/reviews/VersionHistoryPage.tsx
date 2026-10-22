@@ -24,19 +24,19 @@ export default function VersionHistoryPage() {
   const { versions } = useReviewStore()
   const [viewing, setViewing] = useState<DocumentVersion | null>(null)
   const [compareIndex, setCompareIndex] = useState<number | null>(null)
-  if (!review) return <EmptyState title="Không tìm thấy yêu cầu review" />
+  if (!review) return <EmptyState title="Không tìm thấy yêu cầu đánh giá" />
   const versionsList = versionsFor(review, versions)
   const cmp = compareIndex ?? (versionsList.length > 1 ? versionsList.length - 1 : null)
 
   return (
     <>
-      <BackLink label="Không gian review" fallback={`/reviews/${review.id}`} />
-      <PageHeading title="Lịch sử version" description={`Tài liệu: ${review.documentTitle}`} />
+      <BackLink label="Không gian đánh giá" fallback={`/reviews/${review.id}`} />
+      <PageHeading title="Lịch sử phiên bản" description={`Tài liệu: ${review.documentTitle}`} />
       <ReviewContextCard review={review} />
-      <Notice>Mỗi version đã nộp là bất biến. Giảng viên có thể xem và so sánh; không thể sửa, thay thế hoặc xóa version.</Notice>
+      <Notice>Mỗi phiên bản đã nộp là bất biến. Giảng viên có thể xem và so sánh; không thể sửa, thay thế hoặc xóa phiên bản.</Notice>
 
       <section className="flex flex-col gap-3">
-        <SectionHeader title="Các version" meta={`${versionsList.length} version`} />
+        <SectionHeader title="Các phiên bản" meta={`${versionsList.length} phiên bản`} />
         {versionsList.map((v, i) => ({v, i})).reverse().map(({v, i}) => (
           <VersionCard key={v.id} version={v} selected={cmp === i} onView={() => setViewing(v)} onCompare={i > 0 ? () => setCompareIndex(i) : undefined} />
         ))}
@@ -54,7 +54,7 @@ export default function VersionHistoryPage() {
           </Card>
         </section>
       )}
-      <Button variant="secondary" to={`/reviews/${review.id}/history`} icon={<History size={18} strokeWidth={1.75} />}>Xem lịch sử review</Button>
+      <Button variant="secondary" to={`/reviews/${review.id}/history`} icon={<History size={18} strokeWidth={1.75} />}>Xem lịch sử đánh giá</Button>
 
       <Modal open={Boolean(viewing)} onClose={() => setViewing(null)} title={`${review.documentTitle} · ${viewing?.version ?? ""}`} description={`Chỉ xem · ${viewing?.fileName ?? ""}`}>
         {viewing && <DocumentViewer review={{ ...review, version: viewing.version, fileName: viewing.fileName, fileType: viewing.fileType ?? (viewing.fileName.toLowerCase().endsWith(".docx") ? "DOCX" : "PDF"), fileSize: viewing.fileSize, pageCount: viewing.pageCount ?? review.pageCount, submittedAt: viewing.submittedAt, submitter: viewing.submitter }}  />}

@@ -54,7 +54,7 @@ export const personaTemplate: RuleSet = {
   id: "persona-evaluation-100",
   name: "Persona Evaluation — 100 Points",
   description:
-    "Rubric đề xuất của giảng viên, phase P2 (Gate G2); không phải tiêu chuẩn chấm điểm chính thức của NN/g. Không tính đủ 5 Persona thành tiêu chí riêng. Gốc: 80–100 đạt; 70 cần cải thiện; dưới 70 cần làm lại. Khoảng 70–79 là quy ước triển khai bổ sung. Trước duyệt UI cần evidence/assumption matrix, khác biệt Persona và scenario. Điểm cao không thay thế nghiên cứu người dùng/usability testing.",
+    "Rubric đề xuất của giảng viên, phase P2 (Gate G2); không phải tiêu chuẩn chấm điểm chính thức của NN/g. Không tính đủ 5 Persona thành tiêu chí riêng. Gốc: 80–100 đạt; 70 cần cải thiện; dưới 70 cần làm lại. Khoảng 70–79 là quy ước triển khai bổ sung. Trước duyệt UI cần bằng chứng/assumption matrix, khác biệt Persona và scenario. Điểm cao không thay thế nghiên cứu người dùng/usability testing.",
   version: 1,
   status: "active",
   aiEnabled: true,
@@ -74,7 +74,7 @@ export const personaTemplate: RuleSet = {
     instruction:
       "Đề xuất 10 điểm nếu đạt, 0 nếu chưa đạt; chỉ mô phỏng ở bản demo. Không kết luận có bằng chứng khi chưa xác minh.",
     evidenceRequirement:
-      "Đối chiếu evidence/assumption matrix và nội dung tài liệu gốc; đánh dấu Cần xác minh khi chưa kiểm tra.",
+      "Đối chiếu bằng chứng/assumption matrix và nội dung tài liệu gốc; đánh dấu Cần xác minh khi chưa kiểm tra.",
   })),
   passThreshold: 80,
   improveThreshold: 70,
@@ -90,7 +90,7 @@ export function validateRule(r: RuleSet): string | undefined {
     !Number.isFinite(r.reviewSlaDays) ||
     r.reviewSlaDays <= 0
   )
-    return "Định dạng, dung lượng và hạn review phải hợp lệ."
+    return "Định dạng, dung lượng và hạn đánh giá phải hợp lệ."
   if (
     r.maxResubmissions !== undefined &&
     (!Number.isInteger(r.maxResubmissions) || r.maxResubmissions < 0)
@@ -130,7 +130,7 @@ export function validateRule(r: RuleSet): string | undefined {
     r.aiRequiredBeforeSupervisor &&
     !cs.some((c) => c.enabled && c.aiEnabled)
   )
-    return "Cần ít nhất một tiêu chí bật AI để bắt buộc AI Review."
+    return "Cần ít nhất một tiêu chí bật AI để bắt buộc Đánh giá AI."
   return undefined
 }
 

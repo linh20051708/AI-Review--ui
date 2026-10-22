@@ -1,11 +1,11 @@
-import { Bell, BookOpen, Folder, LayoutDashboard, UserRound } from "lucide-react"
+import { Inbox, BookOpen, Folder, LayoutDashboard, UserRound } from "lucide-react"
 import { NavLink } from "react-router-dom"
 
 const tabs = [
   { to: "/student/dashboard", label: "Tổng quan", icon: LayoutDashboard },
-  { to: "/student/projects", label: "My Project", icon: Folder },
+  { to: "/student/projects", label: "Dự án", icon: Folder },
   { to: "/student/documents", label: "Tài liệu", icon: BookOpen },
-  { to: "/student/notifications", label: "Thông báo", icon: Bell },
+  { to: "/student/notifications", label: "Thông báo", icon: Inbox },
   { to: "/student/profile", label: "Tài khoản", icon: UserRound },
 ]
 

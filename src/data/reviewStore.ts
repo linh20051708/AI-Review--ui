@@ -193,12 +193,12 @@ export const latestEvaluation = (r: ReviewRequest) =>
 export function supervisorBlock(r: ReviewRequest): string | undefined {
   const rule = resolveReviewRule(r, getManagementState())
   if (!rule || rule.status !== "active")
-    return "Cần gán một bộ quy tắc Active trước khi review."
+    return "Cần gán một bộ quy tắc Đang áp dụng trước khi đánh giá."
   if (
     rule.aiRequiredBeforeSupervisor &&
     latestEvaluation(r)?.evaluationStatus !== "completed"
   )
-    return "Bộ quy tắc yêu cầu hoàn tất AI Evaluation trước khi giảng viên bắt đầu review hoặc ra quyết định."
+    return "Bộ quy tắc yêu cầu hoàn tất Đánh giá AI trước khi giảng viên bắt đầu đánh giá hoặc ra quyết định."
 }
 
 function submissionRule(
@@ -209,13 +209,13 @@ function submissionRule(
 ) {
   const cfg = getManagementState()
   const project = cfg.projects.find(p => p.id === review.projectId)
-  if (!project || project.state !== "active" || (project.registrationId && !cfg.registrations?.some(r => r.id === project.registrationId && r.status === "approved" && r.projectId === project.id))) throw new Error("Project phải được Supervisor duyệt và đang hoạt động trước khi nộp tài liệu.")
+  if (!project || project.state !== "active" || (project.registrationId && !cfg.registrations?.some(r => r.id === project.registrationId && r.status === "approved" && r.projectId === project.id))) throw new Error("Dự án phải được Giảng viên duyệt và đang hoạt động trước khi nộp tài liệu.")
   const rule = resolveReviewRule({ ...review, ruleSnapshot: undefined }, cfg)
   if (!rule || rule.status !== "active")
-    throw new Error("Cần gán bộ quy tắc Active trước khi nộp.")
+    throw new Error("Cần gán bộ quy tắc Đang áp dụng trước khi nộp.")
   if (rule.aiRequiredBeforeSupervisor && validateRule(rule))
     throw new Error(
-      "Bộ quy tắc yêu cầu AI nhưng checklist chưa hợp lệ. Supervisor cần cấu hình trước khi nộp.",
+      "Bộ quy tắc yêu cầu AI nhưng checklist chưa hợp lệ. Giảng viên cần cấu hình trước khi nộp.",
     )
   if (
     resubmit &&
@@ -234,7 +234,7 @@ function submissionRule(
       (fileSize <= 0 || fileSize > rule.maxFileSizeMB * 1024 * 1024))
   )
     throw new Error(
-      "File không đúng định dạng hoặc dung lượng theo bộ quy tắc.",
+      "Tệp không đúng định dạng hoặc dung lượng theo bộ quy tắc.",
     )
   const cls = cfg.classes.find((c) => c.id === review.classId)
   const item = resolveLabStructure(
@@ -244,7 +244,7 @@ function submissionRule(
     .flatMap((l) => l.items)
     .find((i) => i.id === review.documentId)
   if (item && item.allowedFiles !== "Both" && item.allowedFiles !== fileType)
-    throw new Error("File không đúng định dạng của Lab Item.")
+    throw new Error("Tệp không đúng định dạng của Lab Item.")
   if (
     rule.prerequisiteApproval &&
     item?.dependsOn.some(
@@ -271,15 +271,15 @@ function autoEvaluate(reviewId: string) {
 
 export async function runEvaluation(reviewId: string, simulateError = false) {
   const review = state.requests.find((r) => r.id === reviewId)
-  if (!review) throw new Error("Không tìm thấy yêu cầu review.")
+  if (!review) throw new Error("Không tìm thấy yêu cầu đánh giá.")
   if (latestEvaluation(review)?.evaluationStatus === "loading") return
   if (!["waiting", "inReview"].includes(review.supervisorStatus))
     throw new Error(
-      "Review đã hoàn tất; kết quả AI được giữ nguyên trong lịch sử.",
+      "Đánh giá đã hoàn tất; kết quả AI được giữ nguyên trong lịch sử.",
     )
   const rule = resolveReviewRule(review, getManagementState())
   if (!rule || rule.status !== "active" || !rule.aiEnabled)
-    throw new Error("AI chưa được bật trong bộ quy tắc Active.")
+    throw new Error("AI chưa được bật trong bộ quy tắc Đang áp dụng.")
   const invalid = validateRule(rule)
   if (invalid) throw new Error(invalid)
   const version = state.versions.find(
@@ -362,12 +362,12 @@ export async function runEvaluation(reviewId: string, simulateError = false) {
       ...state.audit,
       event(
         reviewId,
-        `AI Review ${
+        `Đánh giá AI ${
           simulateError ? "gặp lỗi" : "hoàn tất"
         } · ${run.documentVersion} · ${rule.name} v${rule.version ?? 1}`,
         simulateError ? "rust" : "olive",
         undefined,
-        "AI Review",
+        "Đánh giá AI",
       ),
     ],
   })
@@ -376,7 +376,7 @@ export async function runEvaluation(reviewId: string, simulateError = false) {
       projectId: review.projectId,
       documentId: review.documentId,
       documentTitle: review.documentTitle,
-      title: `AI Review có kết quả tham khảo cho ${review.documentTitle} ${review.version}.`,
+      title: `Đánh giá AI có kết quả tham khảo cho ${review.documentTitle} ${review.version}.`,
       meta: review.projectName,
     })
 }
@@ -390,12 +390,12 @@ const notifySubmission = (review: ReviewRequest) => {
   }
   notificationActions.push({
     ...context,
-    title: `Đã gửi yêu cầu review ${review.documentTitle} ${review.version}.`,
+    title: `Đã gửi yêu cầu đánh giá ${review.documentTitle} ${review.version}.`,
   })
   if (review.aiStatus === "aiReviewed")
     notificationActions.push({
       ...context,
-      title: `AI Review mô phỏng hoàn tất cho ${review.documentTitle} ${review.version}.`,
+      title: `Đánh giá AI mô phỏng hoàn tất cho ${review.documentTitle} ${review.version}.`,
     })
 }
 
@@ -436,7 +436,7 @@ export const reviewActions = {
       ),
       audit: [
         ...state.audit,
-        event(reviewId, `${currentUser.name} bắt đầu review.`, "brand"),
+        event(reviewId, `${currentUser.name} bắt đầu đánh giá.`, "brand"),
       ],
     })
   },
@@ -457,7 +457,7 @@ export const reviewActions = {
         ...state.audit,
         event(
           input.reviewId,
-          "Giảng viên thêm feedback.",
+          "Giảng viên thêm phản hồi.",
           "amber",
           `“${input.message}”`,
         ),
@@ -491,7 +491,7 @@ export const reviewActions = {
     const blocked = supervisorBlock(review)
     if (blocked) throw new Error(blocked)
     if (decision !== "approved" && !note?.trim())
-      throw new Error("Cần lý do/feedback cho quyết định này.")
+      throw new Error("Cần lý do/phản hồi cho quyết định này.")
     const label = review
       ? `${review.documentTitle} ${review.version}`
       : "tài liệu"
@@ -676,14 +676,14 @@ export const reviewActions = {
         ...state.audit,
         event(
           review.id,
-          `${input.submitter} đã upload ${input.version}.`,
+          `${input.submitter} đã tải lên ${input.version}.`,
           "neutral",
           undefined,
           input.submitter,
         ),
         event(
           review.id,
-          `${input.submitter} gửi yêu cầu review.`,
+          `${input.submitter} gửi yêu cầu đánh giá.`,
           "neutral",
           undefined,
           input.submitter,
@@ -716,7 +716,7 @@ export const reviewActions = {
             r.documentId === review.documentId),
       )
     )
-      throw new Error("Tài liệu đã có yêu cầu review. Vui lòng tải lại trang.")
+      throw new Error("Tài liệu đã có yêu cầu đánh giá. Vui lòng tải lại trang.")
     const ruleSnapshot = submissionRule(review, input.fileType, input.fileSize)
     const ts = now()
     const isFirst = input.version === "v1"
@@ -762,14 +762,14 @@ export const reviewActions = {
         ...state.audit,
         event(
           review.id,
-          `${review.submitter} đã upload ${input.version}.`,
+          `${review.submitter} đã tải lên ${input.version}.`,
           "neutral",
           undefined,
           review.submitter,
         ),
         event(
           review.id,
-          `${review.submitter} gửi yêu cầu review.`,
+          `${review.submitter} gửi yêu cầu đánh giá.`,
           "neutral",
           undefined,
           review.submitter,

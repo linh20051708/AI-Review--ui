@@ -13,11 +13,11 @@ import "@/styles/review-refinement.css"
 export default function AIReviewResultPage() {
   const { review } = useReviewFromParams()
 
-  if (!review) return <EmptyState title="Không tìm thấy yêu cầu review" />
+  if (!review) return <EmptyState title="Không tìm thấy yêu cầu đánh giá" />
 
   return (
     <div className="phase-one flex min-w-0 flex-col gap-3 text-[14px]">
-      <BackLink label="Không gian review" fallback={"/reviews/" + review.id} />
+      <BackLink label="Không gian đánh giá" fallback={"/reviews/" + review.id} />
       <PageHeading
         title="Kết quả AI"
         description={review.documentTitle + " · " + review.version}
